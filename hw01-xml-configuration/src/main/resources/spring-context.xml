@@ -23,9 +23,6 @@
         </constructor-arg>
     </bean>
 
-    <bean id="printResultService" class="ru.otus.spring.service.PrintResultServiceImpl">
-        <constructor-arg name="service" ref="questionService"/>
-    </bean>
 
 
 
