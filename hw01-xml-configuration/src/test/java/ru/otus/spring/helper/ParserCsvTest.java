@@ -8,9 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.test.context.ContextConfiguration;
-import ru.otus.spring.dao.QuestionDao;
-import ru.otus.spring.dao.QuestionDaoImpl;
 import ru.otus.spring.domain.Question;
 
 import java.io.IOException;
@@ -33,7 +30,8 @@ class ParserCsvTest {
     @Test
     @DisplayName("корректный парсинг и маппинг csv")
     void correctParsingAndMappingOfCsv() throws IOException {
-        Parser parser = context.getBean(Parser.class);
+        Resource resource = context.getResource("classpath:/questions-and-answers.csv");
+        Parser parser = new ParserCsv(resource);//context.getBean(Parser.class);
         List<Question> parseQuestions = parser.parseQuestions();
         assertThat(parseQuestions).isNotEmpty();
         parseQuestions.forEach(answer -> {
@@ -57,26 +55,6 @@ class ParserCsvTest {
         Resource resourceEr2 = context.getResource("classpath:/questions-and-answersError5674.csv");
         Parser parser2 = new ParserCsv(resourceEr2);
         assertThrows(Exception.class, parser2::parseQuestions);
-    }
-
-    @Test
-    @DisplayName("корректную работы основных методов сервиса при ошибках парсинга")
-    void correctWorkOfServiceWhenParsingRuntimeException() {
-        Resource resourceEr = context.getResource("classpath:/questions-and-answersError.csv");
-        Parser parser = new ParserCsv(resourceEr);
-        QuestionDao dao = new QuestionDaoImpl(parser);
-        assertDoesNotThrow(dao::findAll);
-        assertThat(dao.findAll()).isEmpty();
-    }
-
-    @Test
-    @DisplayName("корректную работы основных методов сервиса при отсутсвии файла")
-    void correctWorkOfServiceWhenNullPointException() {
-        Resource resourceEr = context.getResource("classpath:/questions-and-answersError5674.csv");
-        Parser parser = new ParserCsv(resourceEr);
-        QuestionDao dao = new QuestionDaoImpl(parser);
-        assertDoesNotThrow(dao::findAll);
-        assertThat(dao.findAll()).isEmpty();
     }
 
     @AfterEach

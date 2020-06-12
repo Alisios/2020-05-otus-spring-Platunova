@@ -1,10 +1,11 @@
 package ru.otus.spring.dao;
 
+import ru.otus.spring.dao.QuestionDaoException;
 import ru.otus.spring.domain.Question;
 
 import java.util.List;
 
 public interface QuestionDao {
 
-    List<Question> findAll();
+    List<Question> findAll() throws QuestionDaoException;
 }
