@@ -27,15 +27,4 @@ public class QuestionServiceImpl implements QuestionService {
         return listAnswers;
     }
 
-    @Override
-    public List<String> convertQuestionsToString(List<Question> allQuestionsAndAnswers) {
-        List<String> allQuestionsAndAnswersString = new ArrayList<>();
-        allQuestionsAndAnswers.forEach((question) -> {
-            allQuestionsAndAnswersString.add(question.getId() + ". " + question.getContentOfQuestion() + "\n" +
-                    question.getListOfAnswers().stream()
-                            .map(i -> ("\t" + (question.getListOfAnswers().indexOf(i) + 1) + ") " +
-                                    i.getContentOfPossibleAnswer())).collect(Collectors.joining("\n")));
-        });
-        return allQuestionsAndAnswersString;
-    }
 }

@@ -12,12 +12,12 @@ public class IOServiceImpl implements IOService {
     private final Scanner in;
 
     @Override
-    public void outputQuestion(String s) {
+    public void outputMessage(String s) {
         outPut.println(s);
     }
 
     @Override
-    public String inputAnswer() {
+    public String inputMessage() {
         return in.nextLine();
     }
 }

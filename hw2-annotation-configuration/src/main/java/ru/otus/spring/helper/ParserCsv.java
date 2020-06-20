@@ -1,9 +1,10 @@
 package ru.otus.spring.helper;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 import ru.otus.spring.domain.Answer;
 import ru.otus.spring.domain.Question;
 
@@ -18,13 +19,18 @@ import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Getter
 @Setter
+@Component
+@PropertySource("classpath:application.properties")
 public class ParserCsv implements Parser {
 
-    private String resourceName;
+    private final String resourceName;
+
+    public ParserCsv(@Value("${service.path}") String resourceName) {
+        this.resourceName = resourceName;
+    }
 
     @Override
     public List<Question> parseQuestions() throws IOException {

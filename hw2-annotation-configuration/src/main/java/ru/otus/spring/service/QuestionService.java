@@ -11,5 +11,4 @@ public interface QuestionService {
 
     List<Integer> getRightAnswers(List<Question> allQuestionsAndAnswers);
 
-    List<String> convertQuestionsToString(List<Question> allQuestionsAndAnswers);
 }

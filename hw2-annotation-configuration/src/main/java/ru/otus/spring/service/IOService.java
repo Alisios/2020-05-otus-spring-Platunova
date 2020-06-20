@@ -2,7 +2,7 @@ package ru.otus.spring.service;
 
 public interface IOService {
 
-    void outputQuestion(String s);
+    void outputMessage(String s);
 
-    String inputAnswer();
+    String inputMessage();
 }

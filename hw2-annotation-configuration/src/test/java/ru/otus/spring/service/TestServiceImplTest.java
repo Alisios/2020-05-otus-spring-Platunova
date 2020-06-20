@@ -20,7 +20,8 @@ class TestServiceImplTest {
     private final static int RIGHT = 3;
     private final IOService ioService = mock(IOService.class);
     private final QuestionService questionService = mock(QuestionService.class);
-    private final TestService testService = new TestServiceImpl(ioService, questionService, RIGHT);
+    private final ConverterService converterService = mock(ConverterService.class);
+    private final TestService testService = new TestServiceImpl(ioService, questionService, RIGHT,converterService);
     private final List<Question> list = List.of(
             new Question(123, "Что происходит?",
                     List.of(new Answer("a"), new Answer("b"), new Answer("c")), 1));
@@ -29,23 +30,23 @@ class TestServiceImplTest {
     @DisplayName("корректное определение привильных ответов студента")
     void correctlyDefinesRightAnswerOfStudent() throws QuestionDaoException {
         when(questionService.getAll()).thenReturn(list);
-        when(questionService.convertQuestionsToString(list)).thenReturn(Collections.singletonList("123. Что происходит?\n \t1) a\n\t2) b\n\t3) c\n"));
+        when(converterService.convertQuestionsToString(list)).thenReturn(Collections.singletonList("123. Что происходит?\n \t1) a\n\t2) b\n\t3) c\n"));
         when(questionService.getRightAnswers(list)).thenReturn(List.of(1));
-        when(ioService.inputAnswer()).thenReturn("2");
-        assertThat(testService.testStudent()).isEqualTo(List.of(1));
-        when(ioService.inputAnswer()).thenReturn("3");
-        assertThat(testService.testStudent()).isEqualTo(List.of(0));
+        when(ioService.inputMessage()).thenReturn("2");
+        assertThat(testService.testStudent()).isEqualTo(1);
+        when(ioService.inputMessage()).thenReturn("3");
+        assertThat(testService.testStudent()).isEqualTo(0);
     }
 
     @Test
     @DisplayName("корректную реакцию на неправильный ввод студента")
     void correctlyHandleWrongInputOfStudent() throws QuestionDaoException {
         when(questionService.getAll()).thenReturn(list);
-        when(questionService.convertQuestionsToString(list)).thenReturn(Collections.singletonList("123. Что происходит?\n \t1) a\n\t2) b\n\t3) c\n"));
+        when(converterService.convertQuestionsToString(list)).thenReturn(Collections.singletonList("123. Что происходит?\n \t1) a\n\t2) b\n\t3) c\n"));
         when(questionService.getRightAnswers(list)).thenReturn(List.of(1));
-        doThrow(new NumberFormatException()).when(ioService).inputAnswer();
+        doThrow(new NumberFormatException()).when(ioService).inputMessage();
         assertDoesNotThrow(()->{
-            assertThat(testService.testStudent()).isEqualTo(List.of(0));
+            assertThat(testService.testStudent()).isEqualTo(0);
         });
     }
 

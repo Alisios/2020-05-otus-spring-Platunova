@@ -6,7 +6,7 @@ public class QuestionDaoException  extends Exception{
         super(msg);
     }
 
-    public QuestionDaoException(RuntimeException ex) {
+    public QuestionDaoException(Exception ex) {
         super(ex);
     }
 }
