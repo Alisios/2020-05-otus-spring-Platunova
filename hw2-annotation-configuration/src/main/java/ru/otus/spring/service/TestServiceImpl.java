@@ -39,18 +39,20 @@ public class TestServiceImpl implements TestService{
         answerOfStudent.add(0);
         List<Question> allQuestionsAndAnswers = questionService.getAll();
         List<String> allQuestionsAndAnswersString = converterService.convertQuestionsToString(allQuestionsAndAnswers);
-        allQuestionsAndAnswersString.forEach((question) -> {
-            ioService.outputMessage(question);
+        return allQuestionsAndAnswersString.stream().mapToInt(q -> {
+            ioService.outputMessage(q);
             try {
-                answerOfStudent.set(0, answerOfStudent.get(0) +
-                        ((Integer.parseInt(ioService.inputMessage())) == (questionService.getRightAnswers(allQuestionsAndAnswers)
-                                .get(allQuestionsAndAnswersString.indexOf(question)) + 1) ? 1 : 0));
-            }catch(NumberFormatException ex){
+                return Integer.parseInt(ioService.inputMessage()) ==
+                        (questionService.getRightAnswers(allQuestionsAndAnswers)
+                                .get(allQuestionsAndAnswersString.indexOf(q)) + 1) ? 1 : 0;
+            } catch(NumberFormatException ex){
                 ioService.outputMessage("Ответ не засчитан. Ответ должен быть числом!");
             }
-        });
-        return answerOfStudent.get(0);
+            return 0;
+        }).sum();
     }
+
+
 
     @Override
     public String showResults(int res){

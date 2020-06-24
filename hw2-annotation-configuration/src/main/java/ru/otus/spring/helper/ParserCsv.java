@@ -19,11 +19,7 @@ import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
-
-@Getter
-@Setter
 @Component
-@PropertySource("classpath:application.properties")
 public class ParserCsv implements Parser {
 
     private final String resourceName;
