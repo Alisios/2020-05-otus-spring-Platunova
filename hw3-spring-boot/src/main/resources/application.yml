@@ -1,0 +1,27 @@
+service:
+  rightAnswersMin:  3
+  locale: ru_RU
+#  locale: en
+  localeMessagesKeys:
+    - errorInAnswer
+    - userName
+    - userSurname
+    - infoBeforeTest
+    - resultOfTest
+    - isPassed
+    - isFailed
+  nameOfCsvFileWithQuestionsAndAnswers: questions-and-answers
+
+spring:
+  output:
+    ansi:
+      enabled: ALWAYS
+
+logging:
+  pattern: ${CONSOLE_LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{70}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}
+  level:
+    org:
+      spring: INFO
+
+#  file:
+#    name: logs/mylog.log
