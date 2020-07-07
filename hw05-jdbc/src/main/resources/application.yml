@@ -1,0 +1,39 @@
+service:
+  locale: ru_RU
+
+spring:
+  application:
+    name: book-service
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/alisa
+    username: alisa
+    password: alisa
+
+    initialize: true
+    initialization-mode: always
+
+    hikari:
+      connectionTimeout: 10000
+      maximumPoolSize: 4
+
+  output:
+    ansi:
+      enabled: ALWAYS
+
+logging:
+  pattern: ${CONSOLE_LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{70}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}
+
+  level:
+    root: info
+
+    org:
+      spring:
+        jdbc: DEBUG
+
+    com:
+      zaxxer: INFO
+
+
+#  file:
+#    name: logs/mylog.log
