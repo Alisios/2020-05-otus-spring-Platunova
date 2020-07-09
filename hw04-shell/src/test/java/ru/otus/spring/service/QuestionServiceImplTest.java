@@ -5,8 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import ru.otus.spring.configs.TestServiceProperties;
 import ru.otus.spring.dao.QuestionDao;
 import ru.otus.spring.dao.QuestionDaoException;
 import ru.otus.spring.domain.Answer;
@@ -16,16 +19,23 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @DisplayName("Тест проверяет: ")
 @SpringBootTest
 class QuestionServiceImplTest {
 
     @Configuration
-    @Import(QuestionServiceImpl.class)
-    static class NestedConfiguration { }
+    @ComponentScan("ru.otus.spring.dao")
+    static class NestedConfiguration {
+//        @MockBean
+//        private QuestionDao dao;
+//
+//        @Bean
+//        QuestionService questionService() {
+//            return new QuestionServiceImpl(dao);
+//        }
+    }
 
     @MockBean
     private QuestionDao dao;
