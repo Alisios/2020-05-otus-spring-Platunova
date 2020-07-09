@@ -1,22 +1,26 @@
 service:
   rightAnswersMin:  3
   locale: ru_RU
-#  locale: en
+  #  locale: en
   localeMessagesKeys:
-    - errorInAnswer
     - userName
     - userSurname
     - infoBeforeTest
     - resultOfTest
     - isPassed
     - isFailed
-  nameOfCsvFileWithQuestionsAndAnswers: questions-and-answers
+    - errorInAnswer
+  nameOfCsvFileWithQuestionsAndAnswers: questions-and-answers-
 
 spring:
+  messages:
+    encoding: UTF-8
+    basename: il8n/bundle
+    always-use-message-format: false
+    fallback-to-system-locale: false
   shell:
     interactive:
-      enabled: false
-
+    enabled: false
   output:
     ansi:
       enabled: ALWAYS
@@ -24,7 +28,8 @@ spring:
 logging:
   pattern: ${CONSOLE_LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{70}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}
   level:
-    root: debug
+    org:
+      springframework: DEBUG
 
 #  file:
 #    name: logs/mylog.log

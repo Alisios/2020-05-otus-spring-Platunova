@@ -5,21 +5,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import ru.otus.spring.dao.QuestionDao;
+import org.springframework.context.annotation.Import;
+import ru.otus.spring.configs.TestServiceProperties;
 import ru.otus.spring.domain.Question;
-import ru.otus.spring.service.Localizer;
-import ru.otus.spring.service.QuestionService;
-import ru.otus.spring.service.QuestionServiceImpl;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @DisplayName("Тесты проверяют: ")
@@ -27,28 +23,22 @@ import static org.mockito.Mockito.when;
 class ParserCsvTest {
 
     @Configuration
-    static class NestedConfiguration {
-        @MockBean
-        private Localizer localizer;
+    @Import(ParserCsv.class)
+    static class NestedConfiguration { }
 
-        @Bean
-        Parser parser() {
-            return new ParserCsv(localizer);
-        }
-    }
-
-    @Autowired
-    private Localizer localizer;
+    @MockBean
+    private TestServiceProperties testServiceProperties;
 
     @Autowired
     private Parser parser;
 
-
     @Test
     @DisplayName("корректный парсинг и маппинг csv")
     void correctParsingAndMappingOfCsv() throws IOException {
-        when(localizer.getLocalizedQuestionFile()).thenReturn("questions-and-answers.csv");
+        when(testServiceProperties.getNameOfCsvFileWithQuestionsAndAnswers()).thenReturn("questions-and-answers-");
+        when(testServiceProperties.getLocale()).thenReturn(Locale.ENGLISH);
         List<Question> parseQuestions = parser.parseQuestions();
+        assertThat(parseQuestions.get(0)).hasFieldOrPropertyWithValue("contentOfQuestion","And how do you like this, Elon Musk?");
         assertThat(parseQuestions).isNotEmpty();
         parseQuestions.forEach(answer -> {
             assertThat(answer.getListOfAnswers()).isNotEmpty();
@@ -59,14 +49,16 @@ class ParserCsvTest {
     @Test
     @DisplayName("бросание исключения при некорректной заполненности сsv")
     void correctThrowingOfExceptionOfIncorrectDateInCsv() {
-        when(localizer.getLocalizedQuestionFile()).thenReturn("questions-and-answersError.csv");
+        when(testServiceProperties.getNameOfCsvFileWithQuestionsAndAnswers()).thenReturn("questions-and-answersError-");
+        when(testServiceProperties.getLocale()).thenReturn(Locale.ENGLISH);
         assertThrows(RuntimeException.class, parser::parseQuestions);
     }
 
     @Test
     @DisplayName("бросание исключения при отсуствии файла с данным имененм")
     void correctThrowingOfExceptionOfNullFile() {
-        when(localizer.getLocalizedQuestionFile()).thenReturn("questions-and-answersError5678.csv");
+        when(testServiceProperties.getNameOfCsvFileWithQuestionsAndAnswers()).thenReturn("questions-and-answersError123-");
+        when(testServiceProperties.getLocale()).thenReturn(Locale.ENGLISH);
         assertThrows(Exception.class, () -> {
             parser.parseQuestions();
         });

@@ -6,5 +6,4 @@ public interface Localizer {
 
     Map<String, String> getLocalizedTestServiceMessages();
 
-    String getLocalizedQuestionFile();
 }

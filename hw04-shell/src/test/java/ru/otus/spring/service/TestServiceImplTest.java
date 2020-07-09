@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import ru.otus.spring.configs.TestServiceProperties;
 import ru.otus.spring.dao.QuestionDaoException;
@@ -30,35 +30,20 @@ import static org.mockito.Mockito.when;
 class TestServiceImplTest {
 
     @Configuration
-    static class NestedConfiguration {
-        @MockBean
-        private TestServiceProperties testServiceProperties;
-        @MockBean
-        private IOService ioService;
-        @MockBean
-        private QuestionService questionService;
-        @MockBean
-        private ConverterService converterService;
-        @MockBean
-        private Localizer localizer;
-
-        @Bean
-        TestHandler testService() {
-            return new TestHandlerImpl(ioService, questionService, converterService, localizer, testServiceProperties);
-        }
-    }
+    @ComponentScan("ru.otus.spring.service")
+    static class NestedConfiguration { }
 
     private final User user = new User("Иванов", "Петя", "",true);
 
-    @Autowired
+    @MockBean
     private TestServiceProperties testServiceProperties;
-    @Autowired
+    @MockBean
     private IOService ioService;
-    @Autowired
+    @MockBean
     private QuestionService questionService;
-    @Autowired
+    @MockBean
     private ConverterService converterService;
-    @Autowired
+    @MockBean
     private Localizer localizer;
 
     @Autowired

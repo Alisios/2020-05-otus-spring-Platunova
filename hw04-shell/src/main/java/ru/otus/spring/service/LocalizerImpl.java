@@ -19,10 +19,4 @@ public class LocalizerImpl implements Localizer {
     public Map<String, String> getLocalizedTestServiceMessages() {
         return testServiceProperties.getLocaleMessagesKeys().stream().collect(Collectors.toMap((key) -> key, (key) -> messageSource.getMessage(key, null, testServiceProperties.getLocale())));
     }
-
-    @Override
-    public String getLocalizedQuestionFile() {
-        return messageSource.getMessage("csvPath", new String[]{testServiceProperties.getNameOfCsvFileWithQuestionsAndAnswers()}, testServiceProperties.getLocale());
-    }
-
 }

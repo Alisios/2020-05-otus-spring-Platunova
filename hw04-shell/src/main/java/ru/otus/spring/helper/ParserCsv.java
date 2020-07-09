@@ -2,9 +2,9 @@ package ru.otus.spring.helper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.otus.spring.configs.TestServiceProperties;
 import ru.otus.spring.domain.Answer;
 import ru.otus.spring.domain.Question;
-import ru.otus.spring.service.Localizer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,11 +21,12 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class ParserCsv implements Parser {
 
-    private final Localizer localizer;
+    private final TestServiceProperties testServiceProperties;
+    private final static String CSV_FORMAT = ".csv";
 
     @Override
     public List<Question> parseQuestions() throws IOException {
-        URL path = Thread.currentThread().getContextClassLoader().getResource(localizer.getLocalizedQuestionFile());
+        URL path = Thread.currentThread().getContextClassLoader().getResource(testServiceProperties.getNameOfCsvFileWithQuestionsAndAnswers() + testServiceProperties.getLocale() + CSV_FORMAT);
         String line = "";
         String cvsSplitBy = ";";
         List<Question> listOfQuestion = new ArrayList<>();
