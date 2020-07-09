@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Тест проверяет: ")
-class TestHandlerImplTest {
+class TestServiceImplTest {
 
     private final TestServiceProperties testServiceProperties = mock(TestServiceProperties.class);
     private final IOService ioService = mock(IOService.class);

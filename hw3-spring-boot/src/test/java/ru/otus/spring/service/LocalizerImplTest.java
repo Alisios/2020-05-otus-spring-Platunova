@@ -27,7 +27,6 @@ class LocalizerImplTest {
     void setUp(){
         when(testServiceProperties.getLocaleMessagesKeys()).thenReturn(List.of("a"));
         when(testServiceProperties.getLocale()).thenReturn(Locale.ENGLISH);
-
     }
 
     @Test
@@ -37,18 +36,6 @@ class LocalizerImplTest {
         mapForTest.put("a", "value for a");
         when(messageSource.getMessage("a", null, testServiceProperties.getLocale())).thenReturn(mapForTest.get("a"));
         assertThat(localizerImpl.getLocalizedTestServiceMessages()).isEqualTo(mapForTest);
-    }
-
-    @Test
-    @DisplayName("корректный выбор файла в зависимости от локали")
-    void testServiceProperties2(){
-        String nameOfFile = "name";
-        when(messageSource.getMessage("csvPath", new String [] {nameOfFile}, testServiceProperties.getLocale())).thenReturn("name-en.csv");
-        when(testServiceProperties.getNameOfCsvFileWithQuestionsAndAnswers()).thenReturn(nameOfFile);
-        assertThat(localizerImpl.getLocalizedQuestionFile())
-                .doesNotContain("-ru.csv")
-                .contains("-en.csv")
-                .contains(nameOfFile);
     }
 
 }
