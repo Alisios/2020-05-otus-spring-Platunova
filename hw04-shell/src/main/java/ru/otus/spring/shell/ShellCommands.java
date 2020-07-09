@@ -1,4 +1,4 @@
-package ru.otus.spring.service;
+package ru.otus.spring.shell;
 
 
 import lombok.RequiredArgsConstructor;
@@ -8,6 +8,8 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellMethodAvailability;
 import ru.otus.spring.dao.QuestionDaoException;
 import ru.otus.spring.domain.User;
+import ru.otus.spring.service.IOService;
+import ru.otus.spring.service.TestHandler;
 
 @ShellComponent
 @RequiredArgsConstructor
@@ -27,7 +29,6 @@ public class ShellCommands {
         try {
             testHandler.testStudentAndGetResultScore();
             user.setIsTested(true);
-            user.setRes(testHandler.showResultsOfTest());
         } catch (QuestionDaoException ex) {
             System.out.println("Impossible to handle file for test" + ex.getCause() + ". " + ex.getMessage());
         }
@@ -36,7 +37,7 @@ public class ShellCommands {
     @ShellMethod(value = "Show results", key = {"res", "results"})
     @ShellMethodAvailability(value = "isTestedTrue")
     public void showResult() {
-        ioService.outputMessage(user.toString());
+        ioService.outputMessage(testHandler.showResultsOfTest(user));
         user = null;
     }
 

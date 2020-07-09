@@ -62,11 +62,12 @@ public class TestHandlerImpl implements TestHandler{
     }
 
     @Override
-    public String showResultsOfTest() {
-        return localizer.getLocalizedTestServiceMessages().get("resultOfTest") + res.get() +
+    public String showResultsOfTest(User user) {
+        user.setRes(localizer.getLocalizedTestServiceMessages().get("resultOfTest") + res.get() +
                 ((res.get() >= testServiceProperties.getRightAnswersMin())
                         ? localizer.getLocalizedTestServiceMessages().get("isPassed")
-                        : localizer.getLocalizedTestServiceMessages().get("isFailed"));
+                        : localizer.getLocalizedTestServiceMessages().get("isFailed")));
+        return user.toString();
     }
 
 }

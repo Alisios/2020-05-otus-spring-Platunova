@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import ru.otus.spring.domain.Question;
 import ru.otus.spring.helper.Parser;
 import ru.otus.spring.service.QuestionService;
@@ -28,18 +29,10 @@ class QuestionDaoImplTest {
 
 
     @Configuration
-    static class NestedConfiguration {
+    @Import(QuestionDaoImpl.class)
+    static class NestedConfiguration {}
 
-        @MockBean
-        private Parser parser;
-
-        @Bean
-        QuestionDao dao() {
-            return new QuestionDaoImpl(parser);
-        }
-    }
-
-    @Autowired
+    @MockBean
     private Parser parser;
 
     @Autowired

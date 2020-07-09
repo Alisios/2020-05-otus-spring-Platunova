@@ -8,5 +8,5 @@ public interface TestHandler {
 
     User getUserFromInput();
     void testStudentAndGetResultScore() throws QuestionDaoException;
-    String showResultsOfTest();
+    String showResultsOfTest(User user);
 }

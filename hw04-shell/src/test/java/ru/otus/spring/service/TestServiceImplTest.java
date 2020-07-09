@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("Тест проверяет: ")
 @SpringBootTest
-class TestHandlerImplTest {
+class TestServiceImplTest {
 
     @Configuration
     static class NestedConfiguration {
@@ -47,6 +47,8 @@ class TestHandlerImplTest {
             return new TestHandlerImpl(ioService, questionService, converterService, localizer, testServiceProperties);
         }
     }
+
+    private final User user = new User("Иванов", "Петя", "",true);
 
     @Autowired
     private TestServiceProperties testServiceProperties;
@@ -99,7 +101,7 @@ class TestHandlerImplTest {
         when(questionService.getRightAnswers(list)).thenReturn(List.of(1));
         when(ioService.inputMessage()).thenReturn("2");
         testService.testStudentAndGetResultScore();
-        assertThat(testService.showResultsOfTest()).contains("1").containsIgnoringCase("passed")
+        assertThat(testService.showResultsOfTest(user)).contains("1").containsIgnoringCase("passed")
                 .contains(String.valueOf(testServiceProperties.getRightAnswersMin()));
     }
 
@@ -111,8 +113,8 @@ class TestHandlerImplTest {
         when(questionService.getRightAnswers(list)).thenReturn(List.of(1));
         when(ioService.inputMessage()).thenReturn("3");
         testService.testStudentAndGetResultScore();
-        assertThat(testService.showResultsOfTest()).doesNotContain("1");
-        assertThat(testService.showResultsOfTest()).containsIgnoringCase("failed");
+        assertThat(testService.showResultsOfTest(user)).doesNotContain("1");
+        assertThat(testService.showResultsOfTest(user)).containsIgnoringCase("failed");
     }
 
     @Test
@@ -124,7 +126,7 @@ class TestHandlerImplTest {
         doThrow(new NumberFormatException()).when(ioService).inputMessage();
         assertDoesNotThrow(() -> {
             testService.testStudentAndGetResultScore();
-            assertThat(testService.showResultsOfTest())
+            assertThat(testService.showResultsOfTest(user))
                     .isNotEqualTo(1);
         });
     }
