@@ -7,6 +7,7 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellMethodAvailability;
 import ru.otus.spring.dao.QuestionDaoException;
+import ru.otus.spring.domain.TestResult;
 import ru.otus.spring.domain.User;
 import ru.otus.spring.service.IOService;
 import ru.otus.spring.service.TestHandler;
@@ -17,6 +18,7 @@ public class ShellCommands {
     final private TestHandler testHandler;
     final private IOService ioService;
     private User user;
+    private TestResult testResult;
 
     @ShellMethod(value = "Login command", key = {"l", "login"})
     public void login() {
@@ -27,8 +29,7 @@ public class ShellCommands {
     @ShellMethodAvailability(value = "isPublishEventCommandAvailable")
     public void startTest() throws QuestionDaoException {
         try {
-            testHandler.testStudentAndGetResultScore();
-            user.setIsTested(true);
+            testResult = testHandler.executeTest(user);
         } catch (QuestionDaoException ex) {
             System.out.println("Impossible to handle file for test" + ex.getCause() + ". " + ex.getMessage());
         }
@@ -37,8 +38,9 @@ public class ShellCommands {
     @ShellMethod(value = "Show results", key = {"res", "results"})
     @ShellMethodAvailability(value = "isTestedTrue")
     public void showResult() {
-        ioService.outputMessage(testHandler.showResultsOfTest(user));
+        ioService.outputMessage(testHandler.printResultsOfTest(testResult));
         user = null;
+        testResult = null;
     }
 
     private Availability isPublishEventCommandAvailable() {

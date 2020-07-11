@@ -33,7 +33,7 @@ class TestServiceImplTest {
     @ComponentScan("ru.otus.spring.service")
     static class NestedConfiguration { }
 
-    private final User user = new User("Иванов", "Петя", "",true);
+    private final User user = new User("Иванов", "Петя", true);
 
     @MockBean
     private TestServiceProperties testServiceProperties;
@@ -85,8 +85,7 @@ class TestServiceImplTest {
         when(converterService.convertQuestionsToString(list)).thenReturn(Collections.singletonList("123. Что происходит?\n \t1) a\n\t2) b\n\t3) c\n"));
         when(questionService.getRightAnswers(list)).thenReturn(List.of(1));
         when(ioService.inputMessage()).thenReturn("2");
-        testService.testStudentAndGetResultScore();
-        assertThat(testService.showResultsOfTest(user)).contains("1").containsIgnoringCase("passed")
+        assertThat(testService.printResultsOfTest(testService.executeTest(user))).contains("1").containsIgnoringCase("passed")
                 .contains(String.valueOf(testServiceProperties.getRightAnswersMin()));
     }
 
@@ -97,9 +96,8 @@ class TestServiceImplTest {
         when(converterService.convertQuestionsToString(list)).thenReturn(Collections.singletonList("123. Что происходит?\n \t1) a\n\t2) b\n\t3) c\n"));
         when(questionService.getRightAnswers(list)).thenReturn(List.of(1));
         when(ioService.inputMessage()).thenReturn("3");
-        testService.testStudentAndGetResultScore();
-        assertThat(testService.showResultsOfTest(user)).doesNotContain("1");
-        assertThat(testService.showResultsOfTest(user)).containsIgnoringCase("failed");
+        assertThat(testService.printResultsOfTest(testService.executeTest(user))).doesNotContain("1");
+        assertThat(testService.printResultsOfTest(testService.executeTest(user))).containsIgnoringCase("failed");
     }
 
     @Test
@@ -110,8 +108,7 @@ class TestServiceImplTest {
         when(questionService.getRightAnswers(list)).thenReturn(List.of(1));
         doThrow(new NumberFormatException()).when(ioService).inputMessage();
         assertDoesNotThrow(() -> {
-            testService.testStudentAndGetResultScore();
-            assertThat(testService.showResultsOfTest(user))
+            assertThat(testService.printResultsOfTest(testService.executeTest(user)))
                     .isNotEqualTo(1);
         });
     }
@@ -120,6 +117,6 @@ class TestServiceImplTest {
     @DisplayName("бросает исключение при невозможности открыть тест")
     void correctlyThrowsException() throws QuestionDaoException {
         doThrow(new QuestionDaoException("")).when(questionService).getAll();
-        assertThrows(QuestionDaoException.class, testService::testStudentAndGetResultScore);
+        assertThrows(QuestionDaoException.class,()-> testService.executeTest(user));
     }
 }

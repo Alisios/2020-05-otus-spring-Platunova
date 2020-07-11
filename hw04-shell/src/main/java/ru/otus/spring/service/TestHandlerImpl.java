@@ -4,11 +4,10 @@ import org.springframework.stereotype.Service;
 import ru.otus.spring.configs.TestServiceProperties;
 import ru.otus.spring.dao.QuestionDaoException;
 import ru.otus.spring.domain.Question;
+import ru.otus.spring.domain.TestResult;
 import ru.otus.spring.domain.User;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class TestHandlerImpl implements TestHandler{
@@ -18,8 +17,6 @@ public class TestHandlerImpl implements TestHandler{
     private final ConverterService converterService;
     private final Localizer localizer;
     private final TestServiceProperties testServiceProperties;
-    private final AtomicInteger res = new AtomicInteger();
-
 
     public TestHandlerImpl(IOService ioService, QuestionService questionService, ConverterService converterService, Localizer localizer, TestServiceProperties testServiceProperties) {
         this.ioService = ioService;
@@ -44,11 +41,12 @@ public class TestHandlerImpl implements TestHandler{
     }
 
     @Override
-    public void testStudentAndGetResultScore() throws QuestionDaoException {
+    public TestResult executeTest(User user) throws QuestionDaoException {
+        TestResult testResult = new TestResult();
         inputInfoBeforeTest();
         List<Question> allQuestionsAndAnswers = questionService.getAll();
         List<String> allQuestionsAndAnswersString = converterService.convertQuestionsToString(allQuestionsAndAnswers);
-        res.set(allQuestionsAndAnswersString.stream().mapToInt(q -> {
+        testResult.setScore(allQuestionsAndAnswersString.stream().mapToInt(q -> {
             ioService.outputMessage(q);
             try {
                 return Integer.parseInt(ioService.inputMessage()) ==
@@ -59,15 +57,18 @@ public class TestHandlerImpl implements TestHandler{
             }
             return 0;
         }).sum());
+        user.setIsTested(true);
+        testResult.setUser(user);
+        return testResult;
     }
 
     @Override
-    public String showResultsOfTest(User user) {
-        user.setRes(localizer.getLocalizedTestServiceMessages().get("resultOfTest") + res.get() +
-                ((res.get() >= testServiceProperties.getRightAnswersMin())
+    public String printResultsOfTest(TestResult testResult) {
+        testResult.setRes(localizer.getLocalizedTestServiceMessages().get("resultOfTest") + testResult.getScore() +
+                ((testResult.getScore() >= testServiceProperties.getRightAnswersMin())
                         ? localizer.getLocalizedTestServiceMessages().get("isPassed")
                         : localizer.getLocalizedTestServiceMessages().get("isFailed")));
-        return user.toString();
+        return testResult.toString();
     }
 
 }

@@ -11,8 +11,10 @@ import lombok.*;
 public class User {
 
     private String name;
+
     private String surname;
-    private String res;
+
+    private boolean isTested;
 
     public boolean getIsTested() {
         return isTested;
@@ -22,10 +24,8 @@ public class User {
         this.isTested = isTested;
     }
 
-    private boolean isTested;
-
     @Override
     public String toString() {
-        return name + ' ' + surname + ":\n" + res;
+        return name + ' ' + surname;
     }
 }

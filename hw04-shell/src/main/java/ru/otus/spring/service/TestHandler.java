@@ -1,12 +1,15 @@
 package ru.otus.spring.service;
 
 import ru.otus.spring.dao.QuestionDaoException;
+import ru.otus.spring.domain.TestResult;
 import ru.otus.spring.domain.User;
 
 public interface TestHandler {
 
 
     User getUserFromInput();
-    void testStudentAndGetResultScore() throws QuestionDaoException;
-    String showResultsOfTest(User user);
+
+    TestResult executeTest(User user) throws QuestionDaoException;
+
+    String printResultsOfTest(TestResult testResult);
 }
