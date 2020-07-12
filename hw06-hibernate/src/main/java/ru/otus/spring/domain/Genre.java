@@ -23,7 +23,7 @@ public class Genre {
     @Column(name = "type")
     private String type;
 
-    @OneToMany(mappedBy = "genre",fetch = FetchType.LAZY,cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    @OneToMany(mappedBy = "genre", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     List<Book> listOfBook;
 
     public Genre(String type) {

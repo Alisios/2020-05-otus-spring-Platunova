@@ -23,7 +23,7 @@ public class DbServiceCommentImpl implements DbServiceComment {
         try {
             return commentDao.insert(comment);
         } catch (RuntimeException ex) {
-            throw new DaoException("Error with inserting genre " + comment.toString(), ex);
+            throw new DaoException("Error with inserting comment " + comment.toString(), ex);
         }
     }
 
@@ -33,7 +33,7 @@ public class DbServiceCommentImpl implements DbServiceComment {
         try {
             commentDao.update(comment);
         } catch (RuntimeException ex) {
-            throw new DaoException("Error with updating genre " + comment.toString(), ex);
+            throw new DaoException("Error with updating comment " + comment.toString(), ex);
         }
     }
 

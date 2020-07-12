@@ -41,7 +41,6 @@ logging:
     org:
       hibernate: info
       springframework: info
-#        jdbc: DEBUG
 
     com:
       zaxxer: INFO

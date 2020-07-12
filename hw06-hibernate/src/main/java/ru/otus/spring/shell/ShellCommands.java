@@ -45,7 +45,7 @@ public class ShellCommands {
     @ShellMethod(value = "show books", key = {"showBC", "show-all-books-comments"})
     public void showAllBooksWithComments() {
         try {
-           ioService.outputMessage(userBookService.printBooksWithComments());
+            ioService.outputMessage(userBookService.printBooksWithComments());
         } catch (DaoException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при выводе книг c комментариями");

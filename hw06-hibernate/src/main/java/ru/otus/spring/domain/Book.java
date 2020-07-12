@@ -28,17 +28,17 @@ public class Book {
     @Column(name = "title")
     private String title;
 
-    @ManyToOne (cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "author_id", nullable=false)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "author_id", nullable = false)
     private Author author;
 
-    @ManyToOne (cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "genre_id", nullable=false)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "genre_id", nullable = false)
     private Genre genre;
 
     @Fetch(FetchMode.SUBSELECT)
-    @OneToMany(mappedBy = "book",fetch = FetchType.LAZY,cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
-    private List <Comment> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    private List<Comment> comments = new ArrayList<>();
 
     public Book(String title) {
         this.title = title;
@@ -86,11 +86,10 @@ public class Book {
         return Objects.equals(title, book.title) &&
                 Objects.equals(author, book.author) &&
                 Objects.equals(genre, book.genre);
-               // && Objects.equals(comments, book.comments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, author, genre);//, comments);
+        return Objects.hash(title, author, genre);
     }
 }
