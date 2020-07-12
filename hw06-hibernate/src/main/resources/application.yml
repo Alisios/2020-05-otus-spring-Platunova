@@ -1,0 +1,51 @@
+service:
+  locale: ru_RU
+
+spring:
+  application:
+    name: book-service
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/alisa
+    username: alisa
+    password: alisa
+
+    initialize: true
+    initialization-mode: always
+  jpa:
+    generate-ddl: false
+
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+        generate_statistics: true
+        ddl-auto: none
+        show_sql: true
+        query:
+          substitutions: true 1, false 0
+        connection:
+          enable_lazy_load_no_trans: true
+
+    current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+
+  output:
+    ansi:
+      enabled: ALWAYS
+
+logging:
+  pattern: ${CONSOLE_LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{70}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}
+
+  level:
+    root: info
+
+    org:
+      hibernate: info
+      springframework: info
+#        jdbc: DEBUG
+
+    com:
+      zaxxer: INFO
+
+
+#  file:
+#    name: logs/mylog.log
