@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface QuestionService {
 
-    List<Question> getAll() throws QuestionDaoException;
+    List<Question> getAll() ;
 
     List<Integer> getRightAnswers(List<Question> allQuestionsAndAnswers);
 

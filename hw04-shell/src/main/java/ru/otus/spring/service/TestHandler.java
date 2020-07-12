@@ -9,7 +9,7 @@ public interface TestHandler {
 
     User getUserFromInput();
 
-    TestResult executeTest(User user) throws QuestionDaoException;
+    TestResult executeTest(User user);
 
     String printResultsOfTest(TestResult testResult);
 }

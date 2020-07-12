@@ -16,7 +16,7 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionDao dao;
 
     @Override
-    public List<Question> getAll() throws QuestionDaoException {
+    public List<Question> getAll() {
         return dao.findAll();
     }
 

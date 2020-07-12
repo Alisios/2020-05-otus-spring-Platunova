@@ -15,9 +15,7 @@ import ru.otus.spring.domain.Question;
 import ru.otus.spring.domain.User;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -47,7 +45,7 @@ class TestServiceImplTest {
     private Localizer localizer;
 
     @Autowired
-    TestHandler testService;
+    private TestHandler testService;
 
     private final List<Question> list = List.of(
             new Question(123, "Что происходит?",
@@ -55,17 +53,9 @@ class TestServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        Map<String, String> map = new HashMap<>();
-        map.put("userName", "Введите имя");
-        map.put("userSurname", "Введите фамилию ");
-        map.put("infoBeforeTest", "Какая-то информация");
-        map.put("errorInAnswer", "Информация об ошибке");
-        map.put("isPassed", "is passed");
-        map.put("resultOfTest", "Результаты ");
-        map.put("isFailed", "is failed");
-        when(localizer.getLocalizedTestServiceMessages()).thenReturn(map);
+        when(localizer.printFailedResultOfTest()).thenReturn("failed");
+        when(localizer.printSuccessResultOfTest()).thenReturn("passed");
         when(testServiceProperties.getRightAnswersMin()).thenReturn(1);
-
     }
 
     @Test

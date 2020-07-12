@@ -10,7 +10,7 @@ import ru.otus.spring.domain.User;
 import java.util.List;
 
 @Service
-public class TestHandlerImpl implements TestHandler{
+public class TestHandlerImpl implements TestHandler {
 
     private final IOService ioService;
     private final QuestionService questionService;
@@ -27,23 +27,19 @@ public class TestHandlerImpl implements TestHandler{
     }
 
     @Override
-    public User getUserFromInput(){
+    public User getUserFromInput() {
         User user = new User();
-        ioService.outputMessage(localizer.getLocalizedTestServiceMessages().get("userName"));
+        ioService.outputMessage(localizer.askUserForName());
         user.setName(ioService.inputMessage());
-        ioService.outputMessage(localizer.getLocalizedTestServiceMessages().get("userSurname"));
+        ioService.outputMessage(localizer.askUserForSurname());
         user.setSurname(ioService.inputMessage());
         return user;
     }
 
-    private void inputInfoBeforeTest() {
-        ioService.outputMessage(localizer.getLocalizedTestServiceMessages().get("infoBeforeTest"));
-    }
-
     @Override
-    public TestResult executeTest(User user) throws QuestionDaoException {
+    public TestResult executeTest(User user) {
         TestResult testResult = new TestResult();
-        inputInfoBeforeTest();
+        ioService.outputMessage(localizer.printInfoBeforeTest());
         List<Question> allQuestionsAndAnswers = questionService.getAll();
         List<String> allQuestionsAndAnswersString = converterService.convertQuestionsToString(allQuestionsAndAnswers);
         testResult.setScore(allQuestionsAndAnswersString.stream().mapToInt(q -> {
@@ -53,7 +49,7 @@ public class TestHandlerImpl implements TestHandler{
                         (questionService.getRightAnswers(allQuestionsAndAnswers)
                                 .get(allQuestionsAndAnswersString.indexOf(q)) + 1) ? 1 : 0;
             } catch (NumberFormatException ex) {
-                ioService.outputMessage(localizer.getLocalizedTestServiceMessages().get("errorInAnswer"));
+                ioService.outputMessage(localizer.printErrorInTest());
             }
             return 0;
         }).sum());
@@ -64,10 +60,10 @@ public class TestHandlerImpl implements TestHandler{
 
     @Override
     public String printResultsOfTest(TestResult testResult) {
-        testResult.setRes(localizer.getLocalizedTestServiceMessages().get("resultOfTest") + testResult.getScore() +
+        testResult.setRes(localizer.printResultOfTest() + testResult.getScore() +
                 ((testResult.getScore() >= testServiceProperties.getRightAnswersMin())
-                        ? localizer.getLocalizedTestServiceMessages().get("isPassed")
-                        : localizer.getLocalizedTestServiceMessages().get("isFailed")));
+                        ? localizer.printSuccessResultOfTest()
+                        : localizer.printFailedResultOfTest()));
         return testResult.toString();
     }
 

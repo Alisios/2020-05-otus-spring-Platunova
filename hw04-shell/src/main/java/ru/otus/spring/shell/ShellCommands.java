@@ -1,6 +1,5 @@
 package ru.otus.spring.shell;
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.shell.Availability;
 import org.springframework.shell.standard.ShellComponent;
@@ -27,7 +26,7 @@ public class ShellCommands {
 
     @ShellMethod(value = "Start test", key = {"t", "test"})
     @ShellMethodAvailability(value = "isPublishEventCommandAvailable")
-    public void startTest() throws QuestionDaoException {
+    public void startTest() {
         try {
             testResult = testHandler.executeTest(user);
         } catch (QuestionDaoException ex) {
