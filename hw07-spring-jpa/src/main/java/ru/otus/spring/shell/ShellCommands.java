@@ -42,7 +42,7 @@ public class ShellCommands {
         }
     }
 
-    @ShellMethod(value = "show books", key = {"showBC", "show-all-books-comments"})
+    @ShellMethod(value = "show book with comment", key = {"showBC", "show-book-with-comments"})
     public void showAllBooksWithComments() {
         try {
             ioService.outputMessage(userBookService.printBooksWithComments());
