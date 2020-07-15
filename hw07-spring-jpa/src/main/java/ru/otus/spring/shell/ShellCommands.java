@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import ru.otus.spring.repository.DbException;
-import ru.otus.spring.service.DbServiceBook;
+import ru.otus.spring.service.BookService;
 import ru.otus.spring.service.IOService;
 import ru.otus.spring.service.UserBookService;
 
@@ -15,7 +15,7 @@ import ru.otus.spring.service.UserBookService;
 @Slf4j
 public class ShellCommands {
 
-    private final DbServiceBook dbServiceBook;
+    private final BookService bookService;
 
     private final IOService ioService;
 
@@ -35,7 +35,7 @@ public class ShellCommands {
     @ShellMethod(value = "show books", key = {"showB", "show-all-books"})
     public void showAllBooks() {
         try {
-            dbServiceBook.getAll().forEach((book) -> ioService.outputMessage(book.toString()));
+            bookService.getAll().forEach((book) -> ioService.outputMessage(book.toString()));
         } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при выводе книг");
@@ -57,7 +57,7 @@ public class ShellCommands {
         try {
             ioService.outputMessage("Введите id книги");
             long id = Integer.parseInt(ioService.inputMessage());
-            dbServiceBook.getById(id).ifPresent((book) -> ioService.outputMessage(book.toString()));
+            bookService.getById(id).ifPresent((book) -> ioService.outputMessage(book.toString()));
         } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при поиске книги с id ");
@@ -72,7 +72,7 @@ public class ShellCommands {
         try {
             ioService.outputMessage("Введите id книги");
             long id = Integer.parseInt(ioService.inputMessage());
-            dbServiceBook.deleteById(id);
+            bookService.deleteById(id);
             ioService.outputMessage("Книга c id " + id + " удалена");
         } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());

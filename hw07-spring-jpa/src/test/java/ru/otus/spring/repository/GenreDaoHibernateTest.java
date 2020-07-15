@@ -3,7 +3,6 @@ package ru.otus.spring.repository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@AutoConfigureTestDatabase
 @DisplayName("Тесты проверяют, что репозиторий жанров:")
 @DataJpaTest
 @Transactional
@@ -25,12 +23,8 @@ class GenreDaoHibernateTest {
     @Test
     @DisplayName("кидает исключение при нулевом жанре")
     void correctlyThrowExceptions() {
-        assertThrows(DataAccessException.class, () -> {
-            genreDaoHibernate.save(null);
-        });
-        assertThrows(DataAccessException.class, () -> {
-            genreDaoHibernate.save(null);
-        });
+        assertThrows(DataAccessException.class, () ->  genreDaoHibernate.save(null));
+        assertThrows(DataAccessException.class, () -> genreDaoHibernate.save(null));
     }
 
     @Test
@@ -53,9 +47,7 @@ class GenreDaoHibernateTest {
         assertThat(genreDaoHibernate.findById(1L).get())
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("type", genre.getType());
-        assertDoesNotThrow(() -> {
-            assertThat(genreDaoHibernate.findById(312)).isEmpty();
-        });
+        assertDoesNotThrow(() -> assertThat(genreDaoHibernate.findById(312)).isEmpty());
     }
 
     @Test
@@ -67,8 +59,6 @@ class GenreDaoHibernateTest {
                 .hasFieldOrProperty("id")
                 .hasFieldOrPropertyWithValue("type", genre.getType());
 
-        assertDoesNotThrow(() -> {
-            assertThat(genreDaoHibernate.findByType("что-то неизвестное")).isEmpty();
-        });
+        assertDoesNotThrow(() -> assertThat(genreDaoHibernate.findByType("что-то неизвестное")).isEmpty());
     }
 }

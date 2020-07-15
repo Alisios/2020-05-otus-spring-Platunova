@@ -25,14 +25,14 @@ import static org.mockito.Mockito.*;
 class DbServiceCommentImplTest {
 
     @Configuration
-    @Import(DbServiceCommentImpl.class)
+    @Import(CommentServiceImpl.class)
     static class NestedConfiguration {}
 
     @MockBean
     private CommentRepository commentRepository;
 
     @Autowired
-    private DbServiceComment dbServiceComment;
+    private CommentService commentService;
 
     @Test
     @DisplayName("корректно создает новый комментарий")
@@ -42,7 +42,7 @@ class DbServiceCommentImplTest {
         val comment2 = new Comment(1,"comment",book2);
         val comment = new Comment(0,"comment", book2);
         when(commentRepository.save(comment)).thenReturn(comment2);
-        assertThat(dbServiceComment.save(comment)).isEqualTo(comment2);
+        assertThat(commentService.save(comment)).isEqualTo(comment2);
         verify(commentRepository, times(1)).save(comment);
     }
 
@@ -52,7 +52,7 @@ class DbServiceCommentImplTest {
         doThrow(RuntimeException.class)
                 .when(commentRepository).findAll();
         Throwable thrown = assertThrows(DbException.class, () -> {
-            dbServiceComment.getAll();
+            commentService.getAll();
         });
         assertThat(thrown).hasMessageContaining("Error with finding all comment");
     }

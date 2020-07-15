@@ -16,7 +16,7 @@ import java.util.Optional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class DbServiceBookImpl implements DbServiceBook {
+public class BookServiceImpl implements BookService {
 
     final private BookRepository bookRepository;
 

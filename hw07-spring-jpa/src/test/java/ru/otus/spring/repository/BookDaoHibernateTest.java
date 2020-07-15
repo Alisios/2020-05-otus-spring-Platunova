@@ -5,7 +5,6 @@ import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataAccessException;
@@ -20,7 +19,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@AutoConfigureTestDatabase
 @DisplayName("Тесты проверяют, что репозиторий книги:")
 @DataJpaTest
 @Transactional
@@ -74,12 +72,8 @@ class BookDaoHibernateTest {
     @Test
     @DisplayName("кидает исключение при нулевй книге")
     void correctlyThrowExceptions() {
-        assertThrows(DataAccessException.class, () -> {
-            bookDaoHibernate.save(null);
-        });
-        assertThrows(DataAccessException.class, () -> {
-            bookDaoHibernate.save(null);
-        });
+        assertThrows(DataAccessException.class, () -> bookDaoHibernate.save(null));
+        assertThrows(DataAccessException.class, () -> bookDaoHibernate.save(null));
     }
 
     @Test
@@ -91,9 +85,7 @@ class BookDaoHibernateTest {
         bookDaoHibernate.deleteById(1L);
         assertThat(bookDaoHibernate.count()).isEqualTo(count1 - 1);
         assertThat(bookDaoHibernate.findAll()).doesNotContain(book);
-        assertThrows(DataAccessException.class, () -> {
-            bookDaoHibernate.deleteById(321L);
-        });
+        assertThrows(DataAccessException.class, () -> bookDaoHibernate.deleteById(321L));
     }
 
     @DisplayName("загружает список всех книг с полной информацией о них (без комментариев)")
@@ -142,9 +134,7 @@ class BookDaoHibernateTest {
                 .hasFieldOrProperty("author");
         assertThat(bookn.getAuthor().getName()).isEqualTo(book.getAuthor().getName());
         assertThat(bookn.getGenre().getType()).isEqualTo(book.getGenre().getType());
-        assertDoesNotThrow(() -> {
-            assertThat(bookDaoHibernate.findById(312)).isEmpty();
-        });
+        assertDoesNotThrow(() -> assertThat(bookDaoHibernate.findById(312)).isEmpty());
     }
 
     @Test

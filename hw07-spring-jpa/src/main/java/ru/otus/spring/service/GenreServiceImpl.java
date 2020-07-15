@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class DbServiceGenreImpl implements DbServiceGenre {
+public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository genreRepository;
 

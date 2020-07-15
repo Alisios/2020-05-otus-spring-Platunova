@@ -13,7 +13,7 @@ import ru.otus.spring.service.*;
 @Slf4j
 public class ShellCommandsAuthor {
 
-    private final DbServiceAuthor dbServiceAuthor;
+    private final AuthorService authorService;
 
     private final IOService ioService;
 
@@ -33,7 +33,7 @@ public class ShellCommandsAuthor {
     @ShellMethod(value = "show authors", key = {"showA", "show-all-authors"})
     public void showAllAuthors() {
         try {
-            dbServiceAuthor.getAll().forEach((book) -> ioService.outputMessage(book.toString()));
+            authorService.getAll().forEach((book) -> ioService.outputMessage(book.toString()));
         } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при выводе автора");
@@ -45,7 +45,7 @@ public class ShellCommandsAuthor {
         try {
             ioService.outputMessage("Введите id автора");
             long id = Integer.parseInt(ioService.inputMessage());
-            dbServiceAuthor.getById(id).ifPresent((book) -> ioService.outputMessage(book.toString()));
+            authorService.getById(id).ifPresent((book) -> ioService.outputMessage(book.toString()));
         } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при поиске автора с id ");
@@ -60,7 +60,7 @@ public class ShellCommandsAuthor {
         try {
             ioService.outputMessage("Введите id автора для удаления");
             long id = Integer.parseInt(ioService.inputMessage());
-            dbServiceAuthor.deleteById(id);
+            authorService.deleteById(id);
             ioService.outputMessage("автор c id " + id + " удалена");
         } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());

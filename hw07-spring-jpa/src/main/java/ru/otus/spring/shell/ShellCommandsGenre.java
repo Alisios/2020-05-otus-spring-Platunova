@@ -13,7 +13,7 @@ import ru.otus.spring.service.*;
 @Slf4j
 public class ShellCommandsGenre {
 
-    private final DbServiceGenre dbServiceGenre;
+    private final GenreService genreService;
 
     private final IOService ioService;
 
@@ -33,7 +33,7 @@ public class ShellCommandsGenre {
     @ShellMethod(value = "show genres", key = {"showG", "show-all-genres"})
     public void showAllGenres() {
         try {
-            dbServiceGenre.getAll().forEach((book) -> ioService.outputMessage(book.toString()));
+            genreService.getAll().forEach((book) -> ioService.outputMessage(book.toString()));
         } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при выводе жанра");
@@ -45,7 +45,7 @@ public class ShellCommandsGenre {
         try {
             ioService.outputMessage("Введите id жанра");
             long id = Integer.parseInt(ioService.inputMessage());
-            dbServiceGenre.getById(id).ifPresent((book) -> ioService.outputMessage(book.toString()));
+            genreService.getById(id).ifPresent((book) -> ioService.outputMessage(book.toString()));
         } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при поиске жанра с id ");
@@ -60,7 +60,7 @@ public class ShellCommandsGenre {
         try {
             ioService.outputMessage("Введите id жанра для удаления");
             long id = Integer.parseInt(ioService.inputMessage());
-            dbServiceGenre.deleteById(id);
+            genreService.deleteById(id);
             ioService.outputMessage("Жанр c id " + id + " удален");
         } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());

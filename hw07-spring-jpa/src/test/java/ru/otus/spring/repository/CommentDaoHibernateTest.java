@@ -33,12 +33,8 @@ class CommentDaoHibernateTest {
     @Test
     @DisplayName("кидает исключение при нулевом комментарии")
     void correctlyThrowExceptions() {
-        assertThrows(DataAccessException.class, () -> {
-            commentDaoHibernate.save(null);
-        });
-        assertThrows(DataAccessException.class, () -> {
-            commentDaoHibernate.save(null);
-        });
+        assertThrows(DataAccessException.class, () -> commentDaoHibernate.save(null));
+        assertThrows(DataAccessException.class, () -> commentDaoHibernate.save(null));
     }
 
 
@@ -100,9 +96,7 @@ class CommentDaoHibernateTest {
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("book", comment.getBook())
                 .hasFieldOrPropertyWithValue("text", comment.getText());
-        assertDoesNotThrow(() -> {
-            assertThat(commentDaoHibernate.findById(312)).isEmpty();
-        });
+        assertDoesNotThrow(() -> assertThat(commentDaoHibernate.findById(312)).isEmpty());
     }
 
 
@@ -151,9 +145,7 @@ class CommentDaoHibernateTest {
                 .isNotNull()
                 .contains(comm)
                 .size().isEqualTo(4);
-        assertDoesNotThrow(() -> {
-            assertThat(commentDaoHibernate.findByBookId(312)).isEmpty();
-        });
+        assertDoesNotThrow(() -> assertThat(commentDaoHibernate.findByBookId(312)).isEmpty());
     }
 
     @DisplayName("находит комментарий по id книги вместе с книгой за 1 селект")

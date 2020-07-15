@@ -26,14 +26,14 @@ import static org.mockito.Mockito.*;
 class DbServiceBookImplTest {
 
     @Configuration
-    @Import(DbServiceBookImpl.class)
+    @Import(BookServiceImpl.class)
     static class NestedConfiguration {}
 
     @MockBean
     private BookRepository bookRepository;
 
     @Autowired
-    private DbServiceBook dbServiceBook;
+    private BookService bookService;
 
     @Test
     @DisplayName("корректно создает новую книгу при отсуствии ее в таблице")
@@ -44,7 +44,7 @@ class DbServiceBookImplTest {
         val book2 = new Book(1L,"Норвежский Лес", author,null);
         when(bookRepository.findByTitleAndAuthor(book.getTitle(), author.getName(), author.getSurname())).thenReturn(Optional.empty());
         when(bookRepository.save(book)).thenReturn(book2);
-        assertThat(dbServiceBook.save(book)).isEqualTo(book2);
+        assertThat(bookService.save(book)).isEqualTo(book2);
         verify(bookRepository, times(1)).save(book);
     }
 
@@ -56,7 +56,7 @@ class DbServiceBookImplTest {
         book.setAuthor(author);
         val book2 = new Book(1L,"Норвежский Лес", author,null);
         when(bookRepository.findByTitleAndAuthor(book.getTitle(), author.getName(), author.getSurname())).thenReturn(Optional.of(book2));
-        assertThat(dbServiceBook.save(book)).isEqualTo(book2);
+        assertThat(bookService.save(book)).isEqualTo(book2);
         verify(bookRepository, times(0)).save(book);
     }
 
@@ -67,9 +67,7 @@ class DbServiceBookImplTest {
         val book = new Book(1L,"Норвежский Лес", author,null);
         doThrow(RuntimeException.class)
                 .when(bookRepository).findByTitleAndAuthor(anyString(),anyString(), anyString());
-        Throwable thrown = assertThrows(DbException.class, () -> {
-            dbServiceBook.save(book);
-        });
+        Throwable thrown = assertThrows(DbException.class, () -> bookService.save(book));
         assertThat(thrown).hasMessageContaining("Error with saving book").hasMessageContaining("Норвежский Лес");
     }
 

@@ -7,7 +7,7 @@ import ru.otus.spring.domain.Genre;
 import java.util.List;
 import java.util.Optional;
 
-public interface DbServiceBook {
+public interface BookService {
 
     Book save(Book book);
 

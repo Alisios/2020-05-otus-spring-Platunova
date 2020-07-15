@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class DbServiceCommentImpl implements DbServiceComment {
+public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
 
