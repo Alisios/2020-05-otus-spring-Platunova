@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class DbServiceAuthorImpl implements DbServiceAuthor {
+public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorDao authorDao;
 

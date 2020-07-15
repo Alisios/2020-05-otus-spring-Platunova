@@ -17,13 +17,13 @@ import java.util.stream.Collectors;
 @Transactional
 public class UserBookServiceImpl implements UserBookService {
 
-    private final DbServiceAuthor dbServiceAuthor;
+    private final AuthorService authorService;
 
-    private final DbServiceGenre dbServiceGenre;
+    private final GenreService genreService;
 
-    private final DbServiceBook dbServiceBook;
+    private final BookService bookService;
 
-    private final DbServiceComment dbServiceComment;
+    private final CommentService commentService;
 
     private final IOService ioService;
 
@@ -34,14 +34,14 @@ public class UserBookServiceImpl implements UserBookService {
         var book = new Book(ioService.inputMessage());
         book.setAuthor(addAuthorByUser());
         book.setGenre(addGenreByUser());
-        return dbServiceBook.create(book);
+        return bookService.create(book);
     }
 
     @Override
     public Genre addGenreByUser() {
         ioService.outputMessage("Введите жанр книги");
         var genre = new Genre(ioService.inputMessage());
-        return dbServiceGenre.create(genre);
+        return genreService.create(genre);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class UserBookServiceImpl implements UserBookService {
         var str = ioService.inputMessage();
         ioService.outputMessage("Введите фамилию автора книги");
         var author = new Author(str, ioService.inputMessage());
-        return dbServiceAuthor.create(author);
+        return authorService.create(author);
     }
 
     @Override
@@ -59,8 +59,8 @@ public class UserBookServiceImpl implements UserBookService {
         long id = Long.parseLong(ioService.inputMessage());
         ioService.outputMessage("Введите текст комментария:");
         try {
-            var comment = new Comment(dbServiceBook.getById(id).orElseThrow(() -> new DaoException("Нет книги с данным id")), ioService.inputMessage());
-            return dbServiceComment.create(comment);
+            var comment = new Comment(bookService.getById(id).orElseThrow(() -> new DaoException("Нет книги с данным id")), ioService.inputMessage());
+            return commentService.create(comment);
         } catch (DaoException ex) {
             throw new DaoException("Ошибка при поиске книги. Убедитесь, что книга с таким id сущствует", ex);
         }
@@ -70,8 +70,8 @@ public class UserBookServiceImpl implements UserBookService {
     public String printBooksWithComments() {
         ioService.outputMessage("введите id книги, по которой вы хотите посмотреть комментарии: ");
         long id = Long.parseLong(ioService.inputMessage());
-        Book book = dbServiceBook.getById(id).orElseThrow(() -> new DaoException("Нет книги с данным id"));
-        List<Comment> comments = dbServiceComment.findByBookId(id);
+        Book book = bookService.getById(id).orElseThrow(() -> new DaoException("Нет книги с данным id"));
+        List<Comment> comments = commentService.findByBookId(id);
         return book.toString() + ". \n" + comments.stream().map(Comment::toStringWithoutBook).collect(Collectors.joining(";\n"));
     }
 }

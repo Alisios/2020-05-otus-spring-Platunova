@@ -13,7 +13,7 @@ import ru.otus.spring.service.*;
 @Slf4j
 public class ShellCommandsComments {
 
-    private final DbServiceComment dbServiceComment;
+    private final CommentService commentService;
 
     private final IOService ioService;
 
@@ -33,7 +33,7 @@ public class ShellCommandsComments {
     @ShellMethod(value = "show comments", key = {"showC", "show-all-comments"})
     public void showAllComments() {
         try {
-            dbServiceComment.getAll().forEach((book) -> ioService.outputMessage(book.toString()));
+            commentService.getAll().forEach((book) -> ioService.outputMessage(book.toString()));
         } catch (DaoException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при выводе комментария");
@@ -45,7 +45,7 @@ public class ShellCommandsComments {
         try {
             ioService.outputMessage("Введите id книги, на которую нужны комментарии");
             long id = Integer.parseInt(ioService.inputMessage());
-            dbServiceComment.findByBookId(id).forEach((comment) -> ioService.outputMessage(comment.toStringWithoutBook()));
+            commentService.findByBookId(id).forEach((comment) -> ioService.outputMessage(comment.toStringWithoutBook()));
         } catch (DaoException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при поиске комментария с id ");
@@ -59,7 +59,7 @@ public class ShellCommandsComments {
     public void showCommentByText() {
         try {
             ioService.outputMessage("Введите текст комментария");
-            dbServiceComment.findByText(ioService.inputMessage()).forEach((comment) -> ioService.outputMessage(comment.toString()));
+            commentService.findByText(ioService.inputMessage()).forEach((comment) -> ioService.outputMessage(comment.toString()));
         } catch (DaoException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при поиске комментария с id ");
@@ -74,7 +74,7 @@ public class ShellCommandsComments {
         try {
             ioService.outputMessage("Введите id комментария для удаления");
             long id = Integer.parseInt(ioService.inputMessage());
-            dbServiceComment.deleteById(id);
+            commentService.deleteById(id);
             ioService.outputMessage("Комментарий c id " + id + " удален");
         } catch (DaoException ex) {
             log.error(ex.getMessage(), ex.getCause());

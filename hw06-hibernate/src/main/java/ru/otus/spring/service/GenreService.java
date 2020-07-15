@@ -5,7 +5,7 @@ import ru.otus.spring.domain.Genre;
 import java.util.List;
 import java.util.Optional;
 
-public interface DbServiceGenre {
+public interface GenreService {
 
     Genre create(Genre genre);
 

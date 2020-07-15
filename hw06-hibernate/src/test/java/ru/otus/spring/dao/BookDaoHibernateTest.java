@@ -5,12 +5,10 @@ import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
@@ -21,7 +19,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@AutoConfigureTestDatabase
 @DisplayName("Тесты проверяют, что репозиторий книги:")
 @DataJpaTest
 @Import(BookDaoHibernate.class)
@@ -39,9 +36,9 @@ class BookDaoHibernateTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyInsertNewBook() {
         Book book = new Book("Норвежский Лес");
-        Author author = new Author( "Харуки", "Мураками");
+        Author author = new Author("Харуки", "Мураками");
         em.persistAndFlush(author);
-        book.setGenre( em.find(Genre.class, 3L));
+        book.setGenre(em.find(Genre.class, 3L));
         book.setAuthor(author);
         assertThat(bookDaoHibernate.insert(book))
                 .isNotNull()
@@ -56,9 +53,9 @@ class BookDaoHibernateTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyInsertTheSameBook() {
         Book book = new Book("Триумфальная Арка");
-        Author author = new Author( "Эрик Мария", "Ремарк");
+        Author author = new Author("Эрик Мария", "Ремарк");
         em.persistAndFlush(author);
-        book.setGenre( em.find(Genre.class, 3L));
+        book.setGenre(em.find(Genre.class, 3L));
         book.setAuthor(author);
         long count1 = bookDaoHibernate.count();
         bookDaoHibernate.insert(book);
@@ -91,12 +88,8 @@ class BookDaoHibernateTest {
     @Test
     @DisplayName("кидает исключение при нулевй книге")
     void correctlyThrowExceptions() {
-        assertThrows(Exception.class, () -> {
-            bookDaoHibernate.insert(null);
-        });
-        assertThrows(Exception.class, () -> {
-            bookDaoHibernate.updateByTitle(null);
-        });
+        assertThrows(Exception.class, () -> bookDaoHibernate.insert(null));
+        assertThrows(Exception.class, () -> bookDaoHibernate.updateByTitle(null));
     }
 
     @Test
@@ -127,13 +120,11 @@ class BookDaoHibernateTest {
                 .unwrap(SessionFactory.class);
         sessionFactory.getStatistics().setStatisticsEnabled(true);
 
-        System.out.println("\n\n\n\n----------------------------------------------------------------------------------------------------------");
         val books = bookDaoHibernate.findAll();
         assertThat(books).isNotNull().hasSize(4)
                 .allMatch(s -> !s.getTitle().equals(""))
                 .allMatch(s -> s.getAuthor() != null)
                 .allMatch(s -> s.getGenre() != null);
-        System.out.println("----------------------------------------------------------------------------------------------------------\n\n\n\n");
         assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(1);
     }
 
@@ -145,16 +136,15 @@ class BookDaoHibernateTest {
                 .unwrap(SessionFactory.class);
         sessionFactory.getStatistics().setStatisticsEnabled(true);
 
-        System.out.println("\n\n\n\n----------------------------------------------------------------------------------------------------------");
         val books = bookDaoHibernate.findAll();
         assertThat(books).isNotNull().hasSize(4)
                 .allMatch(s -> !s.getTitle().equals(""))
                 .allMatch(s -> s.getAuthor() != null)
                 .allMatch(s -> s.getGenre() != null)
                 .allMatch(s -> s.getComments().size() > 0);
-        System.out.println("----------------------------------------------------------------------------------------------------------\n\n\n\n");
         assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(2);
     }
+
 
     @Test
     @DisplayName("корректно находит книгу по id и не кидает исключение при отсуствии id")
@@ -171,7 +161,7 @@ class BookDaoHibernateTest {
                 .hasFieldOrProperty("author");
         assertThat(bookn.getAuthor().getName()).isEqualTo(book.getAuthor().getName());
         assertThat(bookn.getGenre().getType()).isEqualTo(book.getGenre().getType());
-        assertDoesNotThrow(() -> { assertThat(bookDaoHibernate.findById(312)).isEmpty(); });
+        assertDoesNotThrow(() -> assertThat(bookDaoHibernate.findById(312)).isEmpty());
     }
 
     @Test
@@ -233,5 +223,38 @@ class BookDaoHibernateTest {
         List<Book> booksByG = bookDaoHibernate.findByAuthor(new Author("Джоан", "Роулинг"));
         assertThat(booksByG).isNotEmpty().contains(bookDaoHibernate.findById(1).get());
         assertThat(bookDaoHibernate.findByAuthor(new Author("Алексей", "Пехов")).isEmpty());
+    }
+
+    @DisplayName("находит книгу по автору за один селект")
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    void findBookByAuthorForOneSelect() {
+        SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
+                .unwrap(SessionFactory.class);
+        sessionFactory.getStatistics().setStatisticsEnabled(true);
+        bookDaoHibernate.findByAuthor(new Author("Стивен", "Кинг"));
+        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(1);
+    }
+
+    @DisplayName("находит книгу по жанру за один селект")
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    void findBookByGenreForOneSelect() {
+        SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
+                .unwrap(SessionFactory.class);
+        sessionFactory.getStatistics().setStatisticsEnabled(true);
+        bookDaoHibernate.findByGenre(new Genre("фэнтези"));
+        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(1);
+    }
+
+    @DisplayName("находит книгу по жанру за один селект")
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    void findBookByTitleAndAuthorForOneSelect() {
+        SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
+                .unwrap(SessionFactory.class);
+        sessionFactory.getStatistics().setStatisticsEnabled(true);
+        bookDaoHibernate.findByTitleAndAuthor(new Book("Гарри Поттер и Философский камень", new Author("Харуки", "Мураками"), null));
+        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(1);
     }
 }

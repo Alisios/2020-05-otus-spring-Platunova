@@ -32,16 +32,16 @@ class UserBookServiceImplTest {
     @Autowired
     private UserBookService userBookService;
     @MockBean
-    private DbServiceGenre dbServiceGenre;
+    private GenreService genreService;
 
     @MockBean
-    private DbServiceAuthor dbServiceAuthor;
+    private AuthorService authorService;
 
     @MockBean
-    private DbServiceBook dbServiceBook;
+    private BookService bookService;
 
     @MockBean
-    private DbServiceComment dbServiceComment;
+    private CommentService commentService;
 
     @MockBean
     private IOService ioService;
@@ -53,11 +53,11 @@ class UserBookServiceImplTest {
         Genre genre = new Genre(1, "фэнтези");
         Author author = new Author(1, "Джоан", "Роулинг");
         when(ioService.inputMessage()).thenReturn("Гарри Поттер и Философский камень").thenReturn(author.getName()).thenReturn(author.getSurname()).thenReturn(genre.getType());
-        when(dbServiceGenre.create(any())).thenReturn(genre);
-        when(dbServiceAuthor.create(any())).thenReturn(author);
+        when(genreService.create(any())).thenReturn(genre);
+        when(authorService.create(any())).thenReturn(author);
         book.setAuthor(author);
         book.setGenre(genre);
-        when(dbServiceBook.create(book)).thenReturn(book);
+        when(bookService.create(book)).thenReturn(book);
         assertThat(userBookService.addBookByUser()).isEqualTo(book);
     }
 
@@ -66,7 +66,7 @@ class UserBookServiceImplTest {
     void correctlyHandleUserMessageAndAddNewGenre() {
         Genre genre = new Genre("фэнтези");
         when(ioService.inputMessage()).thenReturn(genre.getType());
-        when(dbServiceGenre.create(genre)).thenReturn(genre);
+        when(genreService.create(genre)).thenReturn(genre);
         assertThat(userBookService.addGenreByUser()).isEqualTo(genre);
     }
 
@@ -75,7 +75,7 @@ class UserBookServiceImplTest {
     void correctlyHandleUserMessageAndAddNewAuthor() {
         Author author = new Author("Рэй", "Брэдбери");
         when(ioService.inputMessage()).thenReturn(author.getName()).thenReturn(author.getSurname());
-        when(dbServiceAuthor.create(author)).thenReturn(author);
+        when(authorService.create(author)).thenReturn(author);
         assertThat(userBookService.addAuthorByUser()).isEqualTo(author);
     }
 
@@ -87,8 +87,8 @@ class UserBookServiceImplTest {
         Book book = new Book("Гарри Поттер и Философский камень", author, genre);
         Comment comment = new Comment(book, "крутая!");
         when(ioService.inputMessage()).thenReturn("1");
-        when(dbServiceBook.getById(1L)).thenReturn(Optional.of(book));
-        when(dbServiceComment.findByBookId(1L)).thenReturn(List.of(comment));
+        when(bookService.getById(1L)).thenReturn(Optional.of(book));
+        when(commentService.findByBookId(1L)).thenReturn(List.of(comment));
         assertThat(userBookService.printBooksWithComments()).contains(comment.toStringWithoutBook()).contains(book.toString());
     }
 }

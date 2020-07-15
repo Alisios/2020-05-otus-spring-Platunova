@@ -3,7 +3,6 @@ package ru.otus.spring.dao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
@@ -16,7 +15,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@AutoConfigureTestDatabase
 @DisplayName("Тесты проверяют, что репозиторий жанров:")
 @DataJpaTest
 @Import(GenreDaoHibernate.class)
@@ -50,8 +48,6 @@ class GenreDaoHibernateTest {
         long count1 = genreDaoHibernate.count();
         genreDaoHibernate.insert(genre);
         assertThat(genreDaoHibernate.count()).isEqualTo(count1 + 1);
-        genreDaoHibernate.insert(genre);
-        assertThat(genreDaoHibernate.count()).isEqualTo(count1 + 1);
     }
 
     @Test
@@ -72,12 +68,8 @@ class GenreDaoHibernateTest {
     @Test
     @DisplayName("кидает исключение при нулевом жанре")
     void correctlyThrowExceptions() {
-        assertThrows(NullPointerException.class, () -> {
-            genreDaoHibernate.insert(null);
-        });
-        assertThrows(NullPointerException.class, () -> {
-            genreDaoHibernate.update(null);
-        });
+        assertThrows(NullPointerException.class, () -> genreDaoHibernate.insert(null));
+        assertThrows(NullPointerException.class, () -> genreDaoHibernate.update(null));
     }
 
     @Test
@@ -112,9 +104,7 @@ class GenreDaoHibernateTest {
         assertThat(genreDaoHibernate.findById(1L).get())
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("type", genre.getType());
-        assertDoesNotThrow(() -> {
-            assertThat(genreDaoHibernate.findById(312)).isEmpty();
-        });
+        assertDoesNotThrow(() -> assertThat(genreDaoHibernate.findById(312)).isEmpty());
     }
 
     @Test

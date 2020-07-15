@@ -22,18 +22,18 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @DisplayName("Тесты проверяют:")
-class DbServiceGenreImplTest {
+class GenreServiceImplTest {
 
 
     @Configuration
-    @Import(DbServiceGenreImpl.class)
+    @Import(GenreServiceImpl.class)
     static class NestedConfiguration {}
 
     @MockBean
     private GenreDao genreDao;
 
     @Autowired
-    private DbServiceGenre dbServiceGenre;
+    private GenreService genreService;
 
     @Test
     @DisplayName("корректно создает нового атвора при отсуствии его в таблице")
@@ -42,7 +42,7 @@ class DbServiceGenreImplTest {
         Genre genre2 = new Genre(1, "Сказка");
         when(genreDao.findByType(genre.getType())).thenReturn(Optional.empty());
         when(genreDao.insert(genre)).thenReturn(genre2);
-        assertThat(dbServiceGenre.create(genre)).isEqualTo(genre2);
+        assertThat(genreService.create(genre)).isEqualTo(genre2);
         verify(genreDao, times(1)).insert(genre);
     }
 
@@ -52,7 +52,7 @@ class DbServiceGenreImplTest {
         Genre genre = new Genre("Сказка");
         Genre genre2 = new Genre(1, "Сказка");
         when(genreDao.findByType(genre.getType())).thenReturn(Optional.of(genre2));
-        assertThat(dbServiceGenre.create(genre)).isEqualTo(genre2);
+        assertThat(genreService.create(genre)).isEqualTo(genre2);
         verify(genreDao, times(0)).insert(genre);
     }
 
@@ -62,7 +62,7 @@ class DbServiceGenreImplTest {
         Genre genre = new Genre("Сказка");
         doThrow(PermissionDeniedDataAccessException.class).when(genreDao).update(genre);
         Throwable thrown = assertThrows(DaoException.class, () -> {
-            dbServiceGenre.save(genre);
+            genreService.save(genre);
         });
         assertThat(thrown).hasMessageContaining("Error with updating genre").hasMessageContaining("Сказка");
     }
@@ -70,11 +70,11 @@ class DbServiceGenreImplTest {
     @Test
     @DisplayName("корректно обрабатывает запрос удаления")
     void correctlyDeleteGenre() {
-        dbServiceGenre.deleteById(1);
+        genreService.deleteById(1);
         verify(genreDao, times(1)).deleteById(1);
         doThrow(PermissionDeniedDataAccessException.class).when(genreDao).deleteById(1);
         Throwable thrown = assertThrows(DaoException.class, () -> {
-            dbServiceGenre.deleteById(1);
+            genreService.deleteById(1);
         });
         assertThat(thrown).hasMessageContaining("Error with deleting genre").hasMessageContaining("1");
     }

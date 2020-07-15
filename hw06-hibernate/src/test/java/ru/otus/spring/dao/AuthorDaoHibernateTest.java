@@ -51,8 +51,6 @@ class AuthorDaoHibernateTest {
         long count1 = authorDaoHibernate.count();
         authorDaoHibernate.insert(author);
         assertThat(authorDaoHibernate.count()).isEqualTo(count1 + 1);
-        authorDaoHibernate.insert(author);
-        assertThat(authorDaoHibernate.count()).isEqualTo(count1 + 1);
     }
 
     @Test
@@ -74,12 +72,8 @@ class AuthorDaoHibernateTest {
     @Test
     @DisplayName("кидает исключение при нулевом авторе")
     void correctlyThrowExceptions() {
-        assertThrows(NullPointerException.class, () -> {
-            authorDaoHibernate.insert(null);
-        });
-        assertThrows(NullPointerException.class, () -> {
-            authorDaoHibernate.update(null);
-        });
+        assertThrows(NullPointerException.class, () -> authorDaoHibernate.insert(null));
+        assertThrows(NullPointerException.class, () -> authorDaoHibernate.update(null));
     }
 
     @Test
@@ -114,9 +108,7 @@ class AuthorDaoHibernateTest {
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("name", author.getName())
                 .hasFieldOrPropertyWithValue("surname", author.getSurname());
-        assertDoesNotThrow(() -> {
-            assertThat(authorDaoHibernate.findById(312)).isEmpty();
-        });
+        assertDoesNotThrow(() -> assertThat(authorDaoHibernate.findById(312)).isEmpty());
     }
 
 
@@ -139,8 +131,6 @@ class AuthorDaoHibernateTest {
                 .hasFieldOrPropertyWithValue("name", author.getName())
                 .hasFieldOrPropertyWithValue("surname", author.getSurname());
 
-        assertDoesNotThrow(() -> {
-            assertThat(authorDaoHibernate.findByFullName("Алексей", "Пехов")).isEmpty();
-        });
+        assertDoesNotThrow(() -> assertThat(authorDaoHibernate.findByFullName("Алексей", "Пехов")).isEmpty());
     }
 }

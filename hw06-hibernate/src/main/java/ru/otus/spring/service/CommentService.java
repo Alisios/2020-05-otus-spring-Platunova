@@ -6,7 +6,7 @@ import ru.otus.spring.domain.Comment;
 import java.util.List;
 import java.util.Optional;
 
-public interface DbServiceComment {
+public interface CommentService {
     Comment create(Comment genre);
 
     void save(Comment genre);

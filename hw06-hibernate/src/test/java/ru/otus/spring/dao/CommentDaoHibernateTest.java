@@ -5,7 +5,6 @@ import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
@@ -17,9 +16,9 @@ import ru.otus.spring.domain.Comment;
 import ru.otus.spring.domain.Genre;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@AutoConfigureTestDatabase
 @DisplayName("Тесты проверяют, что репозиторий жанров:")
 @DataJpaTest
 @Import(CommentDaoHibernate.class)
@@ -79,12 +78,8 @@ class CommentDaoHibernateTest {
     @Test
     @DisplayName("кидает исключение при нулевом комментарии")
     void correctlyThrowExceptions() {
-        assertThrows(NullPointerException.class, () -> {
-            commentDaoHibernate.insert(null);
-        });
-        assertThrows(NullPointerException.class, () -> {
-            commentDaoHibernate.update(null);
-        });
+        assertThrows(NullPointerException.class, () -> commentDaoHibernate.insert(null));
+        assertThrows(NullPointerException.class, () -> commentDaoHibernate.update(null));
     }
 
 
@@ -124,13 +119,10 @@ class CommentDaoHibernateTest {
         SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
                 .unwrap(SessionFactory.class);
         sessionFactory.getStatistics().setStatisticsEnabled(true);
-
-        System.out.println("\n\n\n\n----------------------------------------------------------------------------------------------------------");
         val comments = commentDaoHibernate.findAll();
         assertThat(comments).isNotNull().hasSize(7)
                 .allMatch(s -> !s.getText().equals(""))
                 .allMatch(s -> s.getBook() != null);
-        System.out.println("----------------------------------------------------------------------------------------------------------\n\n\n\n");
         assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(1);
     }
 
@@ -150,9 +142,7 @@ class CommentDaoHibernateTest {
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("book", comment.getBook())
                 .hasFieldOrPropertyWithValue("text", comment.getText());
-        assertDoesNotThrow(() -> {
-            assertThat(commentDaoHibernate.findById(312)).isEmpty();
-        });
+        assertDoesNotThrow(() -> assertThat(commentDaoHibernate.findById(312)).isEmpty());
     }
 
 
@@ -178,6 +168,17 @@ class CommentDaoHibernateTest {
         assertThat(commentDaoHibernate.findByBook(new Book("Страж", new Author("Алексей", "Пехов"), new Genre("фэнтези")))).isEmpty();
     }
 
+    @DisplayName("находит комментарий по книге за 1 селект")
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    void findCommentByBookByOneSelect() {
+        SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
+                .unwrap(SessionFactory.class);
+        sessionFactory.getStatistics().setStatisticsEnabled(true);
+        commentDaoHibernate.findByBook(new Book("Гарри поттер", new Author("Джоан", "Роулинг"), null));
+        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(1);
+    }
+
     @Test
     @DisplayName("находит комментарий по id книги и не кидает исключение при отсуствии")
     void findCommentByBookId() {
@@ -186,8 +187,17 @@ class CommentDaoHibernateTest {
                 .isNotNull()
                 .contains(comm)
                 .size().isEqualTo(4);
-        assertDoesNotThrow(() -> {
-            assertThat(commentDaoHibernate.findByBookId(312)).isEmpty();
-        });
+        assertDoesNotThrow(() -> assertThat(commentDaoHibernate.findByBookId(312)).isEmpty());
+    }
+
+    @DisplayName("находит комментарий по id книги вместе с книгой за 1 селект")
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    void findCommentByBookIdByOneSelect() {
+        SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
+                .unwrap(SessionFactory.class);
+        sessionFactory.getStatistics().setStatisticsEnabled(true);
+        commentDaoHibernate.findByBookId(1L);
+        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(1);
     }
 }
