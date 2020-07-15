@@ -10,8 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.PermissionDeniedDataAccessException;
 import ru.otus.spring.dao.BookDao;
-import ru.otus.spring.dao.DaoJdbcException;
-import ru.otus.spring.dao.GenreDao;
+import ru.otus.spring.dao.DaoException;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
@@ -26,7 +25,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @DisplayName("Тесты проверяют:")
-class DbServiceBookImplTest {
+class BookServiceImplTest {
 
     @Configuration("ru.otus.spring.service")
     static class NestedConfiguration {
@@ -34,13 +33,13 @@ class DbServiceBookImplTest {
         private BookDao bookDao;
 
         @Bean
-        DbServiceBook dbServiceBook() {
-            return new DbServiceBookImpl(bookDao);
+        BookService dbServiceBook() {
+            return new BookServiceImpl(bookDao);
         }
     }
 
     @Autowired
-    private DbServiceBook dbServiceBook;
+    private BookService bookService;
 
     @Autowired
     private BookDao bookDao;
@@ -50,8 +49,8 @@ class DbServiceBookImplTest {
     void correctlyHandleDBException() {
         Book book = new Book("Сказка");
         doThrow(PermissionDeniedDataAccessException.class).when(bookDao).insert(book);
-        Throwable thrown = assertThrows(DaoJdbcException.class, () -> {
-            dbServiceBook.create(book);
+        Throwable thrown = assertThrows(DaoException.class, () -> {
+            bookService.create(book);
         });
         assertThat(thrown).hasMessageContaining("Error with inserting").hasMessageContaining("Сказка");
     }
@@ -65,8 +64,8 @@ class DbServiceBookImplTest {
         book.setGenre(genre);
         book.setAuthor(author);
         when(bookDao.findByTitleAndAuthor(book)).thenReturn(Optional.empty());
-        when(bookDao.insert(book)).thenReturn(Optional.of(book));
-        assertThat(dbServiceBook.create(book))
+        when(bookDao.insert(book)).thenReturn((book));
+        assertThat(bookService.create(book))
                 .hasNoNullFieldsOrProperties()
                 .isEqualTo(book);
         verify(bookDao, times(1)).insert(book);
@@ -81,7 +80,7 @@ class DbServiceBookImplTest {
         book.setGenre(genre);
         book.setAuthor(author);
         when(bookDao.findByTitleAndAuthor(book)).thenReturn(Optional.of(book));
-        assertThat(dbServiceBook.create(book))
+        assertThat(bookService.create(book))
                 .hasNoNullFieldsOrProperties()
                 .isEqualTo(book);
         verify(bookDao, times(0)).insert(book);
@@ -90,11 +89,11 @@ class DbServiceBookImplTest {
     @Test
     @DisplayName("корректно обрабатывает запрос удаления")
     void correctlyDeleteBook() {
-        dbServiceBook.deleteById(1);
+        bookService.deleteById(1);
         verify(bookDao, times(1)).deleteById(1);
         doThrow(PermissionDeniedDataAccessException.class).when(bookDao).deleteById(1);
-        Throwable thrown = assertThrows(DaoJdbcException.class, () -> {
-            dbServiceBook.deleteById(1);
+        Throwable thrown = assertThrows(DaoException.class, () -> {
+            bookService.deleteById(1);
         });
         assertThat(thrown).hasMessageContaining("Error with deleting book").hasMessageContaining("1");
     }

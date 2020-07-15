@@ -10,11 +10,11 @@ import ru.otus.spring.domain.Genre;
 @RequiredArgsConstructor
 public class UserBookServiceImpl implements UserBookService {
 
-    private final DbServiceAuthor dbServiceAuthor;
+    private final AuthorService dbServiceAuthor;
 
-    private final DbServiceGenre dbServiceGenre;
+    private final GenreService genreService;
 
-    private final DbServiceBook dbServiceBook;
+    private final BookService bookService;
 
     private final IOService ioService;
 
@@ -25,14 +25,14 @@ public class UserBookServiceImpl implements UserBookService {
         var book = new Book(ioService.inputMessage());
         book.setAuthor(addAuthorByUser());
         book.setGenre(addGenreByUser());
-        return dbServiceBook.create(book);
+        return bookService.create(book);
     }
 
     @Override
     public Genre addGenreByUser() {
         ioService.outputMessage("Введите жанр книги");
         var genre = new Genre(ioService.inputMessage());
-        return dbServiceGenre.create(genre);
+        return genreService.create(genre);
     }
 
     @Override

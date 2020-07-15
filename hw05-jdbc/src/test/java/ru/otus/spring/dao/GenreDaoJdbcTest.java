@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@AutoConfigureTestDatabase
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DisplayName("Тесты проверяют:")
 @JdbcTest
 @Import(GenreDaoJdbc.class)
@@ -42,8 +42,6 @@ class GenreDaoJdbcTest {
         int count1 = genreDaoJdbc.count();
         genreDaoJdbc.insert(genre);
         assertThat(genreDaoJdbc.count()).isEqualTo(count1 + 1);
-        genreDaoJdbc.insert(genre);
-        assertThat(genreDaoJdbc.count()).isEqualTo(count1 + 2);
     }
 
     @Test
@@ -62,12 +60,8 @@ class GenreDaoJdbcTest {
     @Test
     @DisplayName("кидает исключение при нулевом жанре")
     void correctlyThrowExceptions() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            genreDaoJdbc.insert(null);
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            genreDaoJdbc.update(null);
-        });
+        assertThrows(RuntimeException.class, () -> genreDaoJdbc.insert(null));
+        assertThrows(RuntimeException.class, () -> genreDaoJdbc.update(null));
     }
 
     @Test
@@ -97,9 +91,7 @@ class GenreDaoJdbcTest {
         assertThat(genreDaoJdbc.findById(1L).get())
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("type", genre.getType());
-        assertDoesNotThrow(() -> {
-            assertThat(genreDaoJdbc.findById(312)).isEmpty();
-        });
+        assertDoesNotThrow(() -> assertThat(genreDaoJdbc.findById(312)).isEmpty());
     }
 
     @Test
@@ -112,8 +104,6 @@ class GenreDaoJdbcTest {
                 .hasFieldOrProperty("id")
                 .hasFieldOrPropertyWithValue("type", genre.getType());
 
-        assertDoesNotThrow(() -> {
-            assertThat(genreDaoJdbc.findByType("что-то неизвестное")).isEmpty();
-        });
+        assertDoesNotThrow(() -> assertThat(genreDaoJdbc.findByType("что-то неизвестное")).isEmpty());
     }
 }

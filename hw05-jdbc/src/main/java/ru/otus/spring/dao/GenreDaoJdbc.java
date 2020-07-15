@@ -2,7 +2,6 @@ package ru.otus.spring.dao;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
@@ -26,8 +25,9 @@ public class GenreDaoJdbc implements GenreDao {
 
     @Override
     public Genre insert(Genre genre) {
-        namedParameterJdbcOperations.update("insert into Genres (type) values (:type)", new BeanPropertySqlParameterSource(genre));
-        return findByType(genre.getType()).get();
+        genre.setId(namedParameterJdbcOperations.query("insert into Genres (type) values (:type) returning id", Map.of("type", genre.getType()),
+                (resultSet, i) -> (resultSet.getLong("id"))).get(0));
+        return genre;
     }
 
     @Override
@@ -52,19 +52,13 @@ public class GenreDaoJdbc implements GenreDao {
 
     @Override
     public Optional<Genre> findById(long id) {
-        try {
-            return Optional.of(namedParameterJdbcOperations.queryForObject("select id, type from Genres where id = :id", Map.of("id", id), genreRowMapper));
-        } catch (EmptyResultDataAccessException ex) {
-            log.error("{}, {}", ex.getCause(), ex.getMessage());
-            return Optional.empty();
-        }
+        List<Genre> genres = namedParameterJdbcOperations.query("select id, type from Genres where id = :id", Map.of("id", id), genreRowMapper);
+        return genres.size() == 0 ? Optional.empty() : Optional.of(genres.get(0));
     }
 
     @Override
     public Optional<Genre> findByType(String type) {
-        if (namedParameterJdbcOperations.query("select id, type from Genres where type = :type", Map.of("type", type), genreRowMapper).size() == 0)
-            return Optional.empty();
-        else
-            return Optional.of(namedParameterJdbcOperations.query("select id, type from Genres where type = :type", Map.of("type", type), genreRowMapper).get(0));
+        List<Genre> genres = namedParameterJdbcOperations.query("select id, type from Genres where type = :type", Map.of("type", type), genreRowMapper);
+        return genres.size() == 0 ? Optional.empty() : Optional.of(genres.get(0));
     }
 }

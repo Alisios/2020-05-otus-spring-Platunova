@@ -2,9 +2,9 @@ package ru.otus.spring.dao;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
 import ru.otus.spring.domain.Author;
@@ -27,8 +27,12 @@ public class AuthorDaoJdbc implements AuthorDao {
 
     @Override
     public Author insert(Author author) {
-        namedParameterJdbcOperations.update("insert into Authors (name, surname) values (:name, :surname)", new BeanPropertySqlParameterSource(author));
-        return findByFullName(author.getName(), author.getSurname()).get();
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("name", author.getName());
+        params.addValue("surname", author.getSurname());
+        author.setId(namedParameterJdbcOperations.query("insert into Authors (name, surname) values(:name,:surname) returning id", params,
+                (resultSet, i) -> (resultSet.getLong("id"))).get(0));
+        return author;
     }
 
     @Override
@@ -55,18 +59,13 @@ public class AuthorDaoJdbc implements AuthorDao {
 
     @Override
     public Optional<Author> findById(long id) {
-        try {
-            return Optional.of(namedParameterJdbcOperations.queryForObject("select id, name, surname from Authors where id = :id", Map.of("id", id), authorRowMapper));
-        } catch (EmptyResultDataAccessException ex) {
-            log.error("{}, {}", ex.getCause(), ex.getMessage());
-            return Optional.empty();
-        }
+        List<Author> authors = (namedParameterJdbcOperations.query("select id, name, surname from Authors where id = :id", Map.of("id", id), authorRowMapper));
+        return authors.size() == 0 ? Optional.empty() : Optional.of(authors.get(0));
     }
 
     @Override
     public Optional<Author> findByFullName(String name, String surname) {
-        if (namedParameterJdbcOperations.query("select id, name, surname from Authors where name = :name and surname = :surname", Map.of("name", name, "surname", surname), authorRowMapper).size() == 0)
-            return Optional.empty();
-        return Optional.of(namedParameterJdbcOperations.query("select id, name, surname from Authors where name = :name and surname = :surname", Map.of("name", name, "surname", surname), authorRowMapper).get(0));
+        List<Author> authors = namedParameterJdbcOperations.query("select id, name, surname from Authors where name = :name and surname = :surname", Map.of("name", name, "surname", surname), authorRowMapper);
+        return authors.size() == 0 ? Optional.empty() : Optional.of(authors.get(0));
     }
 }

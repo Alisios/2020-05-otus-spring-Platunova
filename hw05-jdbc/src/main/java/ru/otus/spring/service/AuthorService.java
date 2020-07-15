@@ -5,7 +5,7 @@ import ru.otus.spring.domain.Author;
 import java.util.List;
 import java.util.Optional;
 
-public interface DbServiceAuthor {
+public interface AuthorService {
 
     Author create(Author author);
 

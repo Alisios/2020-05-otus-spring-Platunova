@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface BookDao {
 
-    Optional <Book> insert(Book book);
+    Book insert(Book book);
 
     int count();
 

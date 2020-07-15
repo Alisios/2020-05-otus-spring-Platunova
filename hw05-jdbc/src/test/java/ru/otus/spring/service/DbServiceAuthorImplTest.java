@@ -8,11 +8,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.PermissionDeniedDataAccessException;
 import ru.otus.spring.dao.AuthorDao;
-import ru.otus.spring.dao.BookDao;
-import ru.otus.spring.dao.DaoJdbcException;
+import ru.otus.spring.dao.DaoException;
 import ru.otus.spring.domain.Author;
 
 import java.util.Optional;
@@ -33,13 +31,13 @@ class DbServiceAuthorImplTest {
         private AuthorDao authorDao;
 
         @Bean
-        DbServiceAuthor dbServiceAuthor() {
-            return new DbServiceAuthorImpl(authorDao);
+        AuthorService dbServiceAuthor() {
+            return new AuthorServiceImpl(authorDao);
         }
     }
 
     @Autowired
-    private DbServiceAuthor dbServiceAuthor;
+    private AuthorService dbServiceAuthor;
 
     @Autowired
     private AuthorDao authorDao;
@@ -74,7 +72,7 @@ class DbServiceAuthorImplTest {
     void correctlyHandleDBException() {
         Author author = new Author("Стивен", "Кинг");
         doThrow(PermissionDeniedDataAccessException.class).when(authorDao).update(author);
-        Throwable thrown = assertThrows(DaoJdbcException.class, () -> {
+        Throwable thrown = assertThrows(DaoException.class, () -> {
             dbServiceAuthor.save(author);
         });
         assertThat(thrown).hasMessageContaining("Error with updating author");

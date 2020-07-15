@@ -9,7 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.PermissionDeniedDataAccessException;
-import ru.otus.spring.dao.DaoJdbcException;
+import ru.otus.spring.dao.DaoException;
 import ru.otus.spring.dao.GenreDao;
 import ru.otus.spring.domain.Genre;
 
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @DisplayName("Тесты проверяют:")
-class DbServiceGenreImplTest {
+class GenreServiceImplTest {
 
     @Configuration("ru.otus.spring.service")
     static class NestedConfiguration {
@@ -30,13 +30,13 @@ class DbServiceGenreImplTest {
         private GenreDao genreDao;
 
         @Bean
-        DbServiceGenre dbServiceGenre() {
-            return new DbServiceGenreImpl(genreDao);
+        GenreService dbServiceGenre() {
+            return new GenreServiceImpl(genreDao);
         }
     }
 
     @Autowired
-    private DbServiceGenre dbServiceGenre;
+    private GenreService genreService;
 
     @Autowired
     private GenreDao genreDao;
@@ -48,7 +48,7 @@ class DbServiceGenreImplTest {
         Genre genre2 = new Genre(1, "Сказка");
         when(genreDao.findByType(genre.getType())).thenReturn(Optional.empty());
         when(genreDao.insert(genre)).thenReturn(genre2);
-        assertThat(dbServiceGenre.create(genre))
+        assertThat(genreService.create(genre))
                 .hasNoNullFieldsOrProperties()
                 .isEqualTo(genre2);
         verify(genreDao, times(1)).insert(genre);
@@ -60,7 +60,7 @@ class DbServiceGenreImplTest {
         Genre genre = new Genre("Сказка");
         Genre genre2 = new Genre(1, "Сказка");
         when(genreDao.findByType(genre.getType())).thenReturn(Optional.of(genre2));
-        assertThat(dbServiceGenre.create(genre))
+        assertThat(genreService.create(genre))
                 .hasNoNullFieldsOrProperties()
                 .isEqualTo(genre2);
         verify(genreDao, times(0)).insert(genre);
@@ -71,8 +71,8 @@ class DbServiceGenreImplTest {
     void correctlyHandleDBException() {
         Genre genre = new Genre("Сказка");
         doThrow(PermissionDeniedDataAccessException.class).when(genreDao).update(genre);
-        Throwable thrown = assertThrows(DaoJdbcException.class, () -> {
-            dbServiceGenre.save(genre);
+        Throwable thrown = assertThrows(DaoException.class, () -> {
+            genreService.save(genre);
         });
         assertThat(thrown).hasMessageContaining("Error with updating genre").hasMessageContaining("Сказка");
     }
@@ -80,11 +80,11 @@ class DbServiceGenreImplTest {
     @Test
     @DisplayName("корректно обрабатывает запрос удаления")
     void correctlyDeleteGenre() {
-        dbServiceGenre.deleteById(1);
+        genreService.deleteById(1);
         verify(genreDao, times(1)).deleteById(1);
         doThrow(PermissionDeniedDataAccessException.class).when(genreDao).deleteById(1);
-        Throwable thrown = assertThrows(DaoJdbcException.class, () -> {
-            dbServiceGenre.deleteById(1);
+        Throwable thrown = assertThrows(DaoException.class, () -> {
+            genreService.deleteById(1);
         });
         assertThat(thrown).hasMessageContaining("Error with deleting genre").hasMessageContaining("1");
     }

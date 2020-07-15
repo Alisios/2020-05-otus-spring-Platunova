@@ -12,7 +12,7 @@ import ru.otus.spring.service.*;
 @Slf4j
 public class ShellCommandsAuthor {
 
-    private final DbServiceAuthor dbServiceAuthor;
+    private final AuthorService dbServiceAuthor;
 
     private final IOService ioService;
 

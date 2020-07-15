@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@AutoConfigureTestDatabase
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DisplayName("Тесты проверяют:")
 @JdbcTest
 @Import(AuthorDaoJdbc.class)
@@ -43,8 +43,6 @@ class AuthorDaoJdbcTest {
         int count1 = authorDaoJdbc.count();
         authorDaoJdbc.insert(author);
         assertThat(authorDaoJdbc.count()).isEqualTo(count1 + 1);
-        authorDaoJdbc.insert(author);
-        assertThat(authorDaoJdbc.count()).isEqualTo(count1 + 2);
     }
 
     @Test
@@ -64,12 +62,8 @@ class AuthorDaoJdbcTest {
     @Test
     @DisplayName("кидает исключение при нулевом авторе")
     void correctlyThrowExceptions() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            authorDaoJdbc.insert(null);
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            authorDaoJdbc.update(null);
-        });
+        assertThrows(RuntimeException.class, () -> authorDaoJdbc.insert(null));
+        assertThrows(RuntimeException.class, () -> authorDaoJdbc.update(null));
     }
 
     @Test
@@ -100,7 +94,7 @@ class AuthorDaoJdbcTest {
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("name", author.getName())
                 .hasFieldOrPropertyWithValue("surname", author.getSurname());
-        assertDoesNotThrow(() -> { assertThat(authorDaoJdbc.findById(312)).isEmpty(); });
+        assertDoesNotThrow(() -> assertThat(authorDaoJdbc.findById(312)).isEmpty());
     }
 
     @Test
@@ -114,6 +108,8 @@ class AuthorDaoJdbcTest {
                 .hasFieldOrPropertyWithValue("name", author.getName())
                 .hasFieldOrPropertyWithValue("surname", author.getSurname());
 
-        assertDoesNotThrow(() -> { assertThat(authorDaoJdbc.findByFullName("Алексей", "Пехов")).isEmpty(); });
+        assertDoesNotThrow(() -> {
+            assertThat(authorDaoJdbc.findByFullName("Алексей", "Пехов")).isEmpty();
+        });
     }
 }

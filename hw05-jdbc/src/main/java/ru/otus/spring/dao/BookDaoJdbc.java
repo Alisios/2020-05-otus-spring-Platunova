@@ -12,8 +12,6 @@ import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,13 +24,14 @@ public class BookDaoJdbc implements BookDao {
     private final NamedParameterJdbcOperations namedParameterJdbcOperations;
 
     @Override
-    public Optional <Book> insert(Book book) {
+    public Book insert(Book book) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("title", book.getTitle());
         params.addValue("author_id", book.getAuthor().getId());
         params.addValue("genre_id", book.getGenre().getId());
-        namedParameterJdbcOperations.update("insert into Books (title, author_id, genre_id) values(:title,:author_id,:genre_id)", params);
-        return findByTitleAndAuthor(book);
+        book.setId(namedParameterJdbcOperations.query("insert into Books (title, author_id, genre_id) values(:title,:author_id,:genre_id) returning id", params,
+                (resultSet, i) -> (resultSet.getLong("id"))).get(0));
+        return book;
     }
 
     @Override
@@ -57,17 +56,17 @@ public class BookDaoJdbc implements BookDao {
         return namedParameterJdbcOperations.query("select bk.id, bk.title,  bk.author_id, bk.genre_id, " +
                 "ath.name, ath.surname, g.type " +
                 "from Books as bk LEFT JOIN Authors as ath on bk.author_id = ath.id " +
-                "LEFT JOIN genres g on bk.genre_id = g.id", new BookRowMapper());
+                "LEFT JOIN genres g on bk.genre_id = g.id", bookRowMapper);
     }
 
     @Override
     public Optional<Book> findById(long id) {
         try {
-            return Optional.of(namedParameterJdbcOperations.queryForObject(
+            return Optional.ofNullable(namedParameterJdbcOperations.queryForObject(
                     "select bk.id, bk.title,  bk.author_id, bk.genre_id, " +
                             "ath.name, ath.surname, g.type " +
                             "from Books as bk LEFT JOIN Authors as ath on bk.author_id = ath.id " +
-                            "LEFT JOIN genres g on bk.genre_id = g.id where bk.id = :id", Map.of("id", id), new BookRowMapper()));
+                            "LEFT JOIN genres g on bk.genre_id = g.id where bk.id = :id", Map.of("id", id), bookRowMapper));
         } catch (EmptyResultDataAccessException ex) {
             log.error("{}, {}", ex.getCause(), ex.getMessage());
             return Optional.empty();
@@ -76,17 +75,13 @@ public class BookDaoJdbc implements BookDao {
 
     @Override
     public Optional<Book> findByTitleAndAuthor(Book book) {
-        try {
-            return Optional.of(namedParameterJdbcOperations.query(
-                    "select bk.id, bk.title,  bk.author_id, bk.genre_id, " +
-                            "ath.name, ath.surname, g.type " +
-                            "from Books as bk LEFT JOIN Authors as ath on bk.author_id = ath.id " +
-                            "LEFT JOIN genres g on bk.genre_id = g.id where bk.title = :title and ath.name= :name and ath.surname= :surname",
-                    Map.of("title", book.getTitle(), "name", book.getAuthor().getName(),"surname", book.getAuthor().getSurname()), new BookRowMapper()).get(0));
-        } catch (IndexOutOfBoundsException ex) {
-            log.error("empty in findByTitleAndAuthor {}, {}", ex.getCause(), ex.getMessage());
-            return Optional.empty();
-        }
+        List<Book> books = namedParameterJdbcOperations.query(
+                "select bk.id, bk.title,  bk.author_id, bk.genre_id, " +
+                        "ath.name, ath.surname, g.type " +
+                        "from Books as bk LEFT JOIN Authors as ath on bk.author_id = ath.id " +
+                        "LEFT JOIN genres g on bk.genre_id = g.id where bk.title = :title and ath.name= :name and ath.surname= :surname",
+                Map.of("title", book.getTitle(), "name", book.getAuthor().getName(), "surname", book.getAuthor().getSurname()), bookRowMapper);
+        return books.size() == 0 ? Optional.empty() : Optional.of(books.get(0));
     }
 
     @Override
@@ -95,7 +90,7 @@ public class BookDaoJdbc implements BookDao {
                 "select bk.id, bk.title,  bk.author_id, bk.genre_id, " +
                         "ath.name, ath.surname, g.type " +
                         "from Books as bk LEFT JOIN Authors as ath on bk.author_id = ath.id " +
-                        "LEFT JOIN genres g on bk.genre_id = g.id where g.type = :type", Map.of("type", genre.getType()), new BookRowMapper());
+                        "LEFT JOIN genres g on bk.genre_id = g.id where g.type = :type", Map.of("type", genre.getType()), bookRowMapper);
 
     }
 
@@ -106,19 +101,14 @@ public class BookDaoJdbc implements BookDao {
                         "ath.name, ath.surname, g.type " +
                         "from Books as bk LEFT JOIN Authors as ath on bk.author_id = ath.id " +
                         "LEFT JOIN genres g on bk.genre_id = g.id" +
-                        " where ath.name = :authorName and ath.surname = :authorSurname", Map.of("authorName", author.getName(), "authorSurname", author.getSurname()), new BookRowMapper());
-
+                        " where ath.name = :authorName and ath.surname = :authorSurname", Map.of("authorName", author.getName(), "authorSurname", author.getSurname()), bookRowMapper);
     }
 
-    private static class BookRowMapper implements RowMapper<Book> {
-        @Override
-        public Book mapRow(ResultSet resultSet, int i) throws SQLException {
-            Book book = new Book(resultSet.getLong("id"), resultSet.getString("title"));
-            book.setAuthor(new Author(resultSet.getLong("author_id"), resultSet.getString("name"), resultSet.getString("surname")));
-            book.setGenre(new Genre(resultSet.getLong("genre_id"), resultSet.getString("type")));
-            return book;
-        }
-    }
+    private final RowMapper<Book> bookRowMapper = (resultSet, i) ->
+            new Book(resultSet.getLong("id"), resultSet.getString("title"),
+                    new Author(resultSet.getLong("author_id"), resultSet.getString("name"), resultSet.getString("surname")),
+                    new Genre(resultSet.getLong("genre_id"), resultSet.getString("type")));
+
 }
 
 

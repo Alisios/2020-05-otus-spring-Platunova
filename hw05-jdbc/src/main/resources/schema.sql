@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS Books;
-DROP TABLE IF EXISTS Authors;
-DROP TABLE IF EXISTS Genres;
+DROP TABLE IF EXISTS Books CASCADE;
+DROP TABLE IF EXISTS Authors CASCADE;
+DROP TABLE IF EXISTS Genres CASCADE;
 
 create table Genres
 (
@@ -27,13 +27,13 @@ create table Books
 );
 
 alter table if exists Books
-    add constraint bookConstraint
+    add constraint bookConstraint12345
         foreign key (author_id)
             references Authors
              ON DELETE CASCADE;
 
 alter table if exists Books
-    add constraint genreConstraint
+    add constraint genreConstraint12345
         foreign key (genre_id)
             references Genres
             ON DELETE CASCADE;

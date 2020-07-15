@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
@@ -20,40 +20,25 @@ import static org.mockito.Mockito.when;
 class UserBookServiceImplTest {
 
 
-    @Configuration("ru.otus.spring.service")
+    @Configuration
+    @Import({UserBookServiceImpl.class})
     static class NestedConfiguration {
-        @MockBean
-        private DbServiceGenre dbServiceGenre;
-
-        @MockBean
-        private DbServiceAuthor dbServiceAuthor;
-
-        @MockBean
-        private DbServiceBook dbServiceBook;
-
-        @MockBean
-        private IOService ioService;
-
-        @Bean
-        UserBookService userBookService() {
-            return new UserBookServiceImpl(dbServiceAuthor, dbServiceGenre, dbServiceBook, ioService);
-        }
     }
+
+    @MockBean
+    private GenreService genreService;
+
+    @MockBean
+    private AuthorService dbServiceAuthor;
+
+    @MockBean
+    private BookService bookService;
+
+    @MockBean
+    private IOService ioService;
 
     @Autowired
     private UserBookService userBookService;
-
-    @Autowired
-    private DbServiceGenre dbServiceGenre;
-
-    @Autowired
-    private DbServiceAuthor dbServiceAuthor;
-
-    @Autowired
-    private DbServiceBook dbServiceBook;
-
-    @Autowired
-    private IOService ioService;
 
     @Test
     @DisplayName("корректно обрабатывает сообщение пользователя и добавляет книгу")
@@ -62,11 +47,11 @@ class UserBookServiceImplTest {
         Genre genre = new Genre(1, "фэнтези");
         Author author = new Author(1, "Джоан", "Роулинг");
         when(ioService.inputMessage()).thenReturn("Гарри Поттер и Философский камень").thenReturn(author.getName()).thenReturn(author.getSurname()).thenReturn(genre.getType());
-        when(dbServiceGenre.create(any())).thenReturn(genre);
+        when(genreService.create(any())).thenReturn(genre);
         when(dbServiceAuthor.create(any())).thenReturn(author);
         book.setAuthor(author);
         book.setGenre(genre);
-        when(dbServiceBook.create(book)).thenReturn(book);
+        when(bookService.create(book)).thenReturn(book);
         assertThat(userBookService.addBookByUser()).isEqualTo(book);
     }
 
@@ -75,7 +60,7 @@ class UserBookServiceImplTest {
     void correctlyHandleUserMessageAndAddNewGenre() {
         Genre genre = new Genre("фэнтези");
         when(ioService.inputMessage()).thenReturn(genre.getType());
-        when(dbServiceGenre.create(genre)).thenReturn(genre);
+        when(genreService.create(genre)).thenReturn(genre);
         assertThat(userBookService.addGenreByUser()).isEqualTo(genre);
     }
 

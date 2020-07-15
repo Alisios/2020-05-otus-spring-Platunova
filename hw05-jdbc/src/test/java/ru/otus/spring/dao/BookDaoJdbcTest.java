@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@AutoConfigureTestDatabase
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DisplayName("Тесты проверяют:")
 @JdbcTest
 @Import(BookDaoJdbc.class)
@@ -37,7 +37,7 @@ class BookDaoJdbcTest {
         Author author = new Author(4, "Харуки", "Мураками");
         book.setGenre(genre);
         book.setAuthor(author);
-        assertThat(bookDaoJdbc.insert(book).get())
+        assertThat(bookDaoJdbc.insert(book))
                 .isNotNull()
                 .hasFieldOrProperty("id")
                 .hasFieldOrPropertyWithValue("title", book.getTitle())
@@ -56,8 +56,6 @@ class BookDaoJdbcTest {
         int count1 = bookDaoJdbc.count();
         bookDaoJdbc.insert(book);
         assertThat(bookDaoJdbc.count()).isEqualTo(count1 + 1);
-        bookDaoJdbc.insert(book);
-        assertThat(bookDaoJdbc.count()).isEqualTo(count1 + 2);
     }
 
     @Test
@@ -68,7 +66,7 @@ class BookDaoJdbcTest {
         Author author = new Author(4, "Харуки", "Мураками");
         book.setGenre(genre);
         book.setAuthor(author);
-        Book bookNew = bookDaoJdbc.insert(book).get();
+        Book bookNew = bookDaoJdbc.insert(book);
         bookNew.setTitle("Вино из топора");
         bookDaoJdbc.updateByTitle(bookNew);
         assertThat(bookDaoJdbc.findById(bookNew.getId()).get())
@@ -82,12 +80,8 @@ class BookDaoJdbcTest {
     @Test
     @DisplayName("кидает исключение при нулевй книге")
     void correctlyThrowExceptions() {
-        assertThrows(Exception.class, () -> {
-            bookDaoJdbc.insert(null);
-        });
-        assertThrows(Exception.class, () -> {
-            bookDaoJdbc.updateByTitle(null);
-        });
+        assertThrows(RuntimeException.class, () -> bookDaoJdbc.insert(null));
+        assertThrows(RuntimeException.class, () -> bookDaoJdbc.updateByTitle(null));
     }
 
     @Test
@@ -126,9 +120,7 @@ class BookDaoJdbcTest {
                 .hasFieldOrProperty("author");
         assertThat(bookn.getAuthor().getName()).isEqualTo(book.getAuthor().getName());
         assertThat(bookn.getGenre().getType()).isEqualTo(book.getGenre().getType());
-        assertDoesNotThrow(() -> {
-            assertThat(bookDaoJdbc.findById(312)).isEmpty();
-        });
+        assertDoesNotThrow(() -> assertThat(bookDaoJdbc.findById(312)).isEmpty());
     }
 
     @Test
