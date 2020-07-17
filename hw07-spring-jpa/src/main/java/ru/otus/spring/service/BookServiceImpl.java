@@ -26,7 +26,7 @@ public class BookServiceImpl implements BookService {
         try {
             Optional<Book> b = bookRepository.findByTitleAndAuthor(book.getTitle(), book.getAuthor().getName(), book.getAuthor().getSurname());
             return b.orElseGet(() -> bookRepository.save(book));
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             log.error("Error with saving book with title {}, {}", book.getTitle(), ex.getCause());
             throw new DbException("Error with saving book with title " + book.getTitle(), ex);
         }
@@ -38,7 +38,7 @@ public class BookServiceImpl implements BookService {
     public void deleteById(long id) {
         try {
             bookRepository.deleteById(id);
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             log.error("Error  with deleting book with id {}, {}", id, ex.getCause());
             throw new DbException("Error with deleting book with id " + id, ex);
         }
@@ -50,7 +50,7 @@ public class BookServiceImpl implements BookService {
     public List<Book> getAll() {
         try {
             return bookRepository.findAll();
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             log.error("Error with finding all books: {}", ex.getCause());
             throw new DbException("Error with finding all books", ex);
         }
@@ -61,7 +61,7 @@ public class BookServiceImpl implements BookService {
     public Optional<Book> getById(long id) {
         try {
             return bookRepository.findById(id);
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             log.error("Error with finding book by id {}, {}", id, ex.getCause());
             throw new DbException("Error with finding book by id" + id, ex);
         }
@@ -72,7 +72,7 @@ public class BookServiceImpl implements BookService {
     public List<Book> getByAuthor(Author author) {
         try {
             return bookRepository.findByAuthor(author.getName(), author.getSurname());
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             log.error("Error with finding book by author {} {}, {}", author.getName(), author.getSurname(), ex.getCause());
             throw new DbException("Error with finding book by author" + author.getName() + " " + author.getSurname(), ex);
         }
@@ -83,7 +83,7 @@ public class BookServiceImpl implements BookService {
     public List<Book> getByGenre(Genre genre) {
         try {
             return bookRepository.findByGenre(genre.getType());
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             log.error("Error with finding book by genre {}, {}" + genre.getType(), ex.getCause());
             throw new DbException("Error with finding book by genre" + genre.getType(), ex);
         }
@@ -94,7 +94,7 @@ public class BookServiceImpl implements BookService {
     public Optional<Book> getByTitleAndAuthor(Book book) {
         try {
             return bookRepository.findByTitleAndAuthor(book.getTitle(), book.getAuthor().getName(), book.getAuthor().getSurname());
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             log.error("Error with finding book by by author and title {}, {}" + book.getTitle(), ex.getCause());
             throw new DbException("Error with finding book by author and title" + book.getTitle(), ex);
         }

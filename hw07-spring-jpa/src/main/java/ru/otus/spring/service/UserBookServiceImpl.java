@@ -1,5 +1,4 @@
 package ru.otus.spring.service;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +13,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class UserBookServiceImpl implements UserBookService {
 
     private final AuthorService authorService;
@@ -29,6 +27,7 @@ public class UserBookServiceImpl implements UserBookService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Book addBookByUser() {
         ioService.outputMessage("Введите название книги");
         var book = new Book(ioService.inputMessage());
@@ -54,6 +53,7 @@ public class UserBookServiceImpl implements UserBookService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Comment addCommentByUser() {
         ioService.outputMessage("введите id книги, которую хотите прокомментировать: ");
         long id = Long.parseLong(ioService.inputMessage());
@@ -67,6 +67,7 @@ public class UserBookServiceImpl implements UserBookService {
     }
 
     @Override
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     public String printBooksWithComments() {
         ioService.outputMessage("введите id книги, по которой вы хотите посмотреть комментарии: ");
         long id = Long.parseLong(ioService.inputMessage());

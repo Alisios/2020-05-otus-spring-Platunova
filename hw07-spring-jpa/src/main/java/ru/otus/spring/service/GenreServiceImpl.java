@@ -22,7 +22,7 @@ public class GenreServiceImpl implements GenreService {
         try {
             Optional<Genre> g = genreRepository.findByType(genre.getType());
             return g.orElseGet(() -> genreRepository.save(genre));
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             throw new DbException("Error with saving genre " + genre.toString(), ex);
         }
     }
@@ -32,7 +32,7 @@ public class GenreServiceImpl implements GenreService {
     public void deleteById(long id) {
         try {
             genreRepository.deleteById(id);
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             throw new DbException("Error with deleting genre with id " + id, ex);
         }
     }
@@ -42,7 +42,7 @@ public class GenreServiceImpl implements GenreService {
     public List<Genre> getAll() {
         try {
             return genreRepository.findAll();
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             throw new DbException("Error with finding all genres", ex);
         }
     }
@@ -52,7 +52,7 @@ public class GenreServiceImpl implements GenreService {
     public Optional<Genre> getById(long id) {
         try {
             return genreRepository.findById(id);
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             throw new DbException("Error with finding genre by id " + id, ex);
         }
     }
@@ -62,7 +62,7 @@ public class GenreServiceImpl implements GenreService {
     public Optional<Genre> getByType(String type) {
         try {
             return genreRepository.findByType(type);
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             throw new DbException("Error with finding genre by type " + type, ex);
         }
     }

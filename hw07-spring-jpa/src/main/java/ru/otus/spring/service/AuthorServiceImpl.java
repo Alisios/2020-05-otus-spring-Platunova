@@ -22,7 +22,7 @@ public class AuthorServiceImpl implements AuthorService {
         try {
             Optional<Author> b = authorRepository.findByNameAndSurname(author.getName(), author.getSurname());
             return b.orElseGet(() -> authorRepository.save(author));
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             throw new DbException("Error with saving author " + author.toString(), ex);
         }
     }
@@ -32,7 +32,7 @@ public class AuthorServiceImpl implements AuthorService {
     public void deleteById(long id) {
         try {
             authorRepository.deleteById(id);
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             throw new DbException("Error with deleting author with id " + id, ex);
         }
     }
@@ -42,7 +42,7 @@ public class AuthorServiceImpl implements AuthorService {
     public List<Author> getAll() {
         try {
             return authorRepository.findAll();
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             throw new DbException("Error with finding all authors", ex);
         }
     }
@@ -52,7 +52,7 @@ public class AuthorServiceImpl implements AuthorService {
     public Optional<Author> getById(long id) {
         try {
             return authorRepository.findById(id);
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             throw new DbException("Error with finding author by id " + id, ex);
         }
     }
@@ -62,7 +62,7 @@ public class AuthorServiceImpl implements AuthorService {
     public Optional<Author> getByName(String name, String surname) {
         try {
             return authorRepository.findByNameAndSurname(name, surname);
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             throw new DbException("Error with finding author by name " + name + " " + surname, ex);
         }
     }

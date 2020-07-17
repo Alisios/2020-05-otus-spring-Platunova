@@ -22,7 +22,7 @@ public class CommentServiceImpl implements CommentService {
     public Comment save(Comment comment) {
         try {
             return commentRepository.save(comment);
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             throw new DbException("Error with inserting comment " + comment.toString(), ex);
         }
     }
@@ -33,7 +33,7 @@ public class CommentServiceImpl implements CommentService {
     public void deleteById(long id) {
         try {
             commentRepository.deleteById(id);
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             throw new DbException("Error with deleting comment  with id" + id, ex);
         }
     }
@@ -43,7 +43,7 @@ public class CommentServiceImpl implements CommentService {
     public void deleteByBookId(long id) {
         try {
             commentRepository.deleteByBookId(id);
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             throw new DbException("Error with deleting comment with book id" + id, ex);
         }
 
@@ -54,7 +54,7 @@ public class CommentServiceImpl implements CommentService {
     public List<Comment> getAll() {
         try {
             return commentRepository.findAll();
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             throw new DbException("Error with finding all comments", ex);
         }
     }
@@ -64,7 +64,7 @@ public class CommentServiceImpl implements CommentService {
     public List<Comment> findByText(String text) {
         try {
             return commentRepository.findByTextContainingIgnoreCase(text);
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             throw new DbException("Error with finding comment by text " + text, ex);
         }
 
@@ -75,7 +75,7 @@ public class CommentServiceImpl implements CommentService {
     public List<Comment> findByBook(Book book) {
         try {
             return commentRepository.findByBook(book.getTitle(), book.getAuthor().getName(), book.getAuthor().getSurname());
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             throw new DbException("Error with finding comment by book with title " + book.getTitle(), ex);
         }
     }
@@ -85,7 +85,7 @@ public class CommentServiceImpl implements CommentService {
     public List<Comment> findByBookId(long id) {
         try {
             return commentRepository.findByBookId(id);
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             throw new DbException("Error with finding comment by book with id " + id, ex);
         }
     }

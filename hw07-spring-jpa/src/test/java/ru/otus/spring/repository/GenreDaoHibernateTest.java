@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataAccessException;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.domain.Genre;
 
@@ -14,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Тесты проверяют, что репозиторий жанров:")
 @DataJpaTest
-@Transactional
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
 class GenreDaoHibernateTest {
 
     @Autowired
@@ -29,6 +31,7 @@ class GenreDaoHibernateTest {
 
     @Test
     @DisplayName("корректно удаляет жанр")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyDeleteById() {
         long count1 = genreDaoHibernate.count();
         Genre genre = genreDaoHibernate.findById(1L).get();
@@ -42,6 +45,7 @@ class GenreDaoHibernateTest {
 
     @Test
     @DisplayName("корректно находит жанр по id и не кидает исключение при отсуствии id")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyFindById() {
         Genre genre = new Genre("фэнтези");
         assertThat(genreDaoHibernate.findById(1L).get())
@@ -52,6 +56,7 @@ class GenreDaoHibernateTest {
 
     @Test
     @DisplayName("корректно находит жанр по типу и не кидает исключение при отсуствии типа")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyFindByType() {
         Genre genre = new Genre("фэнтези");
         assertThat(genreDaoHibernate.findByType(genre.getType())).get()

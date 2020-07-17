@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataAccessException;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.domain.Author;
 
@@ -15,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Тесты проверяют, что репозиторий авторов:")
 @DataJpaTest
-@Transactional
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
 class AuthorDaoHibernateTest {
 
     @Autowired
@@ -30,6 +32,7 @@ class AuthorDaoHibernateTest {
 
     @Test
     @DisplayName("корректно удаляет автора")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyDeleteById() {
         long count1 = authorDaoHibernate.count();
         val author = authorDaoHibernate.findById(1L).get();
@@ -41,6 +44,7 @@ class AuthorDaoHibernateTest {
 
     @Test
     @DisplayName("корректно находит автора по id и не кидает исключение при отсуствии id")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyFindById() {
         val author = new Author("Джоан", "Роулинг");
         assertThat(authorDaoHibernate.findById(1L).get())
@@ -52,6 +56,7 @@ class AuthorDaoHibernateTest {
 
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @DisplayName("корректно находит автора по имени и фамилии и не кидает исключение при отсуствии автора")
     void correctlyFindByFullName() {
         val author = new Author("Джоан", "Роулинг");
