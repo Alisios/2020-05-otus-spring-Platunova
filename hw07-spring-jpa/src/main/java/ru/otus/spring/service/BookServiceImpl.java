@@ -21,7 +21,7 @@ public class BookServiceImpl implements BookService {
     final private BookRepository bookRepository;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public Book save(Book book) {
         try {
             Optional<Book> b = bookRepository.findByTitleAndAuthor(book.getTitle(), book.getAuthor().getName(), book.getAuthor().getSurname());
@@ -34,7 +34,7 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void deleteById(long id) {
         try {
             bookRepository.deleteById(id);
@@ -46,7 +46,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(readOnly = true)
     public List<Book> getAll() {
         try {
             return bookRepository.findAll();
@@ -57,7 +57,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(readOnly = true)
     public Optional<Book> getById(long id) {
         try {
             return bookRepository.findById(id);
@@ -68,7 +68,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(readOnly = true)
     public List<Book> getByAuthor(Author author) {
         try {
             return bookRepository.findByAuthor(author.getName(), author.getSurname());
@@ -79,7 +79,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(readOnly = true)
     public List<Book> getByGenre(Genre genre) {
         try {
             return bookRepository.findByGenre(genre.getType());
@@ -90,7 +90,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(readOnly = true)
     public Optional<Book> getByTitleAndAuthor(Book book) {
         try {
             return bookRepository.findByTitleAndAuthor(book.getTitle(), book.getAuthor().getName(), book.getAuthor().getSurname());

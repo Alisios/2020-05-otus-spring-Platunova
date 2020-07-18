@@ -17,7 +17,7 @@ public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public Genre save(Genre genre) {
         try {
             Optional<Genre> g = genreRepository.findByType(genre.getType());
@@ -28,7 +28,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void deleteById(long id) {
         try {
             genreRepository.deleteById(id);
@@ -38,7 +38,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(readOnly = true)
     public List<Genre> getAll() {
         try {
             return genreRepository.findAll();
@@ -48,7 +48,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(readOnly = true)
     public Optional<Genre> getById(long id) {
         try {
             return genreRepository.findById(id);
@@ -58,7 +58,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(readOnly = true)
     public Optional<Genre> getByType(String type) {
         try {
             return genreRepository.findByType(type);

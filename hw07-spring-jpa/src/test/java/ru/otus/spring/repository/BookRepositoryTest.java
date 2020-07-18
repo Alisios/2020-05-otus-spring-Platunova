@@ -23,10 +23,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Тесты проверяют, что репозиторий книги:")
 @DataJpaTest
 @Transactional//(propagation = Propagation.NOT_SUPPORTED)
-class BookDaoHibernateTest {
+class BookRepositoryTest {
 
     @Autowired
-    private BookRepository bookDaoHibernate;
+    private BookRepository bookRepository;
 
     @Autowired
     private TestEntityManager em;
@@ -40,7 +40,7 @@ class BookDaoHibernateTest {
         em.persistAndFlush(author);
         book.setGenre(em.find(Genre.class, 3L));
         book.setAuthor(author);
-        assertThat(bookDaoHibernate.save(book))
+        assertThat(bookRepository.save(book))
                 .isNotNull()
                 .hasFieldOrProperty("id")
                 .hasFieldOrPropertyWithValue("title", book.getTitle())
@@ -58,11 +58,11 @@ class BookDaoHibernateTest {
         em.persistAndFlush(author);
         book.setGenre(em.find(Genre.class, 3L));
         book.setAuthor(author);
-        Book bookNew = bookDaoHibernate.save(book);
+        Book bookNew = bookRepository.save(book);
         em.detach(bookNew);
         bookNew.setTitle("Вино из топора");
-        bookDaoHibernate.save(bookNew);
-        assertThat(bookDaoHibernate.findById(bookNew.getId()).get())
+        bookRepository.save(bookNew);
+        assertThat(bookRepository.findById(bookNew.getId()).get())
                 .isNotNull()
                 .hasFieldOrProperty("id")
                 .hasFieldOrPropertyWithValue("title", bookNew.getTitle())
@@ -73,20 +73,20 @@ class BookDaoHibernateTest {
     @Test
     @DisplayName("кидает исключение при нулевй книге")
     void correctlyThrowExceptions() {
-        assertThrows(DataAccessException.class, () -> bookDaoHibernate.save(null));
-        assertThrows(DataAccessException.class, () -> bookDaoHibernate.save(null));
+        assertThrows(DataAccessException.class, () -> bookRepository.save(null));
+        assertThrows(DataAccessException.class, () -> bookRepository.save(null));
     }
 
     @Test
     @DisplayName("корректно удаляет книгу")
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyDeleteBookById() {
-        long count1 = bookDaoHibernate.count();
-        Book book = bookDaoHibernate.findById(1L).get();
-        bookDaoHibernate.deleteById(1L);
-        assertThat(bookDaoHibernate.count()).isEqualTo(count1 - 1);
-        assertThat(bookDaoHibernate.findAll()).doesNotContain(book);
-        assertThrows(DataAccessException.class, () -> bookDaoHibernate.deleteById(321L));
+        long count1 = bookRepository.count();
+        Book book = bookRepository.findById(1L).get();
+        bookRepository.deleteById(1L);
+        assertThat(bookRepository.count()).isEqualTo(count1 - 1);
+        assertThat(bookRepository.findAll()).doesNotContain(book);
+        assertThrows(DataAccessException.class, () -> bookRepository.deleteById(321L));
     }
 
     @DisplayName("загружает список всех книг с полной информацией о них (без комментариев)")
@@ -96,7 +96,7 @@ class BookDaoHibernateTest {
         SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
                 .unwrap(SessionFactory.class);
         sessionFactory.getStatistics().setStatisticsEnabled(true);
-        val books = bookDaoHibernate.findAll();
+        val books = bookRepository.findAll();
         assertThat(books).isNotNull().hasSize(4)
                 .allMatch(s -> !s.getTitle().equals(""))
                 .allMatch(s -> s.getAuthor() != null)
@@ -111,7 +111,7 @@ class BookDaoHibernateTest {
         SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
                 .unwrap(SessionFactory.class);
         sessionFactory.getStatistics().setStatisticsEnabled(true);
-        val books = bookDaoHibernate.findAll();
+        val books = bookRepository.findAll();
         assertThat(books).isNotNull().hasSize(4)
                 .allMatch(s -> !s.getTitle().equals(""))
                 .allMatch(s -> s.getAuthor() != null)
@@ -128,14 +128,14 @@ class BookDaoHibernateTest {
         Author author = new Author(1, "Джоан", "Роулинг");
         book.setGenre(genre);
         book.setAuthor(author);
-        Book bookn = bookDaoHibernate.findById(1L).get();
+        Book bookn = bookRepository.findById(1L).get();
         assertThat(bookn)
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("title", book.getTitle())
                 .hasFieldOrProperty("author");
         assertThat(bookn.getAuthor().getName()).isEqualTo(book.getAuthor().getName());
         assertThat(bookn.getGenre().getType()).isEqualTo(book.getGenre().getType());
-        assertDoesNotThrow(() -> assertThat(bookDaoHibernate.findById(312)).isEmpty());
+        assertDoesNotThrow(() -> assertThat(bookRepository.findById(312)).isEmpty());
     }
 
     @Test
@@ -146,7 +146,7 @@ class BookDaoHibernateTest {
         Author author = new Author(1, "Джоан", "Роулинг");
         book.setGenre(genre);
         book.setAuthor(author);
-        Book bookn = bookDaoHibernate.findByTitleAndAuthor(book.getTitle(), book.getAuthor().getName(), book.getAuthor().getSurname()).get();
+        Book bookn = bookRepository.findByTitleAndAuthor(book.getTitle(), book.getAuthor().getName(), book.getAuthor().getSurname()).get();
         assertThat(bookn)
                 .isNotNull()
                 .hasFieldOrProperty("id")
@@ -164,28 +164,28 @@ class BookDaoHibernateTest {
     @Test
     @DisplayName("не находит книгу по автору и названию при несовпадении автора")
     void doesNotFindBookByTitleAndAuthorWithWrongAuthor() {
-        assertThat(bookDaoHibernate.findByTitleAndAuthor("Гарри Поттер и Философский камень", "Харуки", "Мураками")).isEmpty();
+        assertThat(bookRepository.findByTitleAndAuthor("Гарри Поттер и Философский камень", "Харуки", "Мураками")).isEmpty();
     }
 
     @Test
     @DisplayName("не находит книгу по автору и названию при несовпадении наименования")
     void doesNotFindBookByTitleAndAuthorWithWrongTitle() {
-        assertThat(bookDaoHibernate.findByTitleAndAuthor("Гарри Поттер и Дары смерти", "Джоан", "Роулинг")).isEmpty();
+        assertThat(bookRepository.findByTitleAndAuthor("Гарри Поттер и Дары смерти", "Джоан", "Роулинг")).isEmpty();
     }
 
     @Test
     @DisplayName("корректно находит книги по жанру")
     void correctlyFindBookByGenre() {
-        List<Book> booksByG = bookDaoHibernate.findByGenre("фэнтези");
-        assertThat(booksByG).isNotEmpty().contains(bookDaoHibernate.findById(1L).get());
-        assertThat(bookDaoHibernate.findByGenre("журнал").isEmpty());
+        List<Book> booksByG = bookRepository.findByGenre("фэнтези");
+        assertThat(booksByG).isNotEmpty().contains(bookRepository.findById(1L).get());
+        assertThat(bookRepository.findByGenre("журнал").isEmpty());
     }
 
     @Test
     @DisplayName("корректно находит книги по автору")
     void correctlyFindBookByAuthor() {
-        assertThat(bookDaoHibernate.findByAuthor("Стивен", "Кинг")).isNotEmpty();
-        assertThat(bookDaoHibernate.findByAuthor("Алексей", "Пехов").isEmpty());
+        assertThat(bookRepository.findByAuthor("Стивен", "Кинг")).isNotEmpty();
+        assertThat(bookRepository.findByAuthor("Алексей", "Пехов").isEmpty());
     }
 
     @DisplayName("находит книгу по автору за один селект")
@@ -195,7 +195,7 @@ class BookDaoHibernateTest {
         SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
                 .unwrap(SessionFactory.class);
         sessionFactory.getStatistics().setStatisticsEnabled(true);
-        bookDaoHibernate.findByAuthor("Стивен", "Кинг");
+        bookRepository.findByAuthor("Стивен", "Кинг");
         assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(1);
     }
 
@@ -206,7 +206,7 @@ class BookDaoHibernateTest {
         SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
                 .unwrap(SessionFactory.class);
         sessionFactory.getStatistics().setStatisticsEnabled(true);
-        bookDaoHibernate.findByGenre("фэнтези");
+        bookRepository.findByGenre("фэнтези");
         assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(1);
     }
 
@@ -217,7 +217,7 @@ class BookDaoHibernateTest {
         SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
                 .unwrap(SessionFactory.class);
         sessionFactory.getStatistics().setStatisticsEnabled(true);
-        bookDaoHibernate.findByTitleAndAuthor("Гарри Поттер и Философский камень", "Харуки", "Мураками");
+        bookRepository.findByTitleAndAuthor("Гарри Поттер и Философский камень", "Харуки", "Мураками");
         assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(1);
     }
 

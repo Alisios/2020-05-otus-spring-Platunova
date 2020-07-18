@@ -17,7 +17,7 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public Author save(Author author) {
         try {
             Optional<Author> b = authorRepository.findByNameAndSurname(author.getName(), author.getSurname());
@@ -28,7 +28,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void deleteById(long id) {
         try {
             authorRepository.deleteById(id);
@@ -38,7 +38,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(readOnly = true)
     public List<Author> getAll() {
         try {
             return authorRepository.findAll();
@@ -48,7 +48,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(readOnly = true)
     public Optional<Author> getById(long id) {
         try {
             return authorRepository.findById(id);
@@ -58,7 +58,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(readOnly = true)
     public Optional<Author> getByName(String name, String surname) {
         try {
             return authorRepository.findByNameAndSurname(name, surname);

@@ -18,7 +18,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public Comment save(Comment comment) {
         try {
             return commentRepository.save(comment);
@@ -29,7 +29,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void deleteById(long id) {
         try {
             commentRepository.deleteById(id);
@@ -39,7 +39,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void deleteByBookId(long id) {
         try {
             commentRepository.deleteByBookId(id);
@@ -50,7 +50,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(readOnly = true)
     public List<Comment> getAll() {
         try {
             return commentRepository.findAll();
@@ -60,7 +60,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(readOnly = true)
     public List<Comment> findByText(String text) {
         try {
             return commentRepository.findByTextContainingIgnoreCase(text);
@@ -71,7 +71,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(readOnly = true)
     public List<Comment> findByBook(Book book) {
         try {
             return commentRepository.findByBook(book.getTitle(), book.getAuthor().getName(), book.getAuthor().getSurname());
@@ -81,7 +81,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(readOnly = true)
     public List<Comment> findByBookId(long id) {
         try {
             return commentRepository.findByBookId(id);
