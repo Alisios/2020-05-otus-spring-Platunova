@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
-@Transactional
 public class CommentDaoHibernate implements CommentDao {
 
     @PersistenceContext

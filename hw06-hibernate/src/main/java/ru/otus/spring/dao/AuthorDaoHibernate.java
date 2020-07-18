@@ -15,7 +15,6 @@ import java.util.Optional;
 @Repository
 @Slf4j
 @RequiredArgsConstructor
-
 public class AuthorDaoHibernate implements AuthorDao {
 
     @PersistenceContext
