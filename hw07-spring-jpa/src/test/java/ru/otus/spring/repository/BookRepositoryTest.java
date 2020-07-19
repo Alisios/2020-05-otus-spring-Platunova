@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Тесты проверяют, что репозиторий книги:")
 @DataJpaTest
-@Transactional//(propagation = Propagation.NOT_SUPPORTED)
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
 class BookRepositoryTest {
 
     @Autowired
