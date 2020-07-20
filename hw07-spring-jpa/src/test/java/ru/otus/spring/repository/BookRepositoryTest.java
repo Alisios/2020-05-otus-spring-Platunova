@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
@@ -22,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Тесты проверяют, что репозиторий книги:")
 @DataJpaTest
-@Transactional//(propagation = Propagation.NOT_SUPPORTED)
+@Transactional
 class BookRepositoryTest {
 
     @Autowired
@@ -175,6 +174,7 @@ class BookRepositoryTest {
 
     @Test
     @DisplayName("корректно находит книги по жанру")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyFindBookByGenre() {
         List<Book> booksByG = bookRepository.findByGenre("фэнтези");
         assertThat(booksByG).isNotEmpty().contains(bookRepository.findById(1L).get());

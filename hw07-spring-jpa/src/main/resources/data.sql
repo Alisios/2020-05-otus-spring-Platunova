@@ -12,5 +12,7 @@ insert into Books(title, author_id, genre_id) values ('Шерлок Холмс',
 insert into Genres (type) values ('ужасы')
 insert into Authors (name, surname) values ('Стивен', 'Кинг')
 insert into Books(title, author_id, genre_id) values ('Темная Башня', 3, 3)
+insert into Comments(text, book_id) values ('не плохая', 2)
+insert into Comments(text, book_id) values ('вообще огонь', 2)
 
 

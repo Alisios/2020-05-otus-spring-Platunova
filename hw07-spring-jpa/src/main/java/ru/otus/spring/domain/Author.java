@@ -2,6 +2,7 @@ package ru.otus.spring.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Table(name = "authors")
+@EqualsAndHashCode(of = "id")
 public class Author {
 
     @Id
@@ -50,18 +52,4 @@ public class Author {
                 ")";
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Author author = (Author) o;
-        return Objects.equals(name, author.name) &&
-                Objects.equals(surname, author.surname)
-                && Objects.equals(listOfBook, author.listOfBook);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, surname, listOfBook);
-    }
 }

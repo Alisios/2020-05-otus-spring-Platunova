@@ -2,6 +2,7 @@ package ru.otus.spring.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.util.Objects;
 @Table(name = "comments")
 @NamedEntityGraph(name = "book-comment-entity-graph",
         attributeNodes = {@NamedAttributeNode("book")})
+@EqualsAndHashCode(of = "id")
 public class Comment {
 
     @Id
@@ -36,20 +38,6 @@ public class Comment {
     public Comment(long id, String text) {
         this.id = id;
         this.text = text;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Comment comment = (Comment) o;
-        return Objects.equals(text, comment.text) &&
-                Objects.equals(book, comment.book);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(text, book);
     }
 
     @Override

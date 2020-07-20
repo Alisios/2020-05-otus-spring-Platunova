@@ -2,6 +2,7 @@ package ru.otus.spring.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -18,6 +19,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @NamedEntityGraph(name = "book-author-genre-entity-graph",
         attributeNodes = {@NamedAttributeNode("author"), @NamedAttributeNode("genre")})
+@EqualsAndHashCode(of = "id")
 public class Book {
 
     @Id
@@ -75,21 +77,5 @@ public class Book {
                 + title +
                 "\", Автор: " + author +
                 ", Жанр: " + genre;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Book book = (Book) o;
-        return Objects.equals(title, book.title) &&
-                Objects.equals(author, book.author) &&
-                Objects.equals(genre, book.genre);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(title, author, genre);
     }
 }

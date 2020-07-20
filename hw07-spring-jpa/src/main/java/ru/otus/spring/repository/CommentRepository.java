@@ -14,6 +14,8 @@ public interface CommentRepository extends CrudRepository<Comment, Long> {
 
     void deleteById(long id);
 
+
+    @EntityGraph(value = "book-comment-entity-graph")
     void deleteByBookId(long id);
 
     @EntityGraph(value = "book-comment-entity-graph")

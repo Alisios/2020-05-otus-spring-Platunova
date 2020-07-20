@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Comment;
@@ -21,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Тесты проверяют, что репозиторий жанров:")
 @DataJpaTest
-@Transactional//(propagation = Propagation.NOT_SUPPORTED)
+@Transactional
 class CommentRepositoryTest {
 
     @Autowired
@@ -33,7 +32,6 @@ class CommentRepositoryTest {
     @Test
     @DisplayName("кидает исключение при нулевом комментарии")
     void correctlyThrowExceptions() {
-        assertThrows(DataAccessException.class, () -> commentRepository.save(null));
         assertThrows(DataAccessException.class, () -> commentRepository.save(null));
     }
 
@@ -47,7 +45,9 @@ class CommentRepositoryTest {
         commentRepository.deleteById(1L);
         assertThat(commentRepository.count()).isEqualTo(count1 - 1);
         assertThat(commentRepository.findAll()).doesNotContain(comment);
-        assertThrows(DataAccessException.class, () -> { commentRepository.deleteById(321L);});
+        assertThrows(DataAccessException.class, () -> {
+            commentRepository.deleteById(321L);
+        });
     }
 
     @Test
@@ -123,7 +123,7 @@ class CommentRepositoryTest {
                 .isNotNull()
                 .contains(comm)
                 .size().isEqualTo(4);
-        assertThat(commentRepository.findByBook("Страж","Алексей", "Пехов")).isEmpty();
+        assertThat(commentRepository.findByBook("Страж", "Алексей", "Пехов")).isEmpty();
     }
 
     @DisplayName("находит комментарий по книге за 1 селект")

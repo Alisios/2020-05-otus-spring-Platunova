@@ -95,7 +95,7 @@ public class ShellCommandsComments {
         try {
             ioService.outputMessage("Введите id комментария для удаления");
             long id = Integer.parseInt(ioService.inputMessage());
-            commentService.deleteById(id);
+            commentService.deleteByBookId(id);
             ioService.outputMessage("Комментарий c id " + id + " удален");
         } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
