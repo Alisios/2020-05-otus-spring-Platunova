@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
@@ -22,19 +21,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Тесты проверяют, что репозиторий жанров:")
 @DataJpaTest
-@Import(CommentDaoHibernate.class)
+@Import(CommentDaoJpa.class)
 @Transactional
-class CommentDaoHibernateTest {
+class CommentDaoJpaTest {
 
     @Autowired
-    private CommentDaoHibernate commentDaoHibernate;
+    private CommentDaoJpa commentDaoHibernate;
 
     @Autowired
     private TestEntityManager em;
 
     @Test
     @DisplayName("корректно создает новый комментарий")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyInsertComment() {
         Book book = em.find(Book.class, 1L);
         Comment comment = new Comment(book, "супер!");
@@ -48,7 +46,6 @@ class CommentDaoHibernateTest {
 
     @Test
     @DisplayName("корректно вставляет тот же самый комментарий")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyInsertTheSameComment() {
         Book book = em.find(Book.class, 1L);
         Comment comment = new Comment(book, "супер!");
@@ -62,7 +59,6 @@ class CommentDaoHibernateTest {
 
     @Test
     @DisplayName("корректно обновляет комментарий")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyUpdateComment() {
         Book book = em.find(Book.class, 1L);
         Comment comment = new Comment(book, "супер!");
@@ -86,7 +82,6 @@ class CommentDaoHibernateTest {
 
     @Test
     @DisplayName("корректно удаляет комментарий по id")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyDeleteCommentById() {
         long count1 = commentDaoHibernate.count();
         Comment comment = commentDaoHibernate.findById(1L).get();
@@ -149,6 +144,7 @@ class CommentDaoHibernateTest {
 
     @Test
     @DisplayName("находит комментарий по содержанию и не кидает исключение при отсуствии")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void findCommentByText() {
         Comment comm = em.find(Comment.class, 1L);
         assertThat(commentDaoHibernate.findByText("Классная"))
@@ -159,6 +155,7 @@ class CommentDaoHibernateTest {
 
     @Test
     @DisplayName("находит комментарий по книге и не кидает исключение при отсуствии")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void findCommentByBook() {
         Book book = em.find(Book.class, 1L);
         Comment comm = em.find(Comment.class, 1L);
@@ -182,6 +179,7 @@ class CommentDaoHibernateTest {
 
     @Test
     @DisplayName("находит комментарий по id книги и не кидает исключение при отсуствии")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void findCommentByBookId() {
         Comment comm = em.find(Comment.class, 1L);
         assertThat(commentDaoHibernate.findByBookId(1L))

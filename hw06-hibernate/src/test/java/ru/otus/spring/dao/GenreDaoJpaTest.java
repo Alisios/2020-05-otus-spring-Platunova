@@ -17,14 +17,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Тесты проверяют, что репозиторий жанров:")
 @DataJpaTest
-@Import(GenreDaoHibernate.class)
+@Import(GenreDaoJpa.class)
 @Transactional
-class GenreDaoHibernateTest {
+class GenreDaoJpaTest {
 
     final static int INITIAL_NUMBER = 3;
 
     @Autowired
-    private GenreDaoHibernate genreDaoHibernate;
+    private GenreDaoJpa genreDaoHibernate;
 
     @Autowired
     private TestEntityManager em;

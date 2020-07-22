@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
-import ru.otus.spring.dao.DaoException;
+import ru.otus.spring.dao.DbException;
 import ru.otus.spring.service.*;
 
 @ShellComponent
@@ -24,7 +24,7 @@ public class ShellCommandsAuthor {
         try {
             userBookService.addAuthorByUser();
             ioService.outputMessage("автор добавлен");
-        } catch (DaoException ex) {
+        } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при создании автора");
         }
@@ -34,7 +34,7 @@ public class ShellCommandsAuthor {
     public void showAllAuthors() {
         try {
             authorService.getAll().forEach((book) -> ioService.outputMessage(book.toString()));
-        } catch (DaoException ex) {
+        } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при выводе автора");
         }
@@ -46,7 +46,7 @@ public class ShellCommandsAuthor {
             ioService.outputMessage("Введите id автора");
             long id = Integer.parseInt(ioService.inputMessage());
             authorService.getById(id).ifPresent((book) -> ioService.outputMessage(book.toString()));
-        } catch (DaoException ex) {
+        } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при поиске автора с id ");
         } catch (RuntimeException ex) {
@@ -62,7 +62,7 @@ public class ShellCommandsAuthor {
             long id = Integer.parseInt(ioService.inputMessage());
             authorService.deleteById(id);
             ioService.outputMessage("автор c id " + id + " удалена");
-        } catch (DaoException ex) {
+        } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при удалении автора");
         } catch (RuntimeException ex) {

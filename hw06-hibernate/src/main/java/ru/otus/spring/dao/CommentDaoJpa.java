@@ -2,7 +2,6 @@ package ru.otus.spring.dao;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Comment;
 
@@ -12,15 +11,16 @@ import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
-public class CommentDaoHibernate implements CommentDao {
+public class CommentDaoJpa implements CommentDao {
 
     @PersistenceContext
     final private EntityManager em;
 
     @Override
     public Comment insert(Comment comment) {
-        if (comment.getId() <= 0) {
+        if (comment.getId() == 0) {
             em.persist(comment);
+            em.flush();
             return comment;
         } else {
             return em.merge(comment);

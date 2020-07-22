@@ -1,7 +1,7 @@
 package ru.otus.spring.service;
 
 import lombok.val;
-import ru.otus.spring.dao.DaoException;
+import ru.otus.spring.dao.DbException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +69,7 @@ class DbServiceBookImplTest {
         val book = new Book(1L, "Норвежский Лес", author, null);
         doThrow(RuntimeException.class)
                 .when(bookDao).findByTitleAndAuthor(any());
-        Throwable thrown = assertThrows(DaoException.class, () -> bookService.create(book));
+        Throwable thrown = assertThrows(DbException.class, () -> bookService.create(book));
         assertThat(thrown).hasMessageContaining("Error with inserting book").hasMessageContaining("Норвежский Лес");
     }
 }

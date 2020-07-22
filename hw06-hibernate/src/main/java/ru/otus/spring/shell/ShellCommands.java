@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
-import ru.otus.spring.dao.DaoException;
+import ru.otus.spring.dao.DbException;
 import ru.otus.spring.service.BookService;
 import ru.otus.spring.service.IOService;
 import ru.otus.spring.service.UserBookService;
@@ -26,7 +26,7 @@ public class ShellCommands {
         try {
             userBookService.addBookByUser();
             ioService.outputMessage("Книга добавлена");
-        } catch (DaoException ex) {
+        } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при создании книги");
         }
@@ -36,7 +36,7 @@ public class ShellCommands {
     public void showAllBooks() {
         try {
             bookService.getAll().forEach((book) -> ioService.outputMessage(book.toString()));
-        } catch (DaoException ex) {
+        } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при выводе книг");
         }
@@ -46,7 +46,7 @@ public class ShellCommands {
     public void showAllBooksWithComments() {
         try {
             ioService.outputMessage(userBookService.printBooksWithComments());
-        } catch (DaoException ex) {
+        } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при выводе книг c комментариями");
         }
@@ -58,7 +58,7 @@ public class ShellCommands {
             ioService.outputMessage("Введите id книги");
             long id = Integer.parseInt(ioService.inputMessage());
             bookService.getById(id).ifPresent((book) -> ioService.outputMessage(book.toString()));
-        } catch (DaoException ex) {
+        } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при поиске книги с id ");
         } catch (RuntimeException ex) {
@@ -74,7 +74,7 @@ public class ShellCommands {
             long id = Integer.parseInt(ioService.inputMessage());
             bookService.deleteById(id);
             ioService.outputMessage("Книга c id " + id + " удалена");
-        } catch (DaoException ex) {
+        } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при удалении книги");
         } catch (RuntimeException ex) {

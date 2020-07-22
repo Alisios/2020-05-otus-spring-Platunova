@@ -21,12 +21,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Тесты проверяют, что репозиторий книги:")
 @DataJpaTest
-@Import(BookDaoHibernate.class)
+@Import(BookDaoJpa.class)
 @Transactional
-class BookDaoHibernateTest {
+class BookDaoJpaTest {
 
     @Autowired
-    private BookDaoHibernate bookDaoHibernate;
+    private BookDaoJpa bookDaoHibernate;
 
     @Autowired
     private TestEntityManager em;

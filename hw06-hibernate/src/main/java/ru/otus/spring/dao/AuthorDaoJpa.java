@@ -15,15 +15,16 @@ import java.util.Optional;
 @Repository
 @Slf4j
 @RequiredArgsConstructor
-public class AuthorDaoHibernate implements AuthorDao {
+public class AuthorDaoJpa implements AuthorDao {
 
     @PersistenceContext
     final private EntityManager em;
 
     @Override
     public Author insert(Author author) {
-        if (author.getId() <= 0) {
+        if (author.getId() == 0) {
             em.persist(author);
+            em.flush();
             return author;
         } else {
             return em.merge(author);
@@ -72,7 +73,6 @@ public class AuthorDaoHibernate implements AuthorDao {
         TypedQuery<Author> query = em.createQuery("select a from Author a where a.name = :name and a.surname = :surname", Author.class);
         query.setParameter("name", name);
         query.setParameter("surname", surname);
-        List<Author> listQ = query.getResultList();
-        return listQ.size() == 0 ? Optional.empty() : Optional.of(listQ.get(0));
+        return query.getResultList().stream().findFirst();
     }
 }

@@ -4,7 +4,6 @@ import lombok.val;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
@@ -16,24 +15,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@AutoConfigureTestDatabase
 @DisplayName("Тесты проверяют, что репозиторий авторов:")
 @DataJpaTest
-@Import(AuthorDaoHibernate.class)
+@Import(AuthorDaoJpa.class)
 @Transactional
-class AuthorDaoHibernateTest {
+class AuthorDaoJpaTest {
 
     final static int INITIAL_NUMBER = 3;
 
     @Autowired
-    private AuthorDaoHibernate authorDaoHibernate;
+    private AuthorDaoJpa authorDaoHibernate;
 
     @Autowired
     private TestEntityManager em;
 
     @Test
     @DisplayName("корректно создает нового автора")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyInsertNewAuthor() {
         val author = new Author("Рэй", "Брэдбери");
         assertThat(authorDaoHibernate.insert(author))
@@ -45,7 +42,6 @@ class AuthorDaoHibernateTest {
 
     @Test
     @DisplayName("корректно вставляет того же самого автора")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyInsertTheSameAuthor() {
         val author = new Author("Рэй", "Брэдбери");
         long count1 = authorDaoHibernate.count();
@@ -55,7 +51,6 @@ class AuthorDaoHibernateTest {
 
     @Test
     @DisplayName("корректно обновляет автора")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyUpdateAuthor() {
         val author = new Author("Рэй", "Брэдбери");
         val authorNew = authorDaoHibernate.insert(author);
@@ -78,7 +73,6 @@ class AuthorDaoHibernateTest {
 
     @Test
     @DisplayName("корректно удаляет автора")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyDeleteById() {
         long count1 = authorDaoHibernate.count();
         val author = authorDaoHibernate.findById(1L).get();
@@ -90,18 +84,21 @@ class AuthorDaoHibernateTest {
 
     @Test
     @DisplayName("корректно выдает всех авторов")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyFindingAllAuthors() {
         assertThat(authorDaoHibernate.findAll().size()).isNotNull().isEqualTo(INITIAL_NUMBER);
     }
 
     @Test
     @DisplayName("корректно считает всех авторов")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyCountAllAuthors() {
         assertThat(authorDaoHibernate.count()).isNotNull().isEqualTo(INITIAL_NUMBER);
     }
 
     @Test
     @DisplayName("корректно находит автора по id и не кидает исключение при отсуствии id")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyFindById() {
         val author = new Author("Джоан", "Роулинг");
         assertThat(authorDaoHibernate.findById(1L).get())
@@ -114,6 +111,7 @@ class AuthorDaoHibernateTest {
 
     @Test
     @DisplayName("корректно загружеает автора по id из БД")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyFindByIdFromDB() {
         val optionalActualAuthor = authorDaoHibernate.findById(1L);
         val expectedAuthor = em.find(Author.class, 1L);
@@ -123,6 +121,7 @@ class AuthorDaoHibernateTest {
 
     @Test
     @DisplayName("корректно находит автора по имени и фамилии и не кидает исключение при отсуствии автора")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     void correctlyFindByFullName() {
         val author = new Author("Джоан", "Роулинг");
         assertThat(authorDaoHibernate.findByFullName(author.getName(), author.getSurname())).get()

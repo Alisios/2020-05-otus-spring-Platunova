@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
-import ru.otus.spring.dao.DaoException;
+import ru.otus.spring.dao.DbException;
 import ru.otus.spring.service.*;
 
 @ShellComponent
@@ -24,7 +24,7 @@ public class ShellCommandsGenre {
         try {
             userBookService.addGenreByUser();
             ioService.outputMessage("Жанр добавлен");
-        } catch (DaoException ex) {
+        } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при создании жанра");
         }
@@ -34,7 +34,7 @@ public class ShellCommandsGenre {
     public void showAllGenres() {
         try {
             genreService.getAll().forEach((book) -> ioService.outputMessage(book.toString()));
-        } catch (DaoException ex) {
+        } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при выводе жанра");
         }
@@ -46,7 +46,7 @@ public class ShellCommandsGenre {
             ioService.outputMessage("Введите id жанра");
             long id = Integer.parseInt(ioService.inputMessage());
             genreService.getById(id).ifPresent((book) -> ioService.outputMessage(book.toString()));
-        } catch (DaoException ex) {
+        } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при поиске жанра с id ");
         } catch (RuntimeException ex) {
@@ -62,7 +62,7 @@ public class ShellCommandsGenre {
             long id = Integer.parseInt(ioService.inputMessage());
             genreService.deleteById(id);
             ioService.outputMessage("Жанр c id " + id + " удален");
-        } catch (DaoException ex) {
+        } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при удалении жанра");
         } catch (RuntimeException ex) {

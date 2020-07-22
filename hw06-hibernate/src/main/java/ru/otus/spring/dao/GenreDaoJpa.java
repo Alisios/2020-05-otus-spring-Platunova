@@ -15,15 +15,16 @@ import java.util.Optional;
 @Repository
 @AllArgsConstructor
 @Slf4j
-public class GenreDaoHibernate implements GenreDao {
+public class GenreDaoJpa implements GenreDao {
 
     @PersistenceContext
     final private EntityManager em;
 
     @Override
     public Genre insert(Genre genre) {
-        if (genre.getId() <= 0) {
+        if (genre.getId() == 0) {
             em.persist(genre);
+            em.flush();
             return genre;
         } else {
             return em.merge(genre);
@@ -69,7 +70,6 @@ public class GenreDaoHibernate implements GenreDao {
     public Optional<Genre> findByType(String type) {
         TypedQuery<Genre> query = em.createQuery("select g from Genre g where g.type = :type", Genre.class);
         query.setParameter("type", type);
-        List<Genre> listQ = query.getResultList();
-        return listQ.size() == 0 ? Optional.empty() : Optional.of(listQ.get(0));
+        return query.getResultList().stream().findFirst();
     }
 }

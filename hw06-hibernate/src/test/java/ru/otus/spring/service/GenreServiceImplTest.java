@@ -9,7 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.PermissionDeniedDataAccessException;
-import ru.otus.spring.dao.DaoException;
+import ru.otus.spring.dao.DbException;
 import ru.otus.spring.dao.GenreDao;
 import ru.otus.spring.domain.Genre;
 
@@ -61,7 +61,7 @@ class GenreServiceImplTest {
     void correctlyHandleDBException() {
         Genre genre = new Genre("Сказка");
         doThrow(PermissionDeniedDataAccessException.class).when(genreDao).update(genre);
-        Throwable thrown = assertThrows(DaoException.class, () -> {
+        Throwable thrown = assertThrows(DbException.class, () -> {
             genreService.save(genre);
         });
         assertThat(thrown).hasMessageContaining("Error with updating genre").hasMessageContaining("Сказка");
@@ -73,7 +73,7 @@ class GenreServiceImplTest {
         genreService.deleteById(1);
         verify(genreDao, times(1)).deleteById(1);
         doThrow(PermissionDeniedDataAccessException.class).when(genreDao).deleteById(1);
-        Throwable thrown = assertThrows(DaoException.class, () -> {
+        Throwable thrown = assertThrows(DbException.class, () -> {
             genreService.deleteById(1);
         });
         assertThat(thrown).hasMessageContaining("Error with deleting genre").hasMessageContaining("1");

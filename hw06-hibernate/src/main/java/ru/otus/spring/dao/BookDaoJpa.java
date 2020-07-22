@@ -12,16 +12,16 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class BookDaoHibernate implements BookDao {
+public class BookDaoJpa implements BookDao {
 
     @PersistenceContext
     final private EntityManager em;
 
     @Override
     public Book insert(Book book) {
-        if (book.getId() <= 0) {
+        if (book.getId() == 0) {
             em.persist(book);
-            //   em.flush();
+            em.flush();
             return book;
         } else {
             return em.merge(book);
@@ -64,8 +64,7 @@ public class BookDaoHibernate implements BookDao {
         TypedQuery<Book> query = em.createQuery("select b from Book b where b.id = :id", Book.class);//)// join fetch b.comments where b.id = :id", Book.class);
         query.setParameter("id", id);
         query.setHint("javax.persistence.fetchgraph", entityGraph);
-        List<Book> listQ = query.getResultList();
-        return listQ.size() == 0 ? Optional.empty() : Optional.of(listQ.get(0));
+        return query.getResultList().stream().findFirst();
     }
 
     @Override
@@ -95,8 +94,7 @@ public class BookDaoHibernate implements BookDao {
         query.setParameter("surname", book.getAuthor().getSurname());
         query.setParameter("title", book.getTitle());
         query.setHint("javax.persistence.fetchgraph", entityGraph);
-        List<Book> listQ = query.getResultList();
-        return listQ.size() == 0 ? Optional.empty() : Optional.of(listQ.get(0));
+        return query.getResultList().stream().findFirst();
     }
 
 }

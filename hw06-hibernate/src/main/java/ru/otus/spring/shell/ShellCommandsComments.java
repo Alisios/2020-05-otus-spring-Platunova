@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
-import ru.otus.spring.dao.DaoException;
+import ru.otus.spring.dao.DbException;
 import ru.otus.spring.service.*;
 
 @ShellComponent
@@ -24,7 +24,7 @@ public class ShellCommandsComments {
         try {
             userBookService.addCommentByUser();
             ioService.outputMessage("Комментарий добавлен");
-        } catch (DaoException ex) {
+        } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при создании комментария");
         }
@@ -34,7 +34,7 @@ public class ShellCommandsComments {
     public void showAllComments() {
         try {
             commentService.getAll().forEach((book) -> ioService.outputMessage(book.toString()));
-        } catch (DaoException ex) {
+        } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при выводе комментария");
         }
@@ -46,7 +46,7 @@ public class ShellCommandsComments {
             ioService.outputMessage("Введите id книги, на которую нужны комментарии");
             long id = Integer.parseInt(ioService.inputMessage());
             commentService.findByBookId(id).forEach((comment) -> ioService.outputMessage(comment.toStringWithoutBook()));
-        } catch (DaoException ex) {
+        } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при поиске комментария с id ");
         } catch (RuntimeException ex) {
@@ -60,7 +60,7 @@ public class ShellCommandsComments {
         try {
             ioService.outputMessage("Введите текст комментария");
             commentService.findByText(ioService.inputMessage()).forEach((comment) -> ioService.outputMessage(comment.toString()));
-        } catch (DaoException ex) {
+        } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при поиске комментария с id ");
         } catch (RuntimeException ex) {
@@ -76,7 +76,7 @@ public class ShellCommandsComments {
             long id = Integer.parseInt(ioService.inputMessage());
             commentService.deleteById(id);
             ioService.outputMessage("Комментарий c id " + id + " удален");
-        } catch (DaoException ex) {
+        } catch (DbException ex) {
             log.error(ex.getMessage(), ex.getCause());
             ioService.outputMessage("Ошибка при удалении комментария");
         } catch (RuntimeException ex) {
