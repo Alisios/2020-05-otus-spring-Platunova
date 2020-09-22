@@ -4,15 +4,8 @@ import lombok.val;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
@@ -24,14 +17,8 @@ import ru.otus.spring.service.BookServiceImpl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
-@DisplayName("Интеграционный тест проверяет:")
-@EnableJpaRepositories(basePackages = "ru.otus.spring.repository")
-@EntityScan("ru.otus.spring.domain")
-@AutoConfigureTestDatabase
-@AutoConfigureDataJpa
-@Transactional(propagation = Propagation.NOT_SUPPORTED)
-public class IntegrationBookServiceTest {
+@IntegrationTest
+class IntegrationBookServiceTest {
 
     @Configuration
     @Import({BookServiceImpl.class})
