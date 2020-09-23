@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <title>Мероприятия</title>
+    <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
+</head>
+<body>
+<div class="container">
+    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+    <div th:if="${not #lists.isEmpty(books)}">
+        <h2>Список книг</h2>
+        <table class="table table-striped">
+            <tr>
+                <th>Id</th>
+                <th>Название книги</th>
+                <th>Имя автора</th>
+                <th>Фамилия автора</th>
+                <th>Жанр книги</th>
+                <th>Посмотреть</th>
+                <th>Внести изменения</th>
+                <th>Удалить книгу</th>
+            </tr>
+
+            <tr th:each="book : ${books}">
+                <!--/*@thymesVar id="book" type="ru.otus.spring.domain.Book"*/-->
+                <td th:text="${book.id}"><a href="/book/${book.id}">Id</a></td>
+                <td th:text="${book.title}">Название книги</td>
+                <td th:text="${book.author.name}">Имя автора</td>
+                <td th:text="${book.author.surname}">Фамилия автора</td>
+                <td th:text="${book.genre.type}">Жанр книги</td>
+                <td><a th:href="${ '/book/' + book.id}">View</a></td>
+                <td><a th:href="${'/book/edit/' + book.id}">Edit</a></td>
+                <td><a th:href="${'/book/delete/' + book.id}">Delete</a></td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>
