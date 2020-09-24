@@ -16,6 +16,7 @@ import ru.otus.spring.repository.CommentRepository;
 import ru.otus.spring.service.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @IntegrationTestAnnotation
@@ -90,19 +91,19 @@ public class IntegrationUserServiceTest {
         assertThat(commentRepository.findAllByTextContainingIgnoreCase("Супер!")).isNotEmpty();
     }
 
-//    @Test
-//    @DisplayName("откатывает всю транзакцию если на какой-т остадии что-то идет не так")
-//    void rollbackWholeTransactionIfExceptionWasThrownInAnyStep() {
-//        long countA = authorRepository.count();
-//        long countB = bookRepository.count();
-//        Book book = new Book("Маленький Принц", new Author("Антуан","де Сант-Экзюпери"),new Genre("сказка"));
-//        when(ioService.inputMessage()).thenReturn(book.getTitle())
-//                .thenReturn(book.getAuthor().getName())
-//                .thenReturn(book.getAuthor().getSurname())
-//                .thenThrow(DbException.class);
-//        assertThrows(DbException.class, ()->userBookService.addBookByUser());
-//        assertThat(bookRepository.count()).isEqualTo(countB);
-//        assertThat(authorRepository.count()).isEqualTo(countA);
-//    }
+    @Test
+    @DisplayName("откатывает всю транзакцию если на какой-т остадии что-то идет не так")
+    void rollbackWholeTransactionIfExceptionWasThrownInAnyStep() {
+        long countA = authorRepository.count();
+        long countB = bookRepository.count();
+        Book book = new Book("Маленький Принц", new Author("Антуан","де Сант-Экзюпери"),new Genre("сказка"));
+        when(ioService.inputMessage()).thenReturn(book.getTitle())
+                .thenReturn(book.getAuthor().getName())
+                .thenReturn(book.getAuthor().getSurname())
+                .thenThrow(DbException.class);
+        assertThrows(DbException.class, ()->userBookService.addBookByUser());
+        assertThat(bookRepository.count()).isEqualTo(countB);
+        assertThat(authorRepository.count()).isEqualTo(countA);
+    }
 
 }

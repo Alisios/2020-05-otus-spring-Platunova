@@ -2,7 +2,9 @@ package ru.otus.spring;
 
 
 import org.junit.jupiter.api.DisplayName;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,5 +26,6 @@ import java.lang.annotation.Target;
 @ComponentScan({"ru.otus.spring.configs", "ru.otus.spring.changelog"})
 @EntityScan("ru.otus.spring.domain")
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
+@ImportAutoConfiguration(TransactionAutoConfiguration.class)
 public @interface IntegrationTestAnnotation {
 }

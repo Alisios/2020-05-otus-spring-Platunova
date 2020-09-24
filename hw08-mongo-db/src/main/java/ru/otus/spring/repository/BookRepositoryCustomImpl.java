@@ -21,7 +21,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
     private final MongoTemplate mongoTemplate;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void deleteBookByTitleAndAuthor(String title, String name, String surname) {
         Book book = mongoTemplate.findAndRemove(Query.query(Criteria.where("title").is(title)
                 .and("author.name").is(name)
@@ -40,7 +40,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void deleteBooksByAuthor(String name, String surname) {
         List<Book> books = mongoTemplate.findAllAndRemove(Query.query(Criteria.where("author.name").is(name).and("author.surname").is(surname)), Book.class);
         if (!books.isEmpty()) {

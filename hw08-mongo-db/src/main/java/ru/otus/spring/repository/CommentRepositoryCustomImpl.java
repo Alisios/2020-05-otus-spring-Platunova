@@ -13,7 +13,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
     private final MongoTemplate mongoTemplate;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void deleteAllByBook(String title, String name, String surname) {
         mongoTemplate.findAllAndRemove(Query.query(Criteria
                 .where("book.title").is(title)
