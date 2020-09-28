@@ -10,7 +10,7 @@ import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Comment;
 import ru.otus.spring.domain.Genre;
 import ru.otus.spring.repository.CommentRepository;
-import ru.otus.spring.repository.DbException;
+import ru.otus.spring.repository.ServiceException;
 import ru.otus.spring.service.CommentService;
 import ru.otus.spring.service.CommentServiceImpl;
 
@@ -61,7 +61,7 @@ public class IntegrationCommentServiceTest {
         long count = commentRepository.count();
         Book book = new Book("Цветы для Элжернона", null, null);
         assertThatThrownBy(() -> commentService.findByBook(book))
-                .isInstanceOf(DbException.class)
+                .isInstanceOf(ServiceException.class)
                 .hasMessageContaining("with finding comment by book with title");
         assertThat(commentRepository.count()).isEqualTo(count);
     }

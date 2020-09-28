@@ -6,7 +6,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import ru.otus.spring.repository.DbException;
+import ru.otus.spring.repository.ServiceException;
 
 @ControllerAdvice
 @Slf4j
@@ -29,8 +29,8 @@ public class CustomErrorHandler {
         return ResponseEntity.badRequest().body("Операция не выполнена. Объект с таким id не найден");
     }
 
-    @ExceptionHandler(DbException.class)
-    public ResponseEntity<String> handleDbException(DbException ex) {
+    @ExceptionHandler(ServiceException.class)
+    public ResponseEntity<String> handleDbException(ServiceException ex) {
         log.error("Ошибка при обработке в БД: {}, {}", ex.getCause(), ex.getMessage());
         return ResponseEntity.badRequest().body("Запрос не выполнен. Попробуйте повторить. Exception: " + ex.getCause() + ". " + ex.getMessage());
     }

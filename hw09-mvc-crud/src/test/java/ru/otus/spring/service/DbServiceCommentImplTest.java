@@ -12,7 +12,7 @@ import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Comment;
 import ru.otus.spring.repository.CommentRepository;
-import ru.otus.spring.repository.DbException;
+import ru.otus.spring.repository.ServiceException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -50,7 +50,7 @@ class DbServiceCommentImplTest {
     void correctlyHandleDBException() {
         doThrow(RuntimeException.class)
                 .when(commentRepository).findAll();
-        Throwable thrown = assertThrows(DbException.class, () -> {
+        Throwable thrown = assertThrows(ServiceException.class, () -> {
             commentService.getAll();
         });
         assertThat(thrown).hasMessageContaining("Error with finding all comment");

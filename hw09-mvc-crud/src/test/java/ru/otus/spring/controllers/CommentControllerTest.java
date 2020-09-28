@@ -10,7 +10,7 @@ import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Comment;
 import ru.otus.spring.domain.Genre;
-import ru.otus.spring.repository.DbException;
+import ru.otus.spring.repository.ServiceException;
 import ru.otus.spring.service.BookService;
 import ru.otus.spring.service.CommentService;
 
@@ -57,9 +57,9 @@ class CommentControllerTest {
 
     }
 
-    @DisplayName("перенаправление на нужную страницу после сохранения и удаления книги")
+    @DisplayName("перенаправление на нужную страницу после сохранения книги")
     @Test
-    public void redirectAfterSavingAndDeleting() throws Exception {
+    public void redirectAfterSaving() throws Exception {
         when(commentService.findByBookId(1)).thenReturn(List.of(comment));
         when(bookService.getById(1)).thenReturn(Optional.of(book));
         mockMvc.perform(post("/book/{bookId}/comment", 1)
@@ -70,7 +70,11 @@ class CommentControllerTest {
                 .flashAttr("book.author.surname", book.getAuthor().getSurname()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/book/1/comments"));
+    }
 
+    @DisplayName("перенаправление на нужную страницу после удаления книги")
+    @Test
+    public void redirectAfterDeleting() throws Exception {
         mockMvc.perform(get("/book/{bookId}/comment/delete/{id}", 1, 2)
                 .param("bookId", "1")
                 .param("id", "2"))
@@ -92,7 +96,7 @@ class CommentControllerTest {
                 .andExpect(status().isBadRequest());
 
         when(bookService.getById(1)).thenReturn(Optional.of(book));
-        when(commentService.save(any())).thenThrow(DbException.class);
+        when(commentService.save(any())).thenThrow(ServiceException.class);
         mockMvc.perform(post("/book/{id}/comment", 1))
                 .andExpect(status().isBadRequest());
     }

@@ -12,7 +12,7 @@ import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
 import ru.otus.spring.repository.BookRepository;
-import ru.otus.spring.repository.DbException;
+import ru.otus.spring.repository.ServiceException;
 
 import java.util.Optional;
 
@@ -67,7 +67,7 @@ class DbServiceBookImplTest {
         val book = new Book(1L, "Норвежский Лес", author, null);
         doThrow(RuntimeException.class)
                 .when(bookRepository).findByTitleAndAuthor(anyString(), anyString(), anyString());
-        Throwable thrown = assertThrows(DbException.class, () -> bookService.save(book));
+        Throwable thrown = assertThrows(ServiceException.class, () -> bookService.save(book));
         assertThat(thrown).hasMessageContaining("Error with saving book").hasMessageContaining("Норвежский Лес");
     }
 

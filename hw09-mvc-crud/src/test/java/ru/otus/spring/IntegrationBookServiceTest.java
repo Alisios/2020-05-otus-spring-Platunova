@@ -10,7 +10,7 @@ import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
 import ru.otus.spring.repository.BookRepository;
-import ru.otus.spring.repository.DbException;
+import ru.otus.spring.repository.ServiceException;
 import ru.otus.spring.service.BookService;
 import ru.otus.spring.service.BookServiceImpl;
 
@@ -55,7 +55,7 @@ class IntegrationBookServiceTest {
         long count = bookRepository.count();
         book.setGenre(null);
         assertThatThrownBy(()->bookService.save(book))
-                .isInstanceOf(DbException.class)
+                .isInstanceOf(ServiceException.class)
                 .hasMessageContaining("with saving book with");
         assertThat(bookRepository.count()).isEqualTo(count);
     }

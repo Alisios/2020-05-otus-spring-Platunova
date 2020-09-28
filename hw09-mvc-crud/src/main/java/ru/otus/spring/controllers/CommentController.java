@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import ru.otus.spring.domain.Comment;
 import ru.otus.spring.service.BookService;
 import ru.otus.spring.service.CommentService;
@@ -21,7 +19,7 @@ public class CommentController {
     private final BookService bookService;
     private final CommentService commentService;
 
-    @RequestMapping("/book/{id}/comments")
+    @GetMapping("/book/{id}/comments")
     public String showBookWithComments(@PathVariable("id") long id, Model model) {
         var book = bookService.getById(id).orElseThrow(NotFoundException::new);
         model.addAttribute("book", book);
@@ -30,7 +28,7 @@ public class CommentController {
         return "bookcommentshow";
     }
 
-    @RequestMapping(value = "/book/{id}/comment", method = RequestMethod.POST)
+    @PostMapping("/book/{id}/comment")
     public String saveComment(@PathVariable("id") long id, Comment comment) {
         var book = bookService.getById(id).orElseThrow(NotFoundException::new);
         comment.setBook(book);
@@ -39,7 +37,7 @@ public class CommentController {
         return "redirect:/book/" + id + "/comments";
     }
 
-    @RequestMapping(value = "/book/{bookId}/comment/delete/{id}")
+    @GetMapping(value = "/book/{bookId}/comment/delete/{id}")
     public String deleteComment(@PathVariable("bookId") long bookId, @PathVariable("id") long id) {
         commentService.deleteById(id);
         return "redirect:/book/" + bookId + "/comments";

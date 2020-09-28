@@ -11,7 +11,7 @@ import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.domain.Genre;
-import ru.otus.spring.repository.DbException;
+import ru.otus.spring.repository.ServiceException;
 import ru.otus.spring.repository.GenreRepository;
 
 import java.util.Optional;
@@ -62,7 +62,7 @@ class GenreServiceImplTest {
     void correctlyHandleDBException() {
         Genre genre = new Genre("Сказка");
         doThrow(PermissionDeniedDataAccessException.class).when(genreDao).save(genre);
-        Throwable thrown = assertThrows(DbException.class, () -> {
+        Throwable thrown = assertThrows(ServiceException.class, () -> {
             genreService.save(genre);
         });
         assertThat(thrown).hasMessageContaining("Error with saving genre").hasMessageContaining("Сказка");
@@ -74,7 +74,7 @@ class GenreServiceImplTest {
         genreService.deleteById(1);
         verify(genreDao, times(1)).deleteById(1);
         doThrow(PermissionDeniedDataAccessException.class).when(genreDao).deleteById(1);
-        Throwable thrown = assertThrows(DbException.class, () -> {
+        Throwable thrown = assertThrows(ServiceException.class, () -> {
             genreService.deleteById(1);
         });
         assertThat(thrown).hasMessageContaining("Error with deleting genre").hasMessageContaining("1");

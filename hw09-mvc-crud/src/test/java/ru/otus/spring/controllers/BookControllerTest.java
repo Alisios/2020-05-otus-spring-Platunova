@@ -9,7 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
-import ru.otus.spring.repository.DbException;
+import ru.otus.spring.repository.ServiceException;
 import ru.otus.spring.service.BookService;
 
 import java.util.List;
@@ -52,12 +52,11 @@ class BookControllerTest {
     }
 
 
-    @DisplayName("перенаправление на нужную страницу после сохранения и удаления книги")
+    @DisplayName("перенаправление на нужную страницу после сохранения книги")
     @Test
-    public void redirectAfterSavingAndDeleting() throws Exception {
+    public void redirectAfterSaving() throws Exception {
         when(bookService.save(book)).thenReturn(book);
         when(bookService.getById(1)).thenReturn(Optional.of(book));
-
         mockMvc.perform(post("/book")
                 .param("id", "1")
                 .flashAttr("book.title", book.getTitle())
@@ -65,13 +64,16 @@ class BookControllerTest {
                 .flashAttr("book.author.surname", book.getAuthor().getSurname()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/book/1"));
+    }
 
+    @DisplayName("перенаправление на нужную страницу после удаления книги")
+    @Test
+    public void redirectAfterDeleting() throws Exception {
         mockMvc.perform(get("/book/delete/{id}", 1)
                 .param("id", "1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/books"));
     }
-
 
     @DisplayName("возвращение статуса notFound при неуспешном поиске книги")
     @Test
@@ -79,7 +81,7 @@ class BookControllerTest {
         mockMvc.perform(get("/book/101"))
                 .andExpect(status().isBadRequest());
 
-        when(bookService.save(book)).thenThrow(DbException.class);
+        when(bookService.save(book)).thenThrow(ServiceException.class);
         mockMvc.perform(get("/book/1"))
                 .andExpect(status().isBadRequest());
     }

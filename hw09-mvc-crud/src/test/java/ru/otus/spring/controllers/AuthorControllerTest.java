@@ -35,16 +35,20 @@ class AuthorControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @DisplayName("перенаправление на нужную страницу после сохранения и удаления автора")
+    @DisplayName("перенаправление на нужную страницу после сохранения автора")
     @Test
-    public void redirectAfterSavingAndDeleting() throws Exception {
+    public void redirectAfterSaving() throws Exception {
         var author = new Author(1, "Джоан", "Роулинг");
         when(authorService.save(author)).thenReturn(author);
         mockMvc.perform(post("/author")
                 .param("id", "1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/author/1"));
+    }
 
+    @DisplayName("перенаправление на нужную страницу после  удаления автора")
+    @Test
+    public void redirectAfterDeleting() throws Exception {
         mockMvc.perform(get("/author/delete/{id}", 1)
                 .param("id", "1"))
                 .andExpect(status().is3xxRedirection())

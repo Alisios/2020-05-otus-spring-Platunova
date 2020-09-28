@@ -3,7 +3,7 @@ package ru.otus.spring.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.spring.repository.DbException;
+import ru.otus.spring.repository.ServiceException;
 import ru.otus.spring.domain.Genre;
 import ru.otus.spring.repository.GenreRepository;
 
@@ -23,7 +23,7 @@ public class GenreServiceImpl implements GenreService {
             Optional<Genre> g = genreRepository.findByType(genre.getType());
             return g.orElseGet(() -> genreRepository.save(genre));
         } catch (Exception ex) {
-            throw new DbException("Error with saving genre " + genre.toString(), ex);
+            throw new ServiceException("Error with saving genre " + genre.toString(), ex);
         }
     }
 
@@ -33,7 +33,7 @@ public class GenreServiceImpl implements GenreService {
         try {
             genreRepository.deleteById(id);
         } catch (Exception ex) {
-            throw new DbException("Error with deleting genre with id " + id, ex);
+            throw new ServiceException("Error with deleting genre with id " + id, ex);
         }
     }
 
@@ -43,7 +43,7 @@ public class GenreServiceImpl implements GenreService {
         try {
             return genreRepository.findAll();
         } catch (Exception ex) {
-            throw new DbException("Error with finding all genres", ex);
+            throw new ServiceException("Error with finding all genres", ex);
         }
     }
 
@@ -53,7 +53,7 @@ public class GenreServiceImpl implements GenreService {
         try {
             return genreRepository.findById(id);
         } catch (Exception ex) {
-            throw new DbException("Error with finding genre by id " + id, ex);
+            throw new ServiceException("Error with finding genre by id " + id, ex);
         }
     }
 
@@ -63,7 +63,7 @@ public class GenreServiceImpl implements GenreService {
         try {
             return genreRepository.findByType(type);
         } catch (Exception ex) {
-            throw new DbException("Error with finding genre by type " + type, ex);
+            throw new ServiceException("Error with finding genre by type " + type, ex);
         }
     }
 }
