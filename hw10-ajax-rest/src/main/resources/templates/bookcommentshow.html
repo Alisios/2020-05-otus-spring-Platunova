@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <title>Книги</title>
+    <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
+    <!--    <script src="/webjars/jquery/jquery.min.js"></script>-->
+    <script src="webjars/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+    <h2>Описание книги</h2>
+    <div>
+        <form class="form-horizontal" th:value="${bookId}">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Id книги:</label>
+                <div class="col-sm-10">
+                    <p class="form-control-static" id="idBook"></p></div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Название книги:</label>
+                <div class="col-sm-10">
+                    <p class="form-control-static" id="titleBook"></p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Имя автора:</label>
+                <div class="col-sm-10">
+                    <p class="form-control-static" id="authorNameOfBook"></p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Фамилия автора:</label>
+                <div class="col-sm-10">
+                    <p class="form-control-static" id="authorSurNameOfBook"></p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Жанр книги:</label>
+                <div class="col-sm-10">
+                    <p class="form-control-static" id="genreOfBook"></p>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-1"></div>
+    <div class="col-sm-1">
+        <button id="showCommentsButton" class="btn btn-outline-success "
+                onclick="showComments(document.getElementById('commentForm'),document.getElementById('commentNewForm'))">
+            Показать
+            комментарии
+        </button>
+    </div>
+
+    <div class=" col-sm-1"></div>
+    <button class="btn btn-outline-success" id="deleteButton"
+            onclick="deleteBook()"> Удалить
+        книгу
+    </button>
+</div>
+
+
+<br/>
+
+<div class="container" id="commentForm" style="display: none;">
+    <h2>Список комментариев: </h2>
+    <table class="table table-hover" id="commentList">
+        <thead>
+        <tr>
+            <td style="display: none;">Id</td>
+            <th>Текст комментария</th>
+            <th>Дата комментария</th>
+            <th>Удалить комментарий</th>
+        </tr>
+
+        </thead>
+        <tbody id="commentListBody">
+        </tbody>
+
+    </table>
+</div>
+
+
+<div>
+    <form class="form-horizontal" id="commentNewForm" style="display: none;">
+        <input type="hidden"/>
+        <div class="form-group">
+            <label class="col-sm-2 col-md-offset-0 control-label">Введите текст комментария:</label>
+            <div class="col-sm-6 ">
+                <input id="textInput" type="text" class="form-control"/>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-default" onclick="saveComment()">Прокомментировать</button>
+            </div>
+    </form>
+
+</div>
+
+<script th:inline="javascript">
+    const idJs = [[${bookId}]];
+    console.log(idJs);
+
+    $(function () {
+        $.get('/book/info/' + idJs).done(function (book) {
+            console.log(book.title);
+            console.log(book.authorDto.name);
+            console.log(book.authorDto.surname);
+            $("#idBook").append(book.id);
+            $("#titleBook").append(book.title);
+            $("#authorNameOfBook").append(book.authorDto.name);
+            $("#authorSurNameOfBook").append(book.authorDto.surname);
+            $("#genreOfBook").append(book.genre.type);
+        });
+    });
+
+    var disp = function (form) {
+        form.style.display = "block";
+    }
+
+    var showComments = function (form, form2) {
+        event.preventDefault();
+        $.ajax({
+            type: 'GET',
+            url: '/book/' + idJs + '/comments/list',
+            dataType: 'json',
+            async: true,
+            success: function (comments) {
+                disp(form);
+                disp(form2);
+                document.getElementById("showCommentsButton").disabled = true;
+                comments.forEach(function (comment) {
+                    $("#commentListBody").append(`
+                    <tr>
+                    <td style="display: none;"> ${comment.id} </td>
+                    <td> ${comment.text} </td>
+                    <td> ${comment.date} </td>
+                    <td> <button class="btn btn-outline-warning" id="deleteCommentBottom" onclick="deleteComment(${comment.id})">  Delete </button></td>
+
+                    </tr>
+`)
+                });
+            },
+            error: function (jqXHR) {
+                alert(jqXHR.status + ' ' + jqXHR.responseText);
+            }
+        });
+    }
+
+    const deleteComment = function (commentId) {
+        console.log(commentId);
+        $.ajax({
+            type: 'DELETE',
+            url: '/book/' + idJs + '/comment/' + commentId,
+            dataType: 'json',
+            async: true,
+            success: function (id) {
+                deleteRowWithId(document.getElementById('commentList'), commentId);
+            },
+            error: function (jqXHR) {
+                alert(jqXHR.status + ' ' + jqXHR.responseText);
+            }
+        });
+    };
+
+    const deleteRowWithId = (table, id) => {
+        try {
+            var allRows = table.getElementsByTagName("tr");
+            var i = allRows.length;
+            while (i--) {
+                if (table.rows[i].cells[0].innerHTML == id) {
+                    table.deleteRow(i);
+                }
+            }
+        } catch (e) {
+            alert(e);
+        }
+    }
+
+    var deleteBook = function () {
+        console.log(idJs);
+        $.ajax({
+            type: 'DELETE',
+            url: '/book/' + idJs,
+            dataType: 'json',
+            async: true,
+            success: function (id) {
+                window.location.href = "/books";
+            },
+            error: function (jqXHR) {
+                alert(jqXHR.status + ' ' + jqXHR.responseText);
+            }
+        });
+    }
+
+    var saveComment = function () {
+        event.preventDefault();
+        const comment = {
+            'text': document.getElementById("textInput").value,
+        }
+        $.ajax({
+            url: '/book/' + idJs + '/comments',
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(comment),
+            success: function (commentDto) {
+                console.log(commentDto.text);
+                console.log(commentDto.date);
+                console.log(commentDto.id);
+                document.getElementById("commentNewForm").reset();
+                updateTable(commentDto);
+            }
+        });
+    };
+
+    const updateTable = function (comment) {
+        $("#commentListBody")
+            .append(`
+                    <tr>
+                   <td style="display: none;"> ${comment.id} </td>
+                    <td> ${comment.text} </td>
+                    <td> ${comment.date} </td>
+                    <td> <button class="btn btn-outline-warning" id="deleteCommentBottom" onclick="deleteComment(${comment.id})">  Delete </button></td>
+                    </tr>
+                    `);
+    };
+
+</script>
+
+</body>
+</html>

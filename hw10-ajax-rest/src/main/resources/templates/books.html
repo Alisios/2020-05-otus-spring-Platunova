@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <title>Мероприятия</title>
+    <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
+</head>
+<body>
+<div class="container">
+    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+    <h2>Список книг</h2>
+    <table class="table table-striped" id="bookList">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Название книги</th>
+            <th>Имя автора</th>
+            <th>Фамилия автора</th>
+            <th>Жанр книги</th>
+            <th>Посмотреть</th>
+            <th>Внести изменения</th>
+            <th>Удалить книгу</th>
+        </tr>
+        </tr>
+        </thead>
+        <tbody id="booksbody">
+        </tbody>
+
+        <script>
+            $(function () {
+                $.get('/books/list').done(function (books) {
+                    books.forEach(function (book) {
+                        $("#booksbody").append(`
+                    <tr >
+                       <td> ${book.id} </td>
+                       <td> ${book.title} </td>
+                        <td> ${book.authorDto.name}</td>
+                        <td> ${book.authorDto.surname}</td>
+                        <td> ${book.genre.type}</td>
+                        <td><a href="${'/book/' + book.id}">Show details</a></td>
+                        <td><a href="${'/book/edit/' + book.id}">Edit</a></td>
+                       <td> <button id="deleteButton" onclick="RestDelete( ${book.id})">  Delete </button></td>
+                    </tr>
+                `)
+                    });
+                })
+            });
+
+
+            var RestDelete = function (id) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/book/' + id,
+                    dataType: 'json',
+                    async: true,
+                    success: function (id) {
+                        deleteRowWithId(document.getElementById('bookList'), id);
+                    },
+                    error: function (jqXHR) {
+                        alert(jqXHR.status + ' ' + jqXHR.responseText);
+                    }
+                });
+            }
+
+            const deleteRowWithId = (table, id) => {
+                var allRows = table.getElementsByTagName("tr");
+                var i = allRows.length;
+                while (i--) {
+                    if (table.rows[i].cells[0].innerHTML == id) {
+                        table.deleteRow(i);
+                    }
+                }
+            }
+        </script>
+
+</div>
+</body>
+</html>
