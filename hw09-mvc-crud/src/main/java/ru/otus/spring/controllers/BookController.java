@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.service.BookService;
+import ru.otus.spring.service.UserBookService;
 
 @Controller
 @RequiredArgsConstructor
@@ -14,6 +15,7 @@ import ru.otus.spring.service.BookService;
 public class BookController {
 
     private final BookService bookService;
+    private final UserBookService userBookService;
 
     @GetMapping("/book/new")
     public String newBook(Model model) {
@@ -23,7 +25,7 @@ public class BookController {
 
     @PostMapping("/book")
     public String saveBook(Book book) {
-        bookService.save(book);
+        book = userBookService.addBookByUser(book);
         return "redirect:/book/" + book.getId();
     }
 
