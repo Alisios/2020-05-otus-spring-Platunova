@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+    <title>Книги</title>
+
+    <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
+</head>
+<body>
+<div class="container">
+    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+    <h2>Описание книги</h2>
+    <div>
+        <!--/*@thymesVar id="book" type="ru.otus.spring.domain.Book"*/-->
+        <form class="form-horizontal" th:action="@{/book}" method="post">
+            <input type="hidden" th:field="*{book.id}"/>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Название книги:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{book.title}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Имя автора:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{book.author.name}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Фамилия автора:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{book.author.surname}"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Жанр книги:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{book.genre.type}"/>
+                </div>
+            </div>
+
+            <div class="row">
+                <button type="submit" class="btn btn-default">Внести книгу</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
