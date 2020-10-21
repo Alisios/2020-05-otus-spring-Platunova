@@ -11,6 +11,7 @@ import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
 import ru.otus.spring.repository.ServiceException;
 import ru.otus.spring.service.BookService;
+import ru.otus.spring.service.UserBookService;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +27,9 @@ class BookControllerTest {
 
     @MockBean
     private BookService bookService;
+
+    @MockBean
+    private  UserBookService userBookService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -55,8 +59,7 @@ class BookControllerTest {
     @DisplayName("перенаправление на нужную страницу после сохранения книги")
     @Test
     public void redirectAfterSaving() throws Exception {
-        when(bookService.save(book)).thenReturn(book);
-        when(bookService.getById(1)).thenReturn(Optional.of(book));
+        when(userBookService.addBookByUser(book)).thenReturn(book);
         mockMvc.perform(post("/book")
                 .param("id", "1")
                 .flashAttr("book.title", book.getTitle())
