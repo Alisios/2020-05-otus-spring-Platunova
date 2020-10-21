@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+    <title>Книги</title>
+
+    <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
+    <script src="webjars/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+    <h2>Описание книги</h2>
+    <div>
+        <form id="authorForm" class="form-horizontal" th:value="${authorId}">
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Имя автора:</label>
+                <div class="col-sm-10">
+                    <input id="nameInput" type="text" class="form-control"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Фамилия автора:</label>
+                <div class="col-sm-10">
+                    <input id="surnameInput" type="text" class="form-control"/>
+                </div>
+            </div>
+
+            <div class="row">
+                <button id="addAuthor" type="submit" onclick="saveAuthor()" class="btn btn-default">Внести автора
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script th:inline="javascript">
+        const nameJs = [[${authorId}]];
+        console.log(nameJs);
+        $(function () {
+            $.get('/author/' + nameJs).done(function (author) {
+                document.getElementById('nameInput').value = author.name;
+                document.getElementById('surnameInput').value = author.surname;
+                console.log(author.name);
+                console.log(author.surname);
+            })
+        });
+
+        var saveAuthor = function () {
+            event.preventDefault();
+            const author = {
+                'name': document.getElementById("nameInput").value,
+                'surname': document.getElementById("surnameInput").value
+            }
+            $.ajax({
+                url: "/authors",
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(author),
+                success: function (authorIdFromDB) {
+                    document.getElementById("authorForm").reset();
+                    window.location.href = "/authors";
+                }
+            });
+        };
+    </script>
+</div>
+
+</body>
+</html>

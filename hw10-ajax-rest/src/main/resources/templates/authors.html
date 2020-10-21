@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <title>Мероприятия</title>
+    <!--    <script src="/webjars/jquery/jquery.min.js"></script>-->
+    <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
+    <!--    <script src="webjars/jquery/3.3.1/jquery.min.js"></script>-->
+    <script src="/webjars/jquery/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+    <h2>Список авторов</h2>
+    <table class="table table-striped" id="authorList">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Имя автора</th>
+            <th>Фамилия автора</th>
+            <th> Информация об авторе автора</th>
+            <th> Внести изменения</th>
+            <th> Удалить автора</th>
+        </tr>
+        </tr>
+        </thead>
+        <tbody id="authorsbody">
+        </tbody>
+    </table>
+
+
+    <form class="form-horizontal" id="authorDetailForm" style="display: none;">
+        <h3>Информация об авторе :</h3>
+        <div class="form-group">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Имя:</label>
+                <div class="col-sm-10">
+                    <p class="form-control-static" id="nameAuthor"></p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Фамилия:</label>
+                <div class="col-sm-10">
+                    <p class="form-control-static" id="surnameAuthor"></p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label"> Список книг автора:</label>
+
+                <div class="col-sm-10">
+                    <table class="table table-hover" id="booksListTable">
+                        <tbody id="bookListBody">
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+    </form>
+
+    <script>
+        $(function () {
+            $.get('/authors/list').done(function (authors) {
+                authors.forEach(function (author) {
+                    $("#authorsbody").append(`
+                    <tr >
+                       <td> ${author.id} </td>
+                        <td> ${author.name}</td>
+                        <td> ${author.surname}</td>
+                         <td> <button class = "btn btn btn-outline-info" id="showDetail" onclick="showAuthorDetail(${author.id},document.getElementById('authorDetailForm'))"> Details</button></td>
+                        <td><a href="${'/author/edit/' + author.id}">Edit</a></td>
+                       <td> <button class = "btn btn-outline-danger" id="deleteButton" onclick="RestDelete(document.getElementById('authorDetailForm'), ${author.id})">  Delete </button></td>
+                    </tr>
+                `)
+                });
+            })
+        });
+
+        var RestDelete = function (form, id) {
+            $.ajax({
+                type: 'DELETE',
+                url: '/author/' + id,
+                dataType: 'json',
+                async: true,
+                success: function (id) {
+                    hide(form)
+                    // $('#authorList').find('tr').eq(id).remove();
+                    deleteRowWithId(document.getElementById('authorList'), id);
+                    deleteRows(document.getElementById('booksListTable'));
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(jqXHR.status + ' ' + jqXHR.responseText);
+                }
+            });
+        }
+
+        const deleteRows = (table) => {
+            var allRows = table.getElementsByTagName("tr");
+            var i = allRows.length;
+            while (i--) table.deleteRow(i);
+        }
+
+        const deleteRowWithId = (table, id) => {
+            var allRows = table.getElementsByTagName("tr");
+            var i = allRows.length;
+            while (i--) {
+                if (table.rows[i].cells[0].innerHTML == id) {
+                    table.deleteRow(i);
+                }
+            }
+        }
+
+        var showAuthorDetail = function (id, form) {
+            // document.getElementById("authorDetailForm").reset();
+            deleteRows(document.getElementById("bookListBody"));
+            $.ajax({
+                type: 'GET',
+                url: '/author/' + id,
+                dataType: 'json',
+                async: true,
+                success: function (author) {
+                    console.log(author.name);
+                    console.log(author.surname);
+                    document.getElementById('nameAuthor').innerText = author.name;
+                    document.getElementById('surnameAuthor').innerText = author.surname;
+                    // $("#nameAuthor").append(author.name);
+                    // $("#surnameAuthor").append(author.surname);
+                    // $('.nameAuthor').val(author.name);
+                    // $('.surnameAuthor').val(author.surname);
+                    disp(form);
+                    author.titleList.forEach(function (book) {
+                        $("#bookListBody").append(`
+                    <tr ><td> ${book} </td> </tr>`)
+                    });
+
+                },
+                error: function (jqXHR) {
+                    alert(jqXHR.status + ' ' + jqXHR.responseText);
+                }
+            });
+        }
+
+        var disp = function (form) {
+            form.style.display = "block";
+        }
+        var hide = function (form) {
+            form.style.display = "none";
+        }
+    </script>
+
+</div>
+</body>
+</html>
