@@ -18,6 +18,17 @@
     <modules>
         <module>hw01-xml-configuration</module>
         <module>hw2-annotation-configuration</module>
+        <module>hw3-spring-boot</module>
+        <module>hw04-shell</module>
+        <module>hw05-jdbc</module>
+        <module>hw06-hibernate</module>
+        <module>hw07-spring-jpa</module>
+        <module>hw08-mongo-db</module>
+        <module>hw09-mvc-crud</module>
+        <module>hw10-ajax-rest</module>
+        <module>hw12-spring-security-authentication</module>
+        <module>hw15-spring-integration</module>
+        <module>investor-api/stocks-info-service</module>
     </modules>
 
     <properties>
