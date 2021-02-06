@@ -10,6 +10,7 @@ import ru.otus.spring.commons.exceptions.ServiceException;
 import ru.otus.spring.commons.exceptions.ValidationException;
 import ru.otus.spring.storage.StockRepository;
 import ru.otus.spring.storage.dto.StockDto;
+import ru.otus.spring.storage.dto.StockDtoToUser;
 import ru.otus.spring.storage.dto.StockMapper;
 import ru.otus.spring.storage.StockEntity;
 
@@ -41,7 +42,7 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public StockEntity getById(String id) {
         if (id == null)
             throw new ValidationException("Введите корректные данные запроса");
@@ -69,7 +70,7 @@ public class StockServiceImpl implements StockService {
 
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<StockEntity> getAllStocks() {
         try {
             return stockRepository.findAll();
@@ -79,7 +80,7 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<StockEntity> getByInterval(String ticker, LocalDateTime before, LocalDateTime after) {
         //Sort sort = Sort.by(Sort.Direction.ASC, "date");
         if ((ticker == null) || (before == null) || (after == null))
@@ -96,7 +97,7 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public StockEntity getLastInfoByTicker(String ticker) {
         if (ticker == null)
             throw new ValidationException("Введите корректные данные запроса");
@@ -108,7 +109,7 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<StockEntity> getLastInfoByCompanyName(String companyName) {
         if (companyName == null)
             throw new ValidationException("Введите корректные данные запроса");
@@ -120,14 +121,14 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    @Transactional
-    public List<StockEntity> getByType(String type) {
+    @Transactional (readOnly = true)
+    public List<StockDtoToUser> getByType(String type) {
         if (type == null)
             throw new ValidationException("Введите корректные данные запроса");
         try {
             Map<String, Optional<StockEntity>> map3 = stockRepository.findAllByType(type).stream()
                     .collect(Collectors.groupingBy(StockEntity::getCompanyName, Collectors.maxBy(comparator)));
-            return map3.values().stream().map(Optional::get).collect(Collectors.toList());
+            return map3.values().stream().map(Optional::get).map(mapper::mapForUser).collect(Collectors.toList());
         } catch (Exception ex) {
             throw new ServiceException("Ошибка при получении информации о компанииях с типом : " + type, ex);
         }

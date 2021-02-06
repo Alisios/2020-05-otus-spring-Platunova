@@ -2,6 +2,7 @@ package ru.otus.spring.stockservice;
 
 import ru.otus.spring.storage.dto.StockDto;
 import ru.otus.spring.storage.StockEntity;
+import ru.otus.spring.storage.dto.StockDtoToUser;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -50,6 +51,6 @@ public interface StockService {
      * @param type - сектор, к которому принадлежит компания
      * @return список результатов
      */
-    List<StockEntity> getByType(String type);
+    List<StockDtoToUser> getByType(String type);
 
 }

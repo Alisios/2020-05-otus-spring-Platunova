@@ -54,8 +54,8 @@ public class StockEntity {
     @Field(name = "volume")
     long volume;
 
-    @Field(name = "adj_close")
-    double adj_close;
+    @Field(name = "adjClose")
+    double adjClose;
 
     @Field(name = "bondCreditRating")
     String bondCreditRating;

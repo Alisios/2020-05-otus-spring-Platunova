@@ -22,7 +22,7 @@ import java.nio.file.AccessDeniedException;
 public class CustomErrorHandler {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public final ResponseEntity<Object> handleAllExceptions(HttpRequestMethodNotSupportedException ex) {
+    public final ResponseEntity<String> handleAllExceptions(HttpRequestMethodNotSupportedException ex) {
         log.error("Такая операция не предусмотрена: {}, {}.", ex.getCause(), ex.getMessage());
         return ResponseEntity.badRequest().body("Запрос не выполнен. Операция не предусмотрена. Exception: " + ex.getCause() + ". " + ex.getMessage());
     }

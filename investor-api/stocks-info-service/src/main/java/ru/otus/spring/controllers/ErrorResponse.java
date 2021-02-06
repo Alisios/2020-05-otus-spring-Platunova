@@ -10,15 +10,14 @@ import lombok.experimental.FieldDefaults;
 @Schema(description = "Модель ошибок")
 @Builder
 @Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ErrorResponse {
 
     @Schema(description = "code")
-    int code;
+    private int code;
 
     @Schema(description = "URI")
-    String uri;
+    private String uri;
 
     @Schema
-    String message;
+    private String message;
 }

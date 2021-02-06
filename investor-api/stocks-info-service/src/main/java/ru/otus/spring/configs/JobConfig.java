@@ -34,8 +34,8 @@ public class JobConfig {
 
     public static final String OUTPUT_FILE_NAME = "outputFileName";
     public static final String INPUT_FILE_NAME = "inputFileName";
-    public static final String IMPORT_USER_JOB_NAME = "importUserJob";
-    private final AppProps appProps;
+    public static final String IMPORT_STOCK_INFO_JOB_NAME = "importStockInfoJob";
+    private final FileProperties appProps;
 
     public static final int CHUNK_SIZE = 10;
 
@@ -68,17 +68,17 @@ public class JobConfig {
 
     @StepScope
     @Bean
-    public MongoItemWriter<StockEntity> mongoItemWriter(MongoTemplate mongoTemplate) {//(@Value("#{jobParameters['" + OUTPUT_FILE_NAME + "']}") String outputFileName) {
+    public MongoItemWriter<StockEntity> mongoItemWriter(MongoTemplate mongoTemplate) {
         return new MongoItemWriterBuilder<StockEntity>()
                 .template(mongoTemplate)
                 .build();
     }
 
     @Bean
-    public Job importUserJob(Step step1) {
-        return jobBuilderFactory.get(IMPORT_USER_JOB_NAME)
+    public Job importStockInfoJob(Step fromCsvToMongoStep) {
+        return jobBuilderFactory.get(IMPORT_STOCK_INFO_JOB_NAME)
                 .incrementer(new RunIdIncrementer())
-                .flow(step1)
+                .flow(fromCsvToMongoStep)
                 .end()
                 .listener(new JobExecutionListener() {
                     @Override
@@ -96,9 +96,9 @@ public class JobConfig {
     }
 
     @Bean
-    public Step step1
+    public Step fromCsvToMongoStep
             (MongoItemWriter<StockEntity> writer, ItemReader<StockDtoCsv> reader, ItemProcessor itemProcessor) {
-        return stepBuilderFactory.get("step1")
+        return stepBuilderFactory.get("fromCsvToMongoStep")
                 .chunk(CHUNK_SIZE)
                 .reader(reader)
                 .processor(itemProcessor)

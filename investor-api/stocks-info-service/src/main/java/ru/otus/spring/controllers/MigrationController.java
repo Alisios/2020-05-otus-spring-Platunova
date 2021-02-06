@@ -21,7 +21,7 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.otus.spring.configs.AppProps;
+import ru.otus.spring.configs.FileProperties;
 
 import static ru.otus.spring.configs.JobConfig.INPUT_FILE_NAME;
 
@@ -40,25 +40,24 @@ import static ru.otus.spring.configs.JobConfig.INPUT_FILE_NAME;
 @CrossOrigin
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/migration")
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class MigrationController {
 
-    AppProps appProps;
-    Job importUserJob;
+    Job importStockInfoJob;
     JobLauncher jobLauncher;
+    FileProperties properties;
 
     @Operation(summary = "Запуск миграции даннных")
-    @GetMapping({"{fileName}"})
+    @GetMapping({"/migration/{fileName}"})
     @ApiResponse(responseCode = "200", description = "Миграция запущена")
     public void startMapping(
             @Parameter(description = "Название файла для миграции в формате НазваниеКомпании_ТипКомпании.csv. " +
                     "Файл должен находиться в папке resources",
                     required = true, example = "Аэрофлот_авиаперевозки.csv")
             @PathVariable("fileName") String fileName) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        appProps.setInputFile("stocks-info-service/src/main/resources/historyInfo/" + fileName);
-        JobExecution execution = jobLauncher.run(importUserJob, new JobParametersBuilder()
-                .addString(INPUT_FILE_NAME, appProps.getInputFile())
+        properties.setInputFile(properties.getFilePath() + fileName);
+        JobExecution execution = jobLauncher.run(importStockInfoJob, new JobParametersBuilder()
+                .addString(INPUT_FILE_NAME, properties.getInputFile())
                 .toJobParameters());
         log.info(String.valueOf(execution));
     }

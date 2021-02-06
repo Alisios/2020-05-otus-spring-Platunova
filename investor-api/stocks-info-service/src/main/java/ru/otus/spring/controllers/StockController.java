@@ -48,7 +48,7 @@ public class StockController {
     Comparator<StockEntity> comparator = Comparator.comparing(StockEntity::getDate).reversed();
 
     @Operation(summary = "Получение информации о компании по id")
-    @GetMapping({"/{id}"})
+    @GetMapping({"/stocks/{id}"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Запись найдена",
                     content = @Content(schema = @Schema(implementation = StockDtoToUser.class),
@@ -67,7 +67,7 @@ public class StockController {
     }
 
     @Operation(summary = "Добавление информации о компании")
-    @PostMapping
+    @PostMapping({"/stocks"})
     @ApiResponse(responseCode = "201",
             description = "Информация по компании сохранена")
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -101,28 +101,25 @@ public class StockController {
     }
 
     @Operation(summary = "Получение последней информации по ticker компании")
-    @GetMapping({"/ticker/{ticker}"})
+    @GetMapping({"/ticker"})
     @ApiResponse(responseCode = "200", description = "Запись найдена",
             content = @Content(schema = @Schema(implementation = StockDtoToUser.class),
                     mediaType = "application/json"))
     public StockDtoToUser getLastInfoByTicker(
             @Parameter(description = "Ticker", required = true, example = "SBER")
-            @PathVariable("ticker") String ticker) {
+            @RequestParam("ticker") String ticker) {
         return mapper.mapForUser(stockService.getLastInfoByTicker(ticker));
     }
 
     @Operation(summary = "Получение последней информации по типу компании")
-    @GetMapping(value = {"/type/{type}"})
+    @GetMapping(value = {"/type"})
     @ApiResponse(responseCode = "200", description = "Запись найдена",
             content = @Content(schema = @Schema(implementation = StockDtoToUser.class),
                     mediaType = "application/json"))
     public List<StockDtoToUser> getLastInfoByType(
             @Parameter(description = "Тип (Банк, IT, нефть-и-газ и т.д)", required = true, example = "Банки")
-            @PathVariable("type") String type) {
-        return stockService.getByType(type)
-                .stream()
-                .map(mapper::mapForUser)
-                .collect(Collectors.toList());
+            @RequestParam("type") String type) {
+        return stockService.getByType(type);
     }
 
 }

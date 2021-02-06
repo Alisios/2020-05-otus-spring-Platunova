@@ -3,10 +3,6 @@ server:
 #  servlet:
 #    context-path: /stock-service/v1
 
-app:
-  input-file: stocks-info-service/src/main/resources/historyInfo/Аэрофлот_авиаперевозки.csv
-#  output-file: output.dat
-
 service:
   locale: ru_RU
 
@@ -15,6 +11,9 @@ springdoc:
     path: /service-docs
   packages-to-scan: ru.otus.spring
 
+file-properties:
+  filePath: stocks-info-service/src/main/resources/historyInfo/
+  input-file: stocks-info-service/src/main/resources/historyInfo/Аэрофлот_авиаперевозки.csv
 
 spring:
   #  thymeleaf:

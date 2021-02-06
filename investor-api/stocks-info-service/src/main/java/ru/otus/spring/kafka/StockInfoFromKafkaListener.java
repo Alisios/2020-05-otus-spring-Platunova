@@ -15,12 +15,13 @@ import ru.otus.spring.storage.dto.StockDto;
 @Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class Input {
+public class StockInfoFromKafkaListener implements Listener<StockDto> {
 
     StockService stockService;
 
     @StreamListener(StockStreams.INPUT)
-    public void addSubscriber(@Payload StockDto stockDto) {
+    @Override
+    public void handleMessage(@Payload StockDto stockDto) {
         try {
             log.info("Сообщение из Kafka: {}", stockDto);
             stockService.addStock(stockDto);
