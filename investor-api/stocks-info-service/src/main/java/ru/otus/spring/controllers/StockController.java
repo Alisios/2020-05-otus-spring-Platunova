@@ -18,7 +18,7 @@ import ru.otus.spring.stockservice.StockService;
 import ru.otus.spring.storage.dto.StockDto;
 import ru.otus.spring.storage.dto.StockDtoToUser;
 import ru.otus.spring.storage.dto.StockMapper;
-import ru.otus.spring.storage.entity.StockEntity;
+import ru.otus.spring.storage.StockEntity;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;

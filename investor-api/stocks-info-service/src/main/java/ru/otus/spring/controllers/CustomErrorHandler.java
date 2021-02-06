@@ -13,7 +13,6 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import ru.otus.spring.commons.exceptions.ServiceException;
 import ru.otus.spring.commons.exceptions.ValidationException;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.file.AccessDeniedException;
 

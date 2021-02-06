@@ -1,7 +1,7 @@
 package ru.otus.spring.storage.dto;
 
 import org.mapstruct.Mapper;
-import ru.otus.spring.storage.entity.StockEntity;
+import ru.otus.spring.storage.StockEntity;
 
 import java.io.File;
 import java.time.LocalDate;

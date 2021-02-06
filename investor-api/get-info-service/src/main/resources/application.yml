@@ -1,0 +1,49 @@
+server:
+  port: 8099
+
+service:
+  locale: ru_RU
+
+spring:
+  application:
+    name: get-info-service
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092
+
+
+      bindings:
+        ticker-request-in:
+          destination: ticker-request
+          contentType: application/json
+        stock-info-out:
+          destination: stock-info
+          contentType: application/json
+        error-out:
+          destination: error
+          contentType: application/json
+rest:
+  host: localhost
+  port: 8099
+  scheme: http
+  pathInfoSource1: /info/source/1/
+  pathInfoSource2: /info/source/2/
+  pathInfoSource3: /info/source/3/
+  pathInfoSource4: /info/soutce/4/
+
+
+logging:
+  pattern: ${CONSOLE_LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{70}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}
+
+  level:
+    root: info
+
+    org:
+      springframework: info
+
+
+
+#  file:
+#    name: logs/mylog.log

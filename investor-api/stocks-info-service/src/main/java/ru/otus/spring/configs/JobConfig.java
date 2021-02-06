@@ -24,7 +24,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import ru.otus.spring.storage.dto.StockDtoCsv;
 import ru.otus.spring.storage.dto.StockMapper;
-import ru.otus.spring.storage.entity.StockEntity;
+import ru.otus.spring.storage.StockEntity;
 
 @Configuration
 @Slf4j

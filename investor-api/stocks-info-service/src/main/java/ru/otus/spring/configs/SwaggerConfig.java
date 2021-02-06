@@ -10,14 +10,14 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI switchSwagger(){
+    public OpenAPI switchSwagger() {
         return new OpenAPI()
                 .info(new Info()
-                .title("Сервис исторических данных по акциям")
-                .description("")
-                .version(""))
+                        .title("Сервис определения типа ценной бумаги и фильтрации")
+                        .description("")
+                        .version(""))
                 .externalDocs(new ExternalDocumentation()
-                .description("")
-                .url(""));
+                        .description("")
+                        .url(""));
     }
 }

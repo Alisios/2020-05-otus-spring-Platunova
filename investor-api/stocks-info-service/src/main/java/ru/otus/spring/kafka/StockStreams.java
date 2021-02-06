@@ -7,8 +7,8 @@ import org.springframework.messaging.SubscribableChannel;
 
 public interface StockStreams {
 
-    String INPUT = "stock-archive";
-    String OUTPUT = "error";
+    String INPUT = "archive-in";
+    String OUTPUT = "error-out";
 
     @Input(INPUT)
     SubscribableChannel inboundStock();

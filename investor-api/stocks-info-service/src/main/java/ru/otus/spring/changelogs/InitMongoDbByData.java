@@ -1,14 +1,8 @@
 package ru.otus.spring.changelogs;
 
 import com.github.cloudyrock.mongock.ChangeLog;
-import com.github.cloudyrock.mongock.ChangeSet;
-import com.mongodb.client.MongoDatabase;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import ru.otus.spring.storage.StockRepository;
-import ru.otus.spring.storage.entity.StockEntity;
-
-import java.time.LocalDateTime;
 
 @ChangeLog(order = "001")
 @FieldDefaults(level = AccessLevel.PRIVATE)

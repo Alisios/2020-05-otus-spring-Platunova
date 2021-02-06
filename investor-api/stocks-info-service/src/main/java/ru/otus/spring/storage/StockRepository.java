@@ -1,7 +1,6 @@
 package ru.otus.spring.storage;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import ru.otus.spring.storage.entity.StockEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,7 +1,7 @@
 package ru.otus.spring.stockservice;
 
 import ru.otus.spring.storage.dto.StockDto;
-import ru.otus.spring.storage.entity.StockEntity;
+import ru.otus.spring.storage.StockEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;

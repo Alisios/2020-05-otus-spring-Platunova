@@ -20,7 +20,7 @@ public class Producer {
     StockStreams stockStreams;
 
     public void sendError(ErrorMessage error) {
-        log.info("Отправка в кафку ошибки");
+        log.info("Отправка в кафку подписчиков для админа ");
         MessageChannel messageChannel = stockStreams.outToError();
         messageChannel.send(MessageBuilder
                 .withPayload(error)

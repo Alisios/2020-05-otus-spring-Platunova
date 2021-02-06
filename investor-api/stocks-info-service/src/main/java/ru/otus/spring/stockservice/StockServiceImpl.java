@@ -11,7 +11,7 @@ import ru.otus.spring.commons.exceptions.ValidationException;
 import ru.otus.spring.storage.StockRepository;
 import ru.otus.spring.storage.dto.StockDto;
 import ru.otus.spring.storage.dto.StockMapper;
-import ru.otus.spring.storage.entity.StockEntity;
+import ru.otus.spring.storage.StockEntity;
 
 import java.time.LocalDateTime;
 import java.util.*;

@@ -28,9 +28,13 @@ public class StockDtoToUser {
     @Schema(description = "Название компании")
     String companyName;
 
-    @Schema(description = "Тип компании компании")
+    @Schema(description = "Тип ценной бумаги")
     String type;
 
+    @Schema(description = "Тип компании компании")
+    String sector;
+
+    @NotNull
     @Schema(description = "Тикер")
     String ticker;
 
@@ -53,7 +57,7 @@ public class StockDtoToUser {
     long volume;
 
     @Schema(description = "Скорректированная цена на момент закрытия")
-    double adj_close;
+    double adjClose;
 
     @Schema(description = "Рейтинг компании")
     String bondCreditRating;

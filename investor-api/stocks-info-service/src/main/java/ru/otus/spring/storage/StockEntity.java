@@ -1,4 +1,4 @@
-package ru.otus.spring.storage.entity;
+package ru.otus.spring.storage;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

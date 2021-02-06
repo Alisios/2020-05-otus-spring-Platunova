@@ -17,8 +17,8 @@ springdoc:
 
 
 spring:
-#  thymeleaf:
-#    enabled: false
+  #  thymeleaf:
+  #    enabled: false
   application:
     name: stock-service
 
@@ -55,10 +55,10 @@ spring:
         binder:
           brokers: localhost:9092
       bindings:
-        greetings-in:
-          destination: stock-archive
+        archive-in:
+          destination: archive
           contentType: application/json
-        greetings-out:
+        error-out:
           destination: error
           contentType: application/json
 
