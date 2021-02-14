@@ -1,0 +1,121 @@
+server:
+  port: 2090
+
+management:
+  server:
+    port: 2091
+
+  endpoints:
+    web:
+      exposure:
+        include: health, info, beans, metrics, loggers, threaddump,configprops
+
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      show-details: always
+
+service:
+  locale: ru_RU
+
+springdoc:
+  api-docs:
+    path: /service-docs
+  packages-to-scan: ru.otus.spring
+
+message-properties:
+  eventType:
+    type1: event_1
+    type2: event_2
+    type3: event_3
+
+  message:
+    type1: Событие 1 произошло!
+    type2: Событие 2 произошло!
+    type3: Событие 3 произошло!
+
+
+
+spring:
+  application:
+    name: subscribing-service
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/alisa
+    username:
+    password:
+
+    initialize: true
+    initialization-mode: always
+  jpa:
+    generate-ddl: false
+
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+        generate_statistics: true
+        ddl-auto: none
+        show_sql: true
+        query:
+          substitutions: true 1, false 0
+        connection:
+          enable_lazy_load_no_trans: true
+
+    current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092
+
+
+      bindings:
+        subscriber-db-in:
+          destination: subscribing-db
+          contentType: application/json
+        from-admin-in:
+          destination: admin-request
+          contentType: application/json
+        from-exchange-in:
+          destination: info-for-subs
+          contentType: application/json
+
+        error-out:
+          destination: error
+          contentType: application/json
+        message-to-user-out:
+          destination: message-for-user
+          contentType: application/json
+        message-to-admin-out:
+          destination: info-for-admin
+          contentType: application/json
+
+  output:
+    ansi:
+      enabled: ALWAYS
+
+logging:
+  pattern: ${CONSOLE_LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{70}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}
+  level:
+    com:
+      netflix:
+        eureka: OFF
+        discovery: OFF
+
+#  file:
+#    name: logs/mylog.log
+
+#  level:
+#    org:
+#      springframework:
+#        web: debug
+#
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true

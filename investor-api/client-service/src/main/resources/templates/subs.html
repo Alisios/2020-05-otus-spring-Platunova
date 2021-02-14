@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <title>Подписки</title>
+    <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
+    <script src="/webjars/jquery/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+    <h2>Список подписок</h2>
+    <table class="table table-striped" id="bookList">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Тикер компании</th>
+            <th>Тип события</th>
+            <th>Посмотреть</th>
+            <th>Внести изменения</th>
+            <th>Удалить книгу</th>
+        </tr>
+        </tr>
+        </thead>
+        <tbody id="booksbody">
+        </tbody>
+
+        <script>
+            $(function () {
+                $.get('/subs/list').done(function (subs) {
+                    subs.forEach(function (sub) {
+                        $("#booksbody").append(`
+                    <tr >
+                       <td> ${sub.id} </td>
+                       <td> ${sub.ticker} </td>
+                        <td> ${sub.typeEvent}</td>
+                        <td><a href="${'/sub/' + sub.ticker + '/' + sub.typeEvent}">Show details</a></td>
+                        <td><a href="${'/sub/edit/' + sub.ticker + '/' + sub.typeEvent}">Edit</a></td>
+                       <td> <button id="deleteButton" onclick="RestDelete( ${sub.ticker}, ${sub.typeEvent})">  Delete </button></td>
+                    </tr>
+                `)
+                    });
+                })
+            });
+
+
+            var RestDelete = function (ticker, typeEvent) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/sub/' + ticker + '/' + typeEvent,
+                    dataType: 'json',
+                    async: true,
+                    success: function (id) {
+                        deleteRowWithId(document.getElementById('bookList'), id);
+                    },
+                    error: function (jqXHR) {
+                        alert(jqXHR.status + ' ' + jqXHR.responseText);
+                    }
+                });
+            }
+
+            const deleteRowWithId = (table, id) => {
+                var allRows = table.getElementsByTagName("tr");
+                var i = allRows.length;
+                while (i--) {
+                    if (table.rows[i].cells[0].innerHTML == id) {
+                        table.deleteRow(i);
+                    }
+                }
+            }
+        </script>
+
+</div>
+</body>
+</html>

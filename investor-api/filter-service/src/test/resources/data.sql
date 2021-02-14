@@ -1,0 +1,20 @@
+insert into Genres (type) values ('фэнтези')
+insert into Authors (name, surname) values ('Джоан', 'Роулинг')
+insert into Books(title, author_id, genre_id) values ('Гарри Поттер и Философский камень', 1, 1)
+insert into Comments(text, date, book_id) values ('Классная книга!', '2020-09-10 18:47:52.69', 1)
+insert into Comments(text,date, book_id) values ('И мне понравилась','2020-01-23 18:47:52.69', 1)
+insert into Comments(text,date, book_id) values ('Моя любимая','2020-02-11 18:47:52.69', 1)
+insert into Comments(text,date, book_id) values ('А мне больше орден феникса нравится','2020-05-01 18:47:52.69', 1)
+insert into Books(title, author_id, genre_id) values ('Гарри Поттер и Узник Азкабана', 1, 1)
+insert into Genres (type) values ('детектив')
+insert into Authors (name, surname) values ('Артур', 'Конан Дойль')
+insert into Books(title, author_id, genre_id) values ('Шерлок Холмс', 2, 2)
+insert into Genres (type) values ('ужасы')
+insert into Authors (name, surname) values ('Стивен', 'Кинг')
+insert into Books(title, author_id, genre_id) values ('Темная Башня', 3, 3)
+insert into Comments(text,date, book_id) values ('Очень долгая','2020-04-20 18:47:52.69', 4)
+insert into Comments(text,date, book_id) values ('классика!','2020-04-20 18:47:52.69', 3)
+insert into Comments(text,date, book_id) values ('Сириус лучший','2020-04-20 18:47:52.69', 2)
+
+
+

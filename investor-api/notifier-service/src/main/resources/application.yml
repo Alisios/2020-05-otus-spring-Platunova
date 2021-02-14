@@ -1,0 +1,90 @@
+server:
+  port: 6099
+
+service:
+  locale: ru_RU
+
+app:
+  server-email:
+  password:
+  tockien :
+
+
+mail-properties:
+  server-email: ${mail.server-email}
+  key: statistics
+
+
+bot:
+  name: Invest_Notifier_Bot
+  tokien: ${app.tockien}
+  reconnectPause: 5000
+
+spring:
+  application:
+    name: notifier-service
+
+
+  mail:
+    host: smtp.mail.ru
+    port: 465
+    username: ${app.server-email}
+    password: ${app.password}
+    protocol: smtps
+    properties:
+      mail:
+        smtp:
+          ssl.enable: true
+          auth: true
+          transport.protocol: smtps
+          starttls.enable: true
+
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092
+
+      bindings:
+        message-to-user-in:
+          destination: message-for-user
+          contentType: application/json
+
+        error-out:
+          destination: error
+          contentType: application/json
+
+management:
+  server:
+    port: 6090
+
+  endpoints:
+    web:
+      exposure:
+        include: health, info, beans, metrics, loggers, threaddump, configprops
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  pattern: ${CONSOLE_LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{70}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}
+
+  level:
+    root: info
+    com:
+      netflix:
+        eureka: OFF
+        discovery: OFF
+    org:
+      springframework: info
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
+
+
+#  file:
+#    name: logs/mylog.log

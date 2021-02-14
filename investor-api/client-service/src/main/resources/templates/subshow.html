@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <title>Подписки</title>
+    <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
+    <script src="/webjars/jquery/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+    <h2>Детали подписки</h2>
+    <div>
+        <form class="form-horizontal" th:value="${ticker}" th:value2="${typeEvent}">
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Тикер компании:</label>
+                <div class="col-sm-10">
+                    <p id="tickerInput" type="text" class="form-control"></p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Тип подписки:</label>
+                <div class="col-sm-10">
+                    <p id="typeEventInput" type="text" class="form-control"></p>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-1"></div>
+    <div class="col-sm-1">
+        <button id="showUsersButton" class="btn btn-outline-success "
+                onclick="showUsers(document.getElementById('commentForm'),document.getElementById('commentNewForm'))">
+            Показать
+            подписчиков
+        </button>
+    </div>
+
+    <div class=" col-sm-1"></div>
+    <button class="btn btn-outline-success" id="deleteButton"
+            onclick="deleteSub(ticker, typeEvent)"> Удалить
+        подписку
+    </button>
+</div>
+
+
+<br/>
+
+<div class="container" id="commentForm" style="display: none;">
+    <h2>Список подписчиков: </h2>
+    <table class="table table-hover" id="commentList">
+        <thead>
+        <tr>
+            <td style="display: none;">Id</td>
+            <th>Id пользователя:</th>
+            <th>Email для оповещения:</th>
+            <th>Telegram для оповещения:</th>
+            <th>Максимум цены:</th>
+            <th>Минимум цены:</th>
+            <th>Увеличение цены в процентах:</th>
+        </tr>
+
+        </thead>
+        <tbody id="commentListBody">
+        </tbody>
+
+    </table>
+</div>
+
+
+<div>
+    <form class="form-horizontal" id="commentNewForm" style="display: none;">
+        <input type="hidden"/>
+        <div class="form-group">
+
+    </form>
+
+</div>
+
+<script th:inline="javascript">
+    const ticker = [[${ticker}]];
+    const typeEvent = [[${typeEvent}]];
+    console.log(ticker);
+    console.log(typeEvent);
+
+    $(function () {
+        $.get('/sub/info/' + ticker + '/' + typeEvent).done(function (sub) {
+            console.log(sub.ticker);
+            console.log(sub.typeEvent);
+            $("#tickerInput").append( sub.ticker);
+            $("#typeEventInput").append(sub.typeEvent);
+            // document.getElementById('tickerInput').value = sub.ticker;
+            // document.getElementById('typeEventInput').value = sub.typeEvent;
+
+        });
+    });
+
+    var disp = function (form) {
+        form.style.display = "block";
+    }
+
+    var showUsers = function (form, form2) {
+        event.preventDefault();
+        $.ajax({
+            type: 'GET',
+            url: '/sub/' + ticker + '/' + typeEvent + '/users/list',
+            dataType: 'json',
+            async: true,
+            success: function (users) {
+                disp(form);
+                disp(form2);
+                document.getElementById("showUsersButton").disabled = true;
+                users.forEach(function (user) {
+                    $("#commentListBody").append(`
+                    <tr>
+                    <td style="display: none;"> ${user.id} </td>
+                    <td> ${user.user_real_id} </td>
+                    <td> ${user.email} </td>
+                    <td> ${user.telegram} </td>
+                    <td> ${user.max} </td>
+                     <td> ${user.min} </td>
+                      <td> ${user.change} </td>
+                    <td> <button class="btn btn-outline-warning" id="deleteUserBottom" onclick="deleteUser(${user.user_real_id})">  Delete </button></td>
+
+                    </tr>
+`)
+                });
+            },
+            error: function (jqXHR) {
+                alert(jqXHR.status + ' ' + jqXHR.responseText);
+            }
+        });
+    }
+
+    const deleteUser = function (userId) {
+        console.log(userId);
+        $.ajax({
+            type: 'DELETE',
+            url: '/sub/' + ticker + '/' + typeEvent + '/user/' + userId,
+            dataType: 'json',
+            async: true,
+            success: function (id) {
+                deleteRowWithId(document.getElementById('commentList'), userId);
+            },
+            error: function (jqXHR) {
+                alert(jqXHR.status + ' ' + jqXHR.responseText);
+            }
+        });
+    };
+
+    const deleteRowWithId = (table, id) => {
+        try {
+            var allRows = table.getElementsByTagName("tr");
+            var i = allRows.length;
+            while (i--) {
+                if (table.rows[i].cells[0].innerHTML == id) {
+                    table.deleteRow(i);
+                }
+            }
+        } catch (e) {
+            alert(e);
+        }
+    }
+
+    var deleteSub = function () {
+        console.log(ticker, typeEvent);
+        $.ajax({
+            type: 'DELETE',
+            url: '/sub/' + ticker + "/" + typeEvent,
+            dataType: 'json',
+            async: true,
+            success: function (id) {
+                window.location.href = "/subs";
+            },
+            error: function (jqXHR) {
+                alert(jqXHR.status + ' ' + jqXHR.responseText);
+            }
+        });
+    }
+
+
+</script>
+
+</body>
+</html>

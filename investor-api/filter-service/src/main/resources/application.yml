@@ -1,0 +1,65 @@
+server:
+  port: 8011
+
+service:
+  locale: ru_RU
+
+type-properties:
+  bond: Облигация
+  stock: Акция
+  ETF: Фондовая биржа
+  currency: Валюта
+
+
+springdoc:
+  api-docs:
+    path: /service-docs
+  packages-to-scan: ru.otus.spring
+
+spring:
+  application:
+    name: filter-service
+#  kafka:
+#    bootstrap-servers: ${kafka_bootstrap_servers:localhost:9092}
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092
+
+      bindings:
+        subscribing-filter-out:
+          destination: subscribing-filter
+          contentType: application/json
+        stock-info-in:
+          destination: stock-info
+          contentType: application/json
+        error-out:
+          destination: error
+          contentType: application/json
+        archive-out:
+          destination: archive
+          contentType: application/json
+
+
+logging:
+  pattern: ${CONSOLE_LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{70}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}
+
+  level:
+    root: info
+    com:
+      netflix:
+        eureka: OFF
+        discovery: OFF
+    org:
+      springframework: info
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
+
+#  file:
+#    name: logs/mylog.log

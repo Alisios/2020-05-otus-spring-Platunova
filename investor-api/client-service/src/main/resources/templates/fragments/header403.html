@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+</head>
+<body>
+
+<div class="container">
+    <div th:fragment="header">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#" th:href="@{/}">Home</a>
+                    <ul class="nav navbar-nav">
+                        <li><a href="#" th:href="@{/books}">Books</a></li>
+                        <li><a href="#" th:href="@{/authors}">Authors</a></li>
+                        <li><a href="#" th:href="@{/author/new}">Create author</a></li>
+                        <li><a href="#" th:href="@{/book/new}">Create book</a></li>
+                        <li><a href="#" th:href="@{/users}">Administration page</a></li>
+                        <li><a href="#" th:href="@{/logout}">Logout</a></li>
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+
+        <div class="jumbotron">
+            <div class="row text-center">
+                <div class="">
+                    <h2>К сожалению у Вас нет прав доступа к этому ресурсу.
+                        Вы можете выйти из системы и зайти с правами администратора</h2>
+                </div>
+            </div>
+            <div class="row text-center">
+                <img src="../../static/img/403.jpg" width="400"
+                     th:src="@{/img/403.jpg}"/>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
