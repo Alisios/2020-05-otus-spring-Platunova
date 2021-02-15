@@ -5,6 +5,8 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - springDb
 
   kafka:
     image: wurstmeister/kafka
@@ -30,16 +32,18 @@ services:
 
     volumes:
       - ./:/etc/kafka
+    networks:
+      - springDb
 
   redis:
     image: redis:latest
-    ports:
-      - 6379:6379
+#    ports:
+#      - 6379:6379
     volumes:
       - ./config/redis.conf:/redis.conf
-    command: [ "redis-server","--protected-mode", "no", "/redis.conf" ]
-#    networks:
-#      - springDb
+    command: [ "redis-server", "/redis.conf" ]
+    networks:
+      - springDb
 
   app:
     build:
@@ -50,10 +54,13 @@ services:
       - 8011:8011
     environment:
       SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:9092
+      REDIS_SERVER: redis
+      REDIS_PORT: 6379
     links:
       - kafka
-#    networks:
-#      - springDb
+      - redis
+    networks:
+      - springDb
 
-#networks:
-#  springDb:
+networks:
+  springDb:

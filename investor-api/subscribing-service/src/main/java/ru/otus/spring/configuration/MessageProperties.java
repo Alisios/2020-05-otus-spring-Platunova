@@ -13,8 +13,8 @@ import java.util.Map;
 @NoArgsConstructor
 public class MessageProperties {
 
-    Map<String, String> message;
+    private Map<String, String> message;
 
-    Map<String, String> eventType;
+    private Map<String, String> eventType;
 
 }

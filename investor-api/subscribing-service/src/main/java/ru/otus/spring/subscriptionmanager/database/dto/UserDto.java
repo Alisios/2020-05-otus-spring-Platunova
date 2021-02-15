@@ -14,9 +14,9 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDto {
 
-    private UUID id;
+    UUID id;
 
-    private String user_real_id;
+    String user_real_id;
 
     String email;
 

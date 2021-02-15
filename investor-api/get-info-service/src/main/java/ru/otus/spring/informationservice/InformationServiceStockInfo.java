@@ -1,6 +1,8 @@
 package ru.otus.spring.informationservice;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,10 +15,11 @@ import ru.otus.spring.dispatcher.InfoDispatcher;
  */
 @Service
 @Slf4j
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class InformationServiceStockInfo implements InformationService<StockInfo> {
 
-    private final InfoDispatcher infoDispatcher;
-    private final InfoDispatcher infoDispatcherCache;
+    InfoDispatcher infoDispatcher;
+    InfoDispatcher infoDispatcherCache;
 
     @Autowired
     InformationServiceStockInfo(@Qualifier("infoDispatcherRest") InfoDispatcher infoDispatcher,

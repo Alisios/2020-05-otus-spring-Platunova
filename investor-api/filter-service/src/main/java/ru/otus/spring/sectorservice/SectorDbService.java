@@ -1,13 +1,13 @@
-package ru.otus.spring.subscriptionmanager.database;
+package ru.otus.spring.sectorservice;
 
-import ru.otus.spring.subscriptionmanager.database.entity.StockType;
+import ru.otus.spring.sectorservice.entity.StockType;
 
 import java.util.List;
 
 /**
  * сервис для работы с репозиторием типов ценных бумаг
  */
-public interface TypeDbService {
+public interface SectorDbService {
 
     /**
      * метод предназначен для получения сектора экономики компании из БД

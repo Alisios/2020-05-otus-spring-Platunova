@@ -1,6 +1,8 @@
 package ru.otus.spring.dispatcher;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -17,10 +19,11 @@ import ru.otus.spring.informationservice.StockInfo;
 @Service("infoDispatcherDefault")
 @RequiredArgsConstructor
 @Slf4j
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class InfoDispatcherDefault implements InfoDispatcher {
 
-    private final RestTemplate restTemplate;
-    private final RestProperties restProperties;
+    RestTemplate restTemplate;
+    RestProperties restProperties;
 
     @Override
     public StockInfo getInfo() {

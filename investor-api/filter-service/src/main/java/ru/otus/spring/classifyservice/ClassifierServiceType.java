@@ -1,4 +1,4 @@
-package ru.otus.spring.handleservice;
+package ru.otus.spring.classifyservice;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -7,8 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import ru.otus.spring.configuration.TypeProperties;
-import ru.otus.spring.subscriptionmanager.database.TypeDbService;
+
+import ru.otus.spring.sectorservice.SectorDbService;
+import ru.otus.spring.typeservice.TypeService;
+import ru.otus.spring.typeservice.TypeServiceException;
+
 
 /**
  * сервис для классификации ценных бумаг: по типу и по сектору экономики,
@@ -20,26 +23,22 @@ import ru.otus.spring.subscriptionmanager.database.TypeDbService;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ClassifierServiceType implements ClassifierService {
 
-    TypeDbService typeDbService;
-    TypeProperties typeProperties;
+    SectorDbService sectorDbService;
+    TypeService typeService;
 
     @Override
     public String defineType(StockInfo stockInfo) {
-        String name = stockInfo.getCompanyName();
-        if (stockInfo.getExchange() == null)
-            if (name.contains("Bond"))                   //заменитЬ!! упрощенно)
-                return typeProperties.getBond();
-            else if (name.contains("Cur"))
-                return typeProperties.getCurrency();
-            else return typeProperties.getStock();
-        else
-            return typeProperties.getETF();
-
+        try {
+            return typeService.classify(stockInfo);
+        } catch (Exception ex) {
+            log.error("Ошибка определения типа ценной бумаги! Сообщение не может быть обработано", ex);
+            throw new TypeServiceException("Ошибка определения типа ценной бумаги! Сообщение не может быть обработано", ex);
+        }
     }
 
     @Override
     @Retryable(value = Exception.class, maxAttempts = 3, backoff = @Backoff(delay = 100))
     public String defineSector(StockInfo stockInfo) {
-        return typeDbService.getSectorByTicker(stockInfo.getTicker());
+        return sectorDbService.getSectorByTicker(stockInfo.getTicker());
     }
 }

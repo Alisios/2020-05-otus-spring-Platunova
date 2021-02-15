@@ -10,14 +10,13 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class SubscriptionDtoFromUser {
 
     private UUID id;
 
-    String ticker;
+    private String ticker;
 
-    String typeEvent;
+    private String typeEvent;
 
-    UserDto userDto;
+    private UserDto userDto;
 }

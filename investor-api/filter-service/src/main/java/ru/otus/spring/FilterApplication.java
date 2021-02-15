@@ -13,7 +13,7 @@ public class FilterApplication {
 
     public static void main(String[] args) {
 
-         SpringApplication.run(FilterApplication.class);
+        SpringApplication.run(FilterApplication.class);
 
     }
 }

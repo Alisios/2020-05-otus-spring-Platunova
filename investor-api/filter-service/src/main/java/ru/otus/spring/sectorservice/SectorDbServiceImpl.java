@@ -1,11 +1,13 @@
-package ru.otus.spring.subscriptionmanager.database;
+package ru.otus.spring.sectorservice;
 
+import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.spring.subscriptionmanager.database.entity.StockType;
+import ru.otus.spring.sectorservice.entity.StockType;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,19 +19,20 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class TypeDbServiceImpl implements TypeDbService {
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+public class SectorDbServiceImpl implements SectorDbService {
 
-    private final TypeRepository repository;
+    SectorRepository repository;
 
     @Override
     @Transactional(readOnly = true)
     public String getSectorByTicker(@NonNull String ticker) {
         try {
             return repository.findByTicker(ticker).orElseThrow(() ->
-                    new TypeDbServiceException("Ошибка при определении сектора. Заданного тикера не существует!")).getSector();
+                    new SectorDbServiceException("Ошибка при определении сектора. Заданного тикера не существует!")).getSector();
         } catch (Exception ex) {
             log.error("Ошибка при определении сектора по тикеру компании {}", ticker);
-            throw new TypeDbServiceException("Ошибка при определении сектора по тикеру компании", ex);
+            throw new SectorDbServiceException("Ошибка при определении сектора по тикеру компании", ex);
         }
     }
 
@@ -40,7 +43,7 @@ public class TypeDbServiceImpl implements TypeDbService {
             return repository.findAll();
         } catch (Exception ex) {
             log.error("Ошибка при получении всех секторов");
-            throw new TypeDbServiceException("Ошибка при получении всех секторов", ex);
+            throw new SectorDbServiceException("Ошибка при получении всех секторов", ex);
         }
     }
 
@@ -51,7 +54,7 @@ public class TypeDbServiceImpl implements TypeDbService {
             repository.deleteById(id);
         } catch (Exception ex) {
             log.error("Ошибка при удалении сектора {}", id);
-            throw new TypeDbServiceException("Ошибка при удалении сектора " + id + " .", ex);
+            throw new SectorDbServiceException("Ошибка при удалении сектора " + id + " .", ex);
         }
     }
 
@@ -63,7 +66,7 @@ public class TypeDbServiceImpl implements TypeDbService {
             repository.save(stockType);
         } catch (Exception ex) {
             log.error("Ошибка при добавлении сектора {}", stockType);
-            throw new TypeDbServiceException("Ошибка при добавлении сектора " + stockType + " .", ex);
+            throw new SectorDbServiceException("Ошибка при добавлении сектора " + stockType + " .", ex);
         }
     }
 

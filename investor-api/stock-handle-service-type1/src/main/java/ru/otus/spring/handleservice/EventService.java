@@ -21,4 +21,13 @@ public interface EventService {
      * @return - список событий
      */
     List<StockInfoRes> getResult(StockInfoFull info);
+
+    /**
+     * метод предназначен для формирования сообщения пользователю в
+     * зависимости от типа события
+     *
+     * @param info информация с биржи (с наполненной информацией)
+     * @return - сообщение
+     */
+    String getMessage(StockInfoRes info);
 }

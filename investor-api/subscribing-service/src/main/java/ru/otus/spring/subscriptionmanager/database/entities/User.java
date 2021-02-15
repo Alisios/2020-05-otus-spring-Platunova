@@ -20,11 +20,11 @@ public class User {
     @GeneratedValue//(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     @org.hibernate.annotations.Type(type = "pg-uuid")
-    private UUID id;
+    UUID id;
 
     @Column(name = "user_real_id")
     @NotNull
-    private String user_real_id;
+    String user_real_id;
 
     @Column(name = "email")
     String email;

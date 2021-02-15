@@ -4,20 +4,13 @@ server:
 service:
   locale: ru_RU
 
-app:
-  server-email:
-  password:
-  tockien :
-
-
 mail-properties:
-  server-email: ${mail.server-email}
+  server-email:
   key: statistics
 
-
 bot:
-  name: Invest_Notifier_Bot
-  tokien: ${app.tockien}
+  name:
+  tokien:
   reconnectPause: 5000
 
 spring:
@@ -28,8 +21,8 @@ spring:
   mail:
     host: smtp.mail.ru
     port: 465
-    username: ${app.server-email}
-    password: ${app.password}
+    username:
+    password:
     protocol: smtps
     properties:
       mail:

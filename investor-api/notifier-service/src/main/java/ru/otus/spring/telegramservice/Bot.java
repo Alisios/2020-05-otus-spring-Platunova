@@ -19,9 +19,11 @@ import ru.otus.spring.configuration.BotProperties;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class Bot extends TelegramLongPollingBot {
+
     BotProperties properties;
 
     @Override
+    //позже дореализовать прием сообщений и внесение в БД
     public void onUpdateReceived(Update update) {
         log.info("{}, {}", update.getMessage(), update.getUpdateId());
         if (update.hasMessage()) {

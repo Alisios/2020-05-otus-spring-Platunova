@@ -1,4 +1,5 @@
-package ru.otus.spring.handleservice;
+package ru.otus.spring.classifyservice;
+
 
 
 /**
@@ -22,5 +23,6 @@ public interface ClassifierService {
      * @return - сектор экономики компании
      */
     String defineSector(StockInfo stockInfo);
+
 
 }

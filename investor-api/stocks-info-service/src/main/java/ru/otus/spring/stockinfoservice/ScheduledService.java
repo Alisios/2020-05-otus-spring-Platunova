@@ -30,8 +30,7 @@ final class ScheduledService {
     Producer producer;
     StockMapper mapper;
 
-   // @Scheduled(cron = "0 0 0 * * ?")
-   @Scheduled(fixedRate = 120000) //временно! для демонстрации
+   @Scheduled(cron = "${ru.otus.spring.cron}")
     void update() {
         try {
             List<StockDto> list = stockManager.getAllStocksOfLastDay();

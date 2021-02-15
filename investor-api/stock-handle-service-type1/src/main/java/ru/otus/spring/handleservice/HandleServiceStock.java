@@ -24,17 +24,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class HandleServiceStock implements HandleService {
-
-    MessageCreator messageCreator;
     EventService eventService;
-
 
     @Override
     public List<ResultInfo> handleMessageFromExchange(StockInfoFull info) {
         List<StockInfoRes> stockInfo = eventService.getResult(info);
         return stockInfo.stream().map(stock -> ResultInfo.builder()
                 .id(UUID.randomUUID().toString())
-                .message(messageCreator.createMessage(stock))
+                .message(eventService.getMessage(stock))
                 .typeEvent(stock.getTypeEvent())
                 .ticker(info.getTicker())
                 .min(stock.getMin())

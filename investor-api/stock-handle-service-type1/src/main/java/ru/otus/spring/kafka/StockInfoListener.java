@@ -7,8 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+import ru.otus.spring.cacheservice.CacheService;
+import ru.otus.spring.configuration.EventTypeProperties;
 import ru.otus.spring.handleservice.HandleService;
 import ru.otus.spring.handleservice.models.StockInfoFull;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Сервис, ожидающий сообщения от кафки и посылающий
@@ -16,15 +20,13 @@ import ru.otus.spring.handleservice.models.StockInfoFull;
  */
 @Service
 @Slf4j
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class StockInfoListener implements Listener<StockInfoFull> {
 
-    HandleService handleService;
-    KafkaProducer producer;
+    private final HandleService handleService;
+    private final KafkaProducer producer;
 
     @StreamListener(HandleStreams.SUBSCRIBING_FILTER_IN)
-    //@SendTo(HandleStreams.SUBS_OUT)
     public void handleMessage(@Payload StockInfoFull stockInfo) {
         log.info("Получено сообщение из кафки: {}", stockInfo);
         handleService.handleMessageFromExchange(stockInfo).forEach(producer::sendInfo);

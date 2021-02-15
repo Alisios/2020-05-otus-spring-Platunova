@@ -11,8 +11,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.otus.spring.subscriptionmanager.database.TypeDbService;
-import ru.otus.spring.subscriptionmanager.database.entity.StockType;
+import ru.otus.spring.sectorservice.SectorDbService;
+import ru.otus.spring.sectorservice.entity.StockType;
 
 import java.util.List;
 
@@ -20,14 +20,6 @@ import java.util.List;
 @RestController
 @Tag(name = "Контроллер по сектору ценных бумаг")
 //http://localhost:8011/swagger-ui.html
-//@ApiResponses({
-//        @ApiResponse(responseCode = "400", description = "Ошибка на стороне клиента",
-//                content = @Content(schema = @Schema(implementation = ErrorResponse.class),
-//                        mediaType = "application/json")),
-//        @ApiResponse(responseCode = "500", description = "Ошибка на стороне сервера",
-//                content = @Content(schema = @Schema(implementation = ErrorResponse.class),
-//                        mediaType = "application/json"))
-//})
 @ResponseStatus(code = HttpStatus.OK)
 @CrossOrigin
 @RequiredArgsConstructor
@@ -35,7 +27,7 @@ import java.util.List;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class Controller {
 
-    TypeDbService service;
+    SectorDbService service;
 
     @Operation(summary = "Получение всех секторов компаний ценных бумаг")
     @GetMapping({"/sectors"})

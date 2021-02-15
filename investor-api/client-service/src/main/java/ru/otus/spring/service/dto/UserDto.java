@@ -11,20 +11,19 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDto {
 
     private UUID id;
 
     private String user_real_id;
 
-    String email;
+    private String email;
 
-    String telegram;
+    private String telegram;
 
-    double max;
+    private double max;
 
-    double min;
+    private double min;
 
-    double change;
+    private double change;
 }

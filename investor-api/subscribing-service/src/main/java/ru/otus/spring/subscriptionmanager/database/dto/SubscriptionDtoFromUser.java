@@ -12,7 +12,7 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SubscriptionDtoFromUser {
 
-    private UUID id;
+    UUID id;
 
     String ticker;
 

@@ -1,7 +1,9 @@
 package ru.otus.spring.informationservice;
 
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -15,13 +17,14 @@ import ru.otus.spring.kafka.Producer;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class SchedulerService {
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+class SchedulerService {
 
-    private final InformationService<StockInfo> informationService;
+    InformationService<StockInfo> informationService;
 
-    private final Producer publisher;
+    Producer publisher;
 
-    @Scheduled(fixedRate = 60000)//(cron = "0 * * * * ?")
+    @Scheduled(cron = "${ru.otus.spring.cron}")
     void getInfoFromExchange() {
         try {
             publisher.sendInfo(informationService.getStockInfoForKafka());

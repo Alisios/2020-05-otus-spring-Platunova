@@ -10,15 +10,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class User {
 
-    long id;
+    private long id;
 
-    String name;
+    private String name;
 
-    String surname;
+    private String surname;
 
-    String login;
+    private String login;
 
-    String password;
+    private String password;
 
     @Override
     public String toString() {

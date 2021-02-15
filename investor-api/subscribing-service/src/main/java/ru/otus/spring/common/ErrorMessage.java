@@ -11,9 +11,9 @@ import ru.otus.spring.subscriptionmanager.database.dto.UserDto;
 @NoArgsConstructor
 public class ErrorMessage {
 
-    Throwable ex;
+    private Throwable ex;
 
-    String info;
+    private String info;
 
-    String message;
+    private String message;
 }

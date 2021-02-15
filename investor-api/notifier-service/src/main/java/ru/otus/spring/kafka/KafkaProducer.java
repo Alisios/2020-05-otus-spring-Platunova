@@ -1,6 +1,8 @@
 package ru.otus.spring.kafka;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHeaders;
@@ -15,9 +17,10 @@ import ru.otus.spring.commons.ErrorMessage;
 @Component
 @Slf4j
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class KafkaProducer implements Producer {
 
-    private final NotifierStreams infoStreams;
+    NotifierStreams infoStreams;
 
     @Override
     public void sendError(ErrorMessage error) {

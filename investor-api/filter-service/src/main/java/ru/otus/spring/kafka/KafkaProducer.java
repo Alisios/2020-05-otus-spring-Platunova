@@ -10,7 +10,7 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MimeTypeUtils;
-import ru.otus.spring.handleservice.StockInfoFull;
+import ru.otus.spring.classifyservice.StockInfoFull;
 import ru.otus.spring.common.ErrorMessage;
 
 /**

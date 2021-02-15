@@ -1,12 +1,13 @@
-package ru.otus.spring.subscriptionmanager.database;
+package ru.otus.spring.sectorservice;
+
 
 import org.springframework.data.keyvalue.repository.KeyValueRepository;
-import ru.otus.spring.subscriptionmanager.database.entity.StockType;
+import ru.otus.spring.sectorservice.entity.StockType;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface TypeRepository extends KeyValueRepository<StockType, String> {
+public interface SectorRepository extends KeyValueRepository<StockType, String> {
 
     Optional<StockType> findById(String id);
 

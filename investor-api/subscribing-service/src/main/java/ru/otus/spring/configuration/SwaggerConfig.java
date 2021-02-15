@@ -13,7 +13,7 @@ public class SwaggerConfig {
     public OpenAPI switchSwagger() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Сервис определения типа ценной бумаги и фильтрации")
+                        .title("Сервис подписок")
                         .description("")
                         .version(""))
                 .externalDocs(new ExternalDocumentation()

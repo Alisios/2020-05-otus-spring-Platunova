@@ -14,7 +14,7 @@ public class Controller {
 
     @GetMapping("/info/source/1/")
     public StockInfo getLastInfoByTicker() {
-        return StockInfo.builder().companyName("TestName_Акция")
+        return StockInfo.builder().companyName("Сбербанк_Stock")
                 .high(400.5)
                 .close(200.5)
                 .open(210.5)

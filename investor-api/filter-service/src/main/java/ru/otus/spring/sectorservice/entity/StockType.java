@@ -1,4 +1,4 @@
-package ru.otus.spring.subscriptionmanager.database.entity;
+package ru.otus.spring.sectorservice.entity;
 
 
 import lombok.AllArgsConstructor;

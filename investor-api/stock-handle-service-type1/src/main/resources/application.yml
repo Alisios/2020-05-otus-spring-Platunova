@@ -4,6 +4,11 @@ server:
 service:
   locale: ru_RU
 
+event-type-handler:
+  eventType:
+    event_1: eventChange
+    event_2: eventMax
+    event_3: eventMin
 
 type-properties:
   maxChange: 5
@@ -69,7 +74,17 @@ eureka:
   instance:
     preferIpAddress: true
 
+management:
+  server:
+    port: 4029
 
+  endpoints:
+    web:
+      exposure:
+        include: health, info, beans, metrics, loggers, threaddump, configprops
+  endpoint:
+    health:
+      show-details: always
 
 #  file:
 #    name: logs/mylog.log

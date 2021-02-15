@@ -12,6 +12,24 @@ management:
     web:
       exposure:
         include: health, info, beans, metrics, loggers, hystrix-stream, threaddump,configprops
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      show-details: always
+
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 1000
+ribbon:
+  readTimeout: 1000
+  connectTimeout: 1000
 
 spring:
   application:
@@ -43,8 +61,8 @@ rest:
   pathInfoSource4: /info/soutce/4/
   readTimeout: 5
   connectTimeout: 4
-
 #  http://api.marketstack.com/v1/eod
+
 
 logging:
   pattern: ${CONSOLE_LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{70}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}
@@ -68,5 +86,9 @@ eureka:
   instance:
     preferIpAddress: true
 
+ru:
+  otus:
+    spring:
+      cron: "*/5 * * * * ?"
 #  file:
 #    name: logs/mylog.log

@@ -8,10 +8,10 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Service;
-import ru.otus.spring.handleservice.ClassifierService;
-import ru.otus.spring.handleservice.StockInfo;
-import ru.otus.spring.handleservice.StockInfoFull;
-import ru.otus.spring.handleservice.StockInfoMapper;
+import ru.otus.spring.classifyservice.ClassifierService;
+import ru.otus.spring.classifyservice.StockInfo;
+import ru.otus.spring.classifyservice.StockInfoFull;
+import ru.otus.spring.classifyservice.StockInfoMapper;
 import ru.otus.spring.configuration.TypeProperties;
 
 /**

@@ -1,4 +1,4 @@
-package ru.otus.spring.handleservice;
+package ru.otus.spring.classifyservice;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -10,14 +10,13 @@ import java.time.LocalDateTime;
 /**
  * Информация которая приходит с биржи
  * поля могут быть по разному заполнены в зависимости от источника
- * дополненная типом и сектором
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class StockInfoFull {
+public class StockInfo {
 
     String id;
 
@@ -28,8 +27,6 @@ public class StockInfoFull {
     double lastCost;
 
     String type;
-
-    String sector;
 
     String ticker;
 

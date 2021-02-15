@@ -79,7 +79,21 @@ logging:
 #      apache:
 #        kafka:OFF
 
+management:
+  server:
+    port: 7111
 
+  endpoints:
+    web:
+      exposure:
+        include: health, info, beans, metrics, loggers, threaddump, configprops
+  endpoint:
+    health:
+      show-details: always
+ru:
+  otus:
+    spring:
+      cron: "0 * * * * ?"
 
 #  file:
 #    name: logs/mylog.log

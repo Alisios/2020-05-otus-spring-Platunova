@@ -5,15 +5,13 @@ import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@ConfigurationProperties(prefix = "type-properties")
-@Component("typeProperties")
+import java.util.HashMap;
+
+@Component
+@ConfigurationProperties(prefix = "event-type-handler")
 @Data
 @NoArgsConstructor
-public class TypeProperties {
+public class EventTypeProperties {
 
-    private String bond;
-    private String stock;
-    private String ETF;
-    private String currency;
-
+    private HashMap<String, String> eventType;
 }

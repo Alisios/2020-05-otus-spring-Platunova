@@ -23,7 +23,7 @@ public class Subscription {
     @Id
     @GeneratedValue
     @org.hibernate.annotations.Type(type = "pg-uuid")
-    private UUID id;
+     UUID id;
 
     @Column(name = "ticker")
     String ticker;
