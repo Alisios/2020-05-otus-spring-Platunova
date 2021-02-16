@@ -8,4 +8,6 @@ public interface EventTypeService {
     StockInfoRes checkEvent(StockInfoFull stockInfoFull);
 
     String createMessage(StockInfoRes info);
+
+    String getType();
 }

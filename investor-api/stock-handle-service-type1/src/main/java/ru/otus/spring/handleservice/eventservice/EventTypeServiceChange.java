@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.otus.spring.configuration.EventTypeProperties;
 import ru.otus.spring.configuration.MessageProperties;
 import ru.otus.spring.handleservice.models.StockInfoFull;
 import ru.otus.spring.handleservice.models.StockInfoMapper;
@@ -18,6 +19,7 @@ public class EventTypeServiceChange implements EventTypeService {
 
     StockInfoMapper mapper;
     MessageProperties properties;
+    EventTypeProperties eventTypeProperties;
 
     @Override
     public StockInfoRes checkEvent(StockInfoFull info) {
@@ -33,5 +35,10 @@ public class EventTypeServiceChange implements EventTypeService {
                 + info.getCompanyName() + " "
                 + properties.getChange().get("middle")
                 + " " + info.getChange() + "%!";
+    }
+
+    @Override
+    public String getType() {
+        return eventTypeProperties.getEventType().get("event_1");
     }
 }

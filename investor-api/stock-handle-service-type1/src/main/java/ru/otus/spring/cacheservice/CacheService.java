@@ -25,12 +25,12 @@ public interface CacheService {
      *
      * @return получение кэша
      */
-    ConcurrentMap<Object, Object> getCacheBuilder();
+    ConcurrentMap<Object, Object> getCache();
 
-    /**
-     * метод предназначен для получения обработчиков бизнес событий
-     *
-     * @return мапа из типа события и его обработчика
-     */
-    ConcurrentHashMap<String, EventTypeService> getHandlerMap();
+//    /**
+//     * метод предназначен для получения обработчиков бизнес событий
+//     *
+//     * @return мапа из типа события и его обработчика
+//     */
+  //  ConcurrentHashMap<String, EventTypeService> getHandlerMap();
 }

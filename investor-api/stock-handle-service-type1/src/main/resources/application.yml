@@ -15,16 +15,16 @@ type-properties:
   maxCost: 450
   minCost: 200
   change:
-    name: event_1
+    name: eventChange
     message: Цена акции компании
     middle: выросла на
 
   max:
-    name: event_2
+    name: eventMax
     message: Максимальная цена акции компании
     middle: достигла
   min:
-    name: event_3
+    name: eventMin
     message: Минимальная цена акции компании
     middle: упала ниже
 

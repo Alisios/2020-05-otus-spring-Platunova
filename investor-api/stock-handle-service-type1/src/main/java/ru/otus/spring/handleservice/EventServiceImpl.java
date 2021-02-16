@@ -8,15 +8,13 @@ import org.springframework.stereotype.Service;
 import ru.otus.spring.cacheservice.CacheService;
 import ru.otus.spring.configuration.EventTypeProperties;
 import ru.otus.spring.configuration.MessageProperties;
+import ru.otus.spring.handleservice.eventservice.EventTypeService;
 import ru.otus.spring.handleservice.models.CacheStockInfo;
 import ru.otus.spring.handleservice.models.StockInfoFull;
 import ru.otus.spring.handleservice.models.StockInfoMapper;
 import ru.otus.spring.handleservice.models.StockInfoRes;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -28,20 +26,22 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class EventServiceImpl implements EventService {
 
-    EventTypeProperties eventTypeProperties;
-    CacheService cacheService;
+    Map<String, EventTypeService> handlerMap = new HashMap<>();
+
+    EventServiceImpl(List<EventTypeService> handlers) {
+        handlers.forEach(h -> handlerMap.put(h.getType(), h));
+    }
 
     @Override
     public List<StockInfoRes> getResult(StockInfoFull info) {
-        return eventTypeProperties.getEventType().keySet().stream().map(key -> cacheService.getHandlerMap().get(key).checkEvent(info)).filter(Objects::nonNull).collect(Collectors.toList());
+        return handlerMap.keySet().stream().map(key -> handlerMap.get(key).checkEvent(info)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     @Override
     public String getMessage(StockInfoRes info) {
-        return cacheService.getHandlerMap().get(info.getTypeEvent()).createMessage(info);
+        return handlerMap.get(info.getTypeEvent()).createMessage(info);
     }
 }

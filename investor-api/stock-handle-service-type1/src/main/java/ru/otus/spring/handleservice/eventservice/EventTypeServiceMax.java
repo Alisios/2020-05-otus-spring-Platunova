@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.cacheservice.CacheService;
+import ru.otus.spring.configuration.EventTypeProperties;
 import ru.otus.spring.configuration.MessageProperties;
 import ru.otus.spring.handleservice.models.CacheStockInfo;
 import ru.otus.spring.handleservice.models.StockInfoFull;
@@ -20,20 +21,21 @@ public class EventTypeServiceMax implements EventTypeService {
 
     StockInfoMapper mapper;
     MessageProperties properties;
+    EventTypeProperties eventTypeProperties;
     CacheService cacheService;
 
     @Override
     public StockInfoRes checkEvent(StockInfoFull info) {
-        if (cacheService.getCacheBuilder() == null) {
+        if (cacheService.getCache() == null) {
             log.error("Ошибка обращения к кешу при обработке сообщения");
             return null;
         }
         if (info.getLastCost() > ((CacheStockInfo) cacheService
-                .getCacheBuilder().
+                .getCache().
                         get(info.getTicker())).getHigh()) {
             StockInfoRes res = mapper.map(info);
             res.setTypeEvent(properties.getMax().get("name"));
-            res.setMax(((CacheStockInfo) cacheService.getCacheBuilder().get(info.getTicker())).getHigh());
+            res.setMax(((CacheStockInfo) cacheService.getCache().get(info.getTicker())).getHigh());
             return res;
         } else return null;
     }
@@ -44,5 +46,10 @@ public class EventTypeServiceMax implements EventTypeService {
                 + info.getCompanyName() + " "
                 + properties.getMax().get("middle")
                 + " " + info.getMax() + "!";
+    }
+
+    @Override
+    public String getType() {
+        return eventTypeProperties.getEventType().get("event_2");
     }
 }
