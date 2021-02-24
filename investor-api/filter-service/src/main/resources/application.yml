@@ -31,21 +31,15 @@ springdoc:
   packages-to-scan: ru.otus.spring
 
 spring:
-  #  redis:
-  #    host: ${REDIS_SERVER}
-  #    port: ${REDIS_PORT:6379}
-  #    password:
-
   application:
     name: filter-service
-  #  kafka:
-  #    bootstrap-servers: ${kafka_bootstrap_servers:localhost:9092}
+
   cloud:
     stream:
       kafka:
         binder:
           brokers: localhost:9092
-      #          brokers: ${SPRING_KAFKA_BOOTSTRAPSERVERS}
+
 
       bindings:
         subscribing-filter-out:

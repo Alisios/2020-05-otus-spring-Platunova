@@ -5,12 +5,12 @@ service:
   locale: ru_RU
 
 mail-properties:
-  server-email:
+  server-email: invest-api-service@mail.ru
   key: statistics
 
 bot:
-  name:
-  tokien:
+  name: Invest_Notifier_Bot
+  tokien: 1694456141:AAEBG4HSuZNvWUhmaBK9EqxCkao9bEuX6G8
   reconnectPause: 5000
 
 spring:
@@ -21,8 +21,8 @@ spring:
   mail:
     host: smtp.mail.ru
     port: 465
-    username:
-    password:
+    username: invest-api-service@mail.ru
+    password: d1p10m@1
     protocol: smtps
     properties:
       mail:
