@@ -1,0 +1,199 @@
+version: '3.5'
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  mongo-data:
+
+services:
+  get-info-service:
+    container_name: get-info-service
+    build:
+      context: ./get-info-service
+      dockerfile: Dockerfile
+    privileged: true
+    ports:
+      - 18099:8099
+      - 18090:8090
+    expose:
+      - 18099
+      - 18090
+    environment:
+      TZ: 'Europe/Moscow'
+      SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:9092
+    restart: unless-stopped
+    links:
+      - kafka
+
+
+  notifier-service:
+    container_name: notifier-service
+    build:
+      context: ./notifier-service
+      dockerfile: Dockerfile
+    privileged: true
+    ports:
+      - 16099:6099
+      - 16090:6090
+    expose:
+      - 16099
+      - 16090
+    environment:
+      TZ: 'Europe/Moscow'
+      SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:9092
+    restart: unless-stopped
+    links:
+      - kafka
+
+  sub-service:
+    container_name: sub-service
+    build:
+      context: ./subscribing-service
+      dockerfile: Dockerfile
+    privileged: true
+    ports:
+      - 12090:2090
+      - 12091:2091
+    expose:
+      - 12090
+      - 12091
+    environment:
+      TZ: 'Europe/Moscow'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/alisa
+      SPRING_DATASOURCE_USERNAME: alisa
+      SPRING_DATASOURCE_PASSWORD: alisa
+      SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:9092
+    restart: unless-stopped
+    depends_on:
+      - db
+    links:
+      - kafka
+
+  stock-handle-service:
+    container_name: stock-handle-service
+    build:
+      context: ./stock-handle-service-type1
+      dockerfile: Dockerfile
+    privileged: true
+    ports:
+      - 14011:4011
+      - 14029:4029
+    expose:
+      - 14011
+      - 14029
+    environment:
+      TZ: 'Europe/Moscow'
+      SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:9092
+    restart: unless-stopped
+    links:
+      - kafka
+
+  stock-history-service:
+    container_name: history-service
+    build:
+      context: ./stocks-info-service
+      dockerfile: Dockerfile
+    privileged: true
+    ports:
+      - 17091:7091
+      - 17111:7111
+    expose:
+      - 17091
+      - 17111
+    environment:
+      TZ: 'Europe/Moscow'
+      MONGO_HOST: mongo-db
+      SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:9092
+    restart: unless-stopped
+    depends_on:
+      - mongo-db
+    links:
+      - kafka
+
+  db:
+    container_name: db
+    image: library/postgres:10
+    environment:
+      TZ: 'Europe/Moscow'
+      POSTGRES_USER: alisa
+      POSTGRES_PASSWORD: alisa
+      POSTGRES_DB: alisa
+
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+    restart: unless-stopped
+
+  filter-service:
+    container_name: filter-service
+    build:
+      context: ./filter-service
+      dockerfile: Dockerfile
+    privileged: true
+    ports:
+      - 18011:8011
+      - 18012:8012
+    expose:
+      - 18011
+      - 18012
+    environment:
+      TZ: 'Europe/Moscow'
+      REDIS_SERVER: redis-db
+      REDIS_PORT: 6379
+      SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:9092
+    restart: unless-stopped
+    depends_on:
+      - redis-db
+    links:
+      - kafka
+
+  redis-db:
+    container_name: redis-db
+    image: redis:alpine
+    ports:
+      - 6379:6379
+    restart: unless-stopped
+    volumes:
+      - ./storage/redis/data:/data
+#    volumes:
+#      - ./config/redis.conf:/redis.conf
+  mongo-db:
+    container_name: mongo-db
+    image: mongo:latest
+
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - 27017:27017
+    restart: unless-stopped
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    restart: unless-stopped
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    restart: unless-stopped
+    image: wurstmeister/kafka
+    ports:
+      - 9092:9092
+    hostname: kafka
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9093
+      KAFKA_LISTENERS: PLAINTEXT://:9092,PLAINTEXT_HOST://:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    depends_on:
+      - zookeeper
+    volumes:
+      - ./:/etc/kafka

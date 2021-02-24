@@ -16,6 +16,8 @@ bot:
 spring:
   application:
     name: notifier-service
+  kafka:
+    bootstrap-servers: ${kafka_bootstrap_servers:localhost:9092}
 
 
   mail:
