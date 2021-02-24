@@ -1,0 +1,45 @@
+version: '3'
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  postgres-data:
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    privileged: true
+    ports:
+      - 19091:9091
+    expose:
+      - 19091
+    environment:
+      TZ: 'Europe/Moscow'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/alisa
+      SPRING_DATASOURCE_USERNAME: alisa
+      SPRING_DATASOURCE_PASSWORD: alisa
+
+    restart: unless-stopped
+    depends_on:
+      - db
+
+
+  db:
+    container_name: db
+    image: library/postgres:10
+    environment:
+      TZ: 'Europe/Moscow'
+      POSTGRES_USER: alisa
+      POSTGRES_PASSWORD: alisa
+      POSTGRES_DB: alisa
+
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+    restart: unless-stopped

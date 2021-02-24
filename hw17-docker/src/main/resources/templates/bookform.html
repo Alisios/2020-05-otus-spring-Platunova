@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+    <title>Книги</title>
+
+    <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
+    <script src="webjars/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+    <h2>Описание книги</h2>
+    <div>
+        <form id="bookForm" class="form-horizontal" th:value="${bookId}">
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Название книги:</label>
+                <div class="col-sm-10">
+                    <input id="bookTitleInput" type="text" class="form-control"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Имя автора:</label>
+                <div class="col-sm-10">
+                    <input id="nameInput" type="text" class="form-control"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Фамилия автора:</label>
+                <div class="col-sm-10">
+                    <input id="surnameInput" type="text" class="form-control"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Жанр книги:</label>
+                <div class="col-sm-10">
+                    <input id="bookGenreInput" type="text" class="form-control"/>
+                </div>
+            </div>
+
+            <div class="row">
+                <button type="submit" class="btn btn-default" onclick="saveBook()">Внести книгу</button>
+            </div>
+        </form>
+    </div>
+
+
+    <script th:inline="javascript">
+        const bookIdJs = [[${bookId}]];
+        console.log(bookIdJs);
+        try {
+            $(function () {
+                $.get('/book/info/' + bookIdJs).done(function (bookDto) {
+                    console.log(bookDto.title);
+                    console.log(bookDto.authorDto.name);
+                    console.log(bookDto.authorDto.surname);
+                    document.getElementById('bookTitleInput').value = bookDto.title;
+                    document.getElementById('nameInput').value = bookDto.authorDto.name;
+                    document.getElementById('surnameInput').value = bookDto.authorDto.surname;
+                    document.getElementById('bookGenreInput').value = bookDto.genre.type;
+                })
+            });
+        } catch (e) {
+            alert(e);
+        }
+
+        var saveBook = function () {
+            event.preventDefault();
+            const authorDto = {
+                'name': document.getElementById("nameInput").value,
+                'surname': document.getElementById("surnameInput").value
+            }
+
+            const genre = {
+                'type': document.getElementById("bookGenreInput").value
+            }
+
+            const bookDto = {
+                'id': bookIdJs,
+                'title': document.getElementById("bookTitleInput").value,
+                'authorDto': authorDto,
+                'genre': genre
+            }
+
+            $.ajax({
+                url: "/books",
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(bookDto),
+                success: function (newBookId) {
+                    document.getElementById("bookForm").reset();
+                    window.location.href = "/book/" + newBookId;
+                },
+                error: function (jqXHR) {
+                    alert(jqXHR.status + ' ' + jqXHR.responseText);
+                }
+            });
+        };
+    </script>
+</div>
+</body>
+</html>
