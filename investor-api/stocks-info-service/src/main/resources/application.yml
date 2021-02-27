@@ -17,12 +17,12 @@ springdoc:
 
 
 spring:
-
   #  thymeleaf:
   #    enabled: false
   application:
     name: stock-service
-
+  kafka:
+    bootstrap-servers: ${kafka_bootstrap_servers:localhost:9092}
   batch:
     job:
       enabled: false
@@ -35,15 +35,18 @@ spring:
 
   data:
     mongodb:
+      #        authentication-database: admin
+      #        database: BookService
+      #        host: localhost
+      #        port: 27017
+      uri: mongodb://${MONGO_HOST:localhost}:27017/StockService
       authentication-database: admin
-      database: StockService
-      host: localhost
-      port: 27017
 
-  mongock:
-    change-logs-scan-package:
-      - ru.otus.spring.changelogs
-    runner-type: initializingbean
+
+  #  mongock:
+  #    change-logs-scan-package:
+  #      - ru.otus.spring.changelogs
+  #    runner-type: initializingbean
 
   output:
     ansi:
@@ -87,7 +90,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, info, beans, metrics, loggers, threaddump, configprops, scheduledtasks, mappings
+        include: health, info, beans, metrics, loggers, threaddump, configprops
   endpoint:
     health:
       show-details: always

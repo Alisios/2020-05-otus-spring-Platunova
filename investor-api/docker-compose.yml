@@ -24,7 +24,7 @@ services:
       TZ: 'Europe/Moscow'
       SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:9092
     restart: unless-stopped
-    links:
+    depends_on:
       - kafka
 
 
@@ -44,7 +44,7 @@ services:
       TZ: 'Europe/Moscow'
       SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:9092
     restart: unless-stopped
-    links:
+    depends_on:
       - kafka
 
   sub-service:
@@ -68,8 +68,9 @@ services:
     restart: unless-stopped
     depends_on:
       - db
-    links:
       - kafka
+#    links:
+
 
   stock-handle-service:
     container_name: stock-handle-service
@@ -87,7 +88,7 @@ services:
       TZ: 'Europe/Moscow'
       SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:9092
     restart: unless-stopped
-    links:
+    depends_on:
       - kafka
 
   stock-history-service:
@@ -109,8 +110,9 @@ services:
     restart: unless-stopped
     depends_on:
       - mongo-db
-    links:
       - kafka
+#    links:
+
 
   db:
     container_name: db
@@ -149,7 +151,7 @@ services:
     restart: unless-stopped
     depends_on:
       - redis-db
-    links:
+#    links:
       - kafka
 
   redis-db:
