@@ -24,6 +24,6 @@ public class CheckEtf implements CheckService {
 
     @Override
     public String getType() {
-        return typeProperties.getETF();
+        return typeProperties.getEtf();
     }
 }

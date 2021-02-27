@@ -1,10 +1,8 @@
 package ru.otus.spring.service.dto;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 import java.util.UUID;
 
@@ -15,7 +13,7 @@ public class UserDto {
 
     private UUID id;
 
-    private String user_real_id;
+    private String userRealId;
 
     private String email;
 

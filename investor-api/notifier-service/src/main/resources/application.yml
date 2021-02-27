@@ -5,15 +5,17 @@ service:
   locale: ru_RU
 
 mail-properties:
-  server-email: invest-api-service@mail.ru
+  server-email:
   key: statistics
 
 bot:
   name: Invest_Notifier_Bot
-  tokien: 1694456141:AAEBG4HSuZNvWUhmaBK9EqxCkao9bEuX6G8
+  tokien:
   reconnectPause: 5000
 
 spring:
+  jmx:
+    enabled: true
   application:
     name: notifier-service
   kafka:
@@ -23,8 +25,8 @@ spring:
   mail:
     host: smtp.mail.ru
     port: 465
-    username: invest-api-service@mail.ru
-    password: d1p10m@1
+    username:
+    password:
     protocol: smtps
     properties:
       mail:
@@ -56,7 +58,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, info, beans, metrics, loggers, threaddump, configprops
+        include: health, info, beans, metrics, loggers, threaddump, configprops, mail-stat
   endpoint:
     health:
       show-details: always

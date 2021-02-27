@@ -36,7 +36,7 @@ public class SubServiceRest implements SubService {
         ResponseEntity<SubscriptionDto> response =
                 restTemplate.exchange(UriComponentsBuilder.newInstance()
                                 .scheme(restProperties.getScheme())
-                                .port(restProperties.getPort2())
+                                .port(restProperties.getPortOfSubService())
                                 .host(restProperties.getHost())
                                 .path(restProperties.getSubsServicePath()).toUriString(),
                         HttpMethod.POST,
@@ -58,7 +58,7 @@ public class SubServiceRest implements SubService {
         ResponseEntity<List<SubscriptionDto>> response =
                 restTemplate.exchange(UriComponentsBuilder.newInstance()
                                 .scheme(restProperties.getScheme())
-                                .port(restProperties.getPort2())
+                                .port(restProperties.getPortOfSubService())
                                 .host(restProperties.getHost())
                                 .path(restProperties.getSubsServiceAdminPath()).toUriString(),
                         HttpMethod.GET,
@@ -79,7 +79,7 @@ public class SubServiceRest implements SubService {
         ResponseEntity<SubscriptionDto> response =
                 restTemplate.exchange(UriComponentsBuilder.newInstance()
                                 .scheme(restProperties.getScheme())
-                                .port(restProperties.getPort2())
+                                .port(restProperties.getPortOfSubService())
                                 .host(restProperties.getHost())
                                 .path(restProperties.getSubsServicePath() + "/" + id).toUriString(),
                         HttpMethod.GET,
@@ -100,7 +100,7 @@ public class SubServiceRest implements SubService {
         ResponseEntity<SubscriptionDto> response =
                 restTemplate.exchange(UriComponentsBuilder.newInstance()
                                 .scheme(restProperties.getScheme())
-                                .port(restProperties.getPort2())
+                                .port(restProperties.getPortOfSubService())
                                 .host(restProperties.getHost())
                                 .path(restProperties.getSubsServiceAdminPath() + "/" + ticker + "/" + event).toUriString(),
                         HttpMethod.GET,
@@ -121,7 +121,7 @@ public class SubServiceRest implements SubService {
         ResponseEntity<String> response =
                 restTemplate.exchange(UriComponentsBuilder.newInstance()
                                 .scheme(restProperties.getScheme())
-                                .port(restProperties.getPort2())
+                                .port(restProperties.getPortOfSubService())
                                 .host(restProperties.getHost())
                                 .path(restProperties.getSubsServicePath() + "/" + ticker + "/" + event).toUriString(),
                         HttpMethod.DELETE,
@@ -142,7 +142,7 @@ public class SubServiceRest implements SubService {
         ResponseEntity<String> response =
                 restTemplate.exchange(UriComponentsBuilder.newInstance()
                                 .scheme(restProperties.getScheme())
-                                .port(restProperties.getPort2())
+                                .port(restProperties.getPortOfSubService())
                                 .host(restProperties.getHost())
                                 .path(restProperties.getSubsServicePath() + "/" + ticker + "/" + event + restProperties.getSubsUserServicePath() + id).toUriString(),
                         HttpMethod.DELETE,

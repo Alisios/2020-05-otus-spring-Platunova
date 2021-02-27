@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 public class RestProperties {
     private String host;
     private String scheme;
-    private String port1;
-    private String port2;
+    private String portOfUserService;
+    private String portOfSubService;
     private String userInfoServicePath;
     private String subsServicePath;
     private String subsUserServicePath;

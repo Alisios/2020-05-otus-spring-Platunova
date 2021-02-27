@@ -7,7 +7,7 @@ service:
 type-properties:
   bond: Облигация
   stock: Акция
-  ETF: Фондовая биржа
+  etf: Фондовая биржа
   currency: Валюта
 
 management:
@@ -17,7 +17,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, info, beans, metrics, loggers, threaddump, configprops
+        include: health, info, beans, metrics, loggers, threaddump, configprops, scheduledtasks
   endpoint:
     shutdown:
       enabled: true

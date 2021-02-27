@@ -29,7 +29,7 @@ public class UserServiceRest implements UserService {
         ResponseEntity<User> response =
                 restTemplate.exchange(UriComponentsBuilder.newInstance()
                                 .scheme(restProperties.getScheme())
-                                .port(restProperties.getPort1())
+                                .port(restProperties.getPortOfUserService())
                                 .host(restProperties.getHost())
                                 .path(restProperties.getUserInfoServicePath()).toUriString(),
                         HttpMethod.POST,
@@ -60,7 +60,7 @@ public class UserServiceRest implements UserService {
         ResponseEntity<List<User>> response =
                 restTemplate.exchange(UriComponentsBuilder.newInstance()
                                 .scheme(restProperties.getScheme())
-                                .port(restProperties.getPort1())
+                                .port(restProperties.getPortOfUserService())
                                 .host(restProperties.getHost())
                                 .path(restProperties.getSubsServiceAdminPath()).toUriString(),
                         HttpMethod.GET,
@@ -81,7 +81,7 @@ public class UserServiceRest implements UserService {
         ResponseEntity<Optional<User>> response =
                 restTemplate.exchange(UriComponentsBuilder.newInstance()
                                 .scheme(restProperties.getScheme())
-                                .port(restProperties.getPort1())
+                                .port(restProperties.getPortOfUserService())
                                 .host(restProperties.getHost())
                                 .path(restProperties.getUserInfoServicePath() + id).toUriString(),
                         HttpMethod.GET,
@@ -103,7 +103,7 @@ public class UserServiceRest implements UserService {
         ResponseEntity<List<User>> response =
                 restTemplate.exchange(UriComponentsBuilder.newInstance()
                                 .scheme(restProperties.getScheme())
-                                .port(restProperties.getPort1())
+                                .port(restProperties.getPortOfUserService())
                                 .host(restProperties.getHost())
                                 .queryParam("name", name)
                                 .queryParam("surname", surname)
@@ -128,7 +128,7 @@ public class UserServiceRest implements UserService {
         ResponseEntity<Optional<User>> response =
                 restTemplate.exchange(UriComponentsBuilder.newInstance()
                                 .scheme(restProperties.getScheme())
-                                .port(restProperties.getPort1())
+                                .port(restProperties.getPortOfUserService())
                                 .queryParam("login", login)
                                 .host(restProperties.getHost())
                                 .path(restProperties.getUserInfoServicePath()).toUriString(),

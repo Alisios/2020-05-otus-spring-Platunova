@@ -31,6 +31,8 @@ type-properties:
   cacheLifeTime: 24
 
 spring:
+  jmx:
+    enabled: true
   application:
     name: handle-service-stock
 
@@ -85,7 +87,8 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, info, beans, metrics, loggers, threaddump, configprops
+        include: health, info, beans, metrics, loggers, threaddump, configprops, mappings,scheduledtasks
+
   endpoint:
     health:
       show-details: always

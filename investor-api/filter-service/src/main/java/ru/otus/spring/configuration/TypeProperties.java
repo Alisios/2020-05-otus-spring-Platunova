@@ -13,7 +13,7 @@ public class TypeProperties {
 
     private String bond;
     private String stock;
-    private String ETF;
+    private String etf;
     private String currency;
 
 }

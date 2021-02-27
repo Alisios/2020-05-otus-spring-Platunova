@@ -8,7 +8,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, info, beans, metrics, loggers, threaddump,configprops
+        include: health, info, beans, metrics, loggers, threaddump, configprops, mappings
 
   endpoint:
     shutdown:

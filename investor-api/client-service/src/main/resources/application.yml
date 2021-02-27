@@ -12,8 +12,8 @@ management:
 
 rest:
   host: localhost
-  port1: 4090
-  port2: 2090
+  portOfUserService: 4090
+  portOfSubService: 2090
   scheme: http
   userInfoServicePath: /user
   subsServicePath: /subscription

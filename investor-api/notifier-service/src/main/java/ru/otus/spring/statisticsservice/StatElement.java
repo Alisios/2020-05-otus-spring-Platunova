@@ -1,8 +1,10 @@
 package ru.otus.spring.statisticsservice;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.keyvalue.annotation.KeySpace;
 
@@ -13,22 +15,21 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class StatElement {
 
     @Id
-    String id;
+    private String id;
 
     @JsonProperty("Время начала отсчета")
-    LocalDateTime dateTime;
+    private LocalDateTime dateTime;
 
     @JsonProperty("Количество отправленных сообщений в телеграмме")
-    long telegramCount;
+    private long telegramCount;
 
     @JsonProperty("Количество отправленных сообщений по электронной почте")
-    long mailCount;
+    private long mailCount;
 
     @JsonProperty("Количество случившихся ошибок")
-    long errors;
+    private long errors;
 
 }

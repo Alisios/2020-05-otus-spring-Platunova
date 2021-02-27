@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class CacheServiceImpl implements CacheService {
 
     private final ConcurrentMap<Object, Object> yesterdayInfoCache;
+    private final HealthCheckService healthCheckService;
 
     @Override
     public void updateInfo(List<CacheStockInfo> listOfInfo) {
@@ -23,6 +24,7 @@ public class CacheServiceImpl implements CacheService {
                 .collect(Collectors.toConcurrentMap(CacheStockInfo::getTicker,
                         Function.identity()));
         yesterdayInfoCache.putAll(map);
+        healthCheckService.addAtomicHealth();
     }
 
     @Override
