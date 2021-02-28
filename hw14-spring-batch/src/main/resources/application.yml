@@ -1,0 +1,101 @@
+server:
+  port: 2090
+
+management:
+  server:
+    port: 2091
+
+  endpoints:
+    web:
+      exposure:
+        include: health, info, beans, metrics, loggers, threaddump, configprops, mappings
+
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      show-details: always
+
+service:
+  locale: ru_RU
+
+springdoc:
+  api-docs:
+    path: /service-docs
+  packages-to-scan: ru.otus.spring
+
+message-properties:
+  eventType:
+    type1: eventChange
+    type2: eventMax
+    type3: eventMin
+
+  message:
+    type1: Событие 1 произошло!
+    type2: Событие 2 произошло!
+    type3: Событие 3 произошло!
+
+app:
+  input-file:
+
+spring:
+  application:
+    name: sub-service
+  batch:
+    job:
+      enabled: false
+    initialize-schema: always
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/alisa
+    username: alisa
+    password: alisa
+
+    initialize: true
+    initialization-mode: always
+
+  data:
+    mongodb:
+      authentication-database: admin
+      database: SubService
+      host: localhost
+      port: 27017
+
+
+  jpa:
+    generate-ddl: false
+
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+        generate_statistics: true
+        ddl-auto: none
+        show_sql: true
+        query:
+          substitutions: true 1, false 0
+        connection:
+          enable_lazy_load_no_trans: true
+
+    current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+
+
+  output:
+    ansi:
+      enabled: ALWAYS
+
+logging:
+  pattern: ${CONSOLE_LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{70}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}
+  level:
+    com:
+      netflix:
+        eureka: OFF
+        discovery: OFF
+
+#  file:
+#    name: logs/mylog.log
+
+#  level:
+#    org:
+#      springframework:
+#        web: debug
+#
