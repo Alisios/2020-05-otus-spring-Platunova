@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @EnableRetry
 @EnableEurekaClient
-@EnableMapRepositories
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class TelegramConfig {
 
