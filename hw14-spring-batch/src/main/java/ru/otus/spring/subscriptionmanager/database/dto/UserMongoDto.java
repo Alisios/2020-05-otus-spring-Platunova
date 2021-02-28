@@ -17,7 +17,7 @@ public class UserMongoDto {
     String id;
 
     @Field
-    String user_real_id;
+    String userRealId;
 
     @Field
     String email;

@@ -7,6 +7,9 @@ import ru.otus.spring.subscriptionmanager.database.entities.User;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Маппер для миграции сущностец между postgresql и mongo
+ */
 @Component
 public class SubMapper {
 
@@ -27,7 +30,7 @@ public class SubMapper {
                 .max(user.getMax())
                 .min(user.getMin())
                 .telegram(user.getTelegram())
-                .user_real_id(user.getUser_real_id())
+                .userRealId(user.getUserRealId())
                 .build();
     }
 }

@@ -16,7 +16,7 @@ public class UserDto {
 
     UUID id;
 
-    String user_real_id;
+    String userRealId;
 
     String email;
 

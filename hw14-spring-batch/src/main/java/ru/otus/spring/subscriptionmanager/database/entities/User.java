@@ -24,7 +24,7 @@ public class User {
 
     @Column(name = "user_real_id")
     @NotNull
-    String user_real_id;
+    String userRealId;
 
     @Column(name = "email")
     String email;

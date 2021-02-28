@@ -68,7 +68,7 @@ public class SubscriptionDbServiceImpl implements SubscriptionDbService {
                 userSaved = userRepository.save(mapper.dtoToUser(subscriptionDto.getUserDto()));
             } else {
                 subNew = sub.get();
-                Optional<User> user = userRepository.findByUser_id(subscriptionDto.getUserDto().getUser_real_id());
+                Optional<User> user = userRepository.findByUser_id(subscriptionDto.getUserDto().getUserRealId());
                 userSaved = user.orElseGet(() -> {
                     subscriptionDto.getUserDto().setId(UUID.randomUUID());
                     return userRepository.save(mapper.dtoToUser(subscriptionDto.getUserDto()));

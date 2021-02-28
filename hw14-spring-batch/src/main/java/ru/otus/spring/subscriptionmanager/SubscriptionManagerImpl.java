@@ -35,7 +35,7 @@ public class SubscriptionManagerImpl implements SubscriptionManager {
                 subscriberDbService.deleteSubscription(crudMessage.getSubscriptionDto().getTicker(), crudMessage.getSubscriptionDto().getTypeEvent());
                 break;
             case ("delete_user"):
-                subscriberDbService.deleteUser(crudMessage.getSubscriptionDto().getTicker(), crudMessage.getSubscriptionDto().getTypeEvent(), crudMessage.getSubscriptionDto().getUserDto().getUser_real_id());
+                subscriberDbService.deleteUser(crudMessage.getSubscriptionDto().getTicker(), crudMessage.getSubscriptionDto().getTypeEvent(), crudMessage.getSubscriptionDto().getUserDto().getUserRealId());
                 break;
             default:
                 log.error("Неизвестный тип операции с подпиской!");

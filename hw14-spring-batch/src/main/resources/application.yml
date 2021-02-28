@@ -35,9 +35,6 @@ message-properties:
     type2: Событие 2 произошло!
     type3: Событие 3 произошло!
 
-app:
-  input-file:
-
 spring:
   application:
     name: sub-service
