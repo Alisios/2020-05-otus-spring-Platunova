@@ -1,0 +1,92 @@
+server:
+  port: 4011
+
+service:
+  locale: ru_RU
+
+event-type-handler:
+  eventType:
+    event_1: eventChange
+    event_2: eventMax
+    event_3: eventMin
+
+type-properties:
+  maxChange: 5
+  maxCost: 450
+  minCost: 200
+  change:
+    name: eventChange
+    message: Цена акции компании
+    middle: выросла на
+
+  max:
+    name: eventMax
+    message: Максимальная цена акции компании
+    middle: достигла
+  min:
+    name: eventMin
+    message: Минимальная цена акции компании
+    middle: упала ниже
+
+  cacheLifeTime: 24
+
+spring:
+  jmx:
+    enabled: true
+  application:
+    name: handle-service-stock
+
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+
+  data:
+    mongodb:
+      authentication-database: admin
+      database: StockService
+      host: localhost
+      port: 27017
+
+
+  mongock:
+    change-logs-scan-package:
+      - ru.otus.spring.changelogs
+    runner-type: initializingbean
+
+  output:
+    ansi:
+      enabled: ALWAYS
+
+logging:
+  pattern: ${CONSOLE_LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{70}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}
+
+  level:
+    root: info
+    com:
+      netflix:
+        eureka: OFF
+        discovery: OFF
+    org:
+      springframework: info
+
+management:
+  server:
+    port: 4029
+
+  endpoints:
+    web:
+      exposure:
+        include: health, info, beans, metrics, loggers, threaddump, configprops, mappings,scheduledtasks
+
+  endpoint:
+    health:
+      show-details: always
+
+ru:
+  otus:
+    spring:
+      cron: "0 * * * * ?"
+#  file:
+#    name: logs/mylog.log
